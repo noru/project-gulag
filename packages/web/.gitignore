@@ -1,0 +1,8 @@
+.DS_Store
+.vscode
+.cache
+.awcache
+coverage
+node_modules
+dist
+build
