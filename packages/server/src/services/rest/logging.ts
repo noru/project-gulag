@@ -1,5 +1,5 @@
 import * as Koa from 'koa'
-import config from '../config'
+import config from '../../../config'
 
 interface ILogData {
   method: string
@@ -17,7 +17,9 @@ interface ILogData {
 
 function outputLog(data: Partial<ILogData>, thrownError: any) {
   if (config.prettyLog) {
-    console.info(`${data.statusCode} ${data.method} ${data.url} - ${data.responseTime}ms`)
+    console.info(
+      `${data.statusCode} ${data.method} ${data.url} - ${data.responseTime}ms`,
+    )
     if (thrownError) {
       console.error(thrownError)
     }
@@ -29,7 +31,6 @@ function outputLog(data: Partial<ILogData>, thrownError: any) {
 }
 
 export async function logger(ctx: Koa.Context, next: () => Promise<any>) {
-
   const start = new Date().getMilliseconds()
 
   const logData: Partial<ILogData> = {
