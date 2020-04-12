@@ -1,5 +1,8 @@
 import * as ftp from 'basic-ftp'
 import rimraf from 'rimraf'
+import { getLogger } from '../utils'
+
+const logger = getLogger('FTP')
 
 const {
   FTP_HOST,
@@ -20,9 +23,9 @@ async function ftpSync() {
     })
     await client.ensureDir(FTP_REMOTE_DIR!)
     await client.uploadFromDir(FTP_LOCAL_DIR!)
-    console.info('File successfully uploaded at ' + new Date())
+    logger('File successfully uploaded at ' + new Date())
     rimraf(FTP_LOCAL_DIR + '/*', () => {
-      console.info('[FTP] Local files cleared')
+      logger('Local files cleared')
     })
   } catch (err) {
     console.error(err)
