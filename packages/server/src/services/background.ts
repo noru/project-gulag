@@ -1,7 +1,8 @@
 import MQClient, { QUEUE } from '../clients/mq'
-import { LocationMeta } from '../model/location'
+import { LocationMeta } from '../models/location'
 import { dateStr } from '../utils'
 import fs from 'fs'
+import PersonaleModule from '../modules/personale'
 
 class LocationLogGenerator {
   static Limit = 100
@@ -32,7 +33,7 @@ class LocationLogGenerator {
           // TODO, output dir
           fs.writeFile(fileName.replace(/:/g, '_'), fileBody, function (e) {
             if (e) {
-              // TODO: loggin
+              // TODO: logging
               console.error(e)
             } else {
               console.info(`File Generated: ${fileName}`)
@@ -101,3 +102,12 @@ const LocationLineFormatter = (
   // e.g. 140102B001101010000290001;车辆编号;140102B001101000000200001;116.397784;39.916321;75.000;2016-06-24 11:24:24;采区一;1;1
   return `${terminalId};${vehicleId};${personId};${latitude};${longitude};${altitude};${datetime};${area};${terminalStatus};${personStatus};`
 }
+
+setTimeout(async () => {
+  // PersonaleModule.upsertUser({
+  //   Id: '123123',
+  //   IMSI: '41234124123',
+  // })
+  let result = await PersonaleModule.getUserByID('123123')
+  console.log('test mongo', result)
+}, 3000)

@@ -116,9 +116,3 @@ export class Location implements LocationMeta {
     }, {}) as LocationMeta
   }
 }
-
-let location = new Location(
-  '46,0114013436303131333031333936303533371A5E8EBB7501589FAE06CA2D460000000020000C00070007000053C2',
-)
-
-console.log(location.isValid)
