@@ -53,16 +53,16 @@ class LocationLogGenerator {
   getLines() {
     return this.LocationRecords.map((loc) =>
       LocationLineFormatter(
-        'terminalId',
-        'vehicleId',
+        '0',
+        '0',
         'person',
         loc.Longitude,
         loc.Latitude,
         loc.Altitude,
-        dateStr(loc.UTC), // +8?
-        'area',
-        'terminalStatus',
-        'personStatus',
+        dateStr(loc.UTC, 8),
+        '采区一',
+        '1',
+        '1',
       ),
     ).join('~')
   }
