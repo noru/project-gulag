@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@drewxiu/utils": "^1.0.17",
+    "basic-ftp": "^4.5.4",
     "coap": "^0.23.1",
     "dayjs": "^1.8.24",
     "dotenv": "^8.2.0",

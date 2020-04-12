@@ -97,14 +97,14 @@ export class Location implements LocationMeta {
   }
 
   get isValid() {
-    let { rawData, rawLength, DataLength /* CRC */ } = this
-    // let allBytes = rawData.match(/.{2}/g)!.slice(0, -1)
-    // allBytes.pop()
-    // let sum = allBytes.map(Hex2Int).reduce((sum, next) => sum + next, 0)
-    // let sum16 = sum.toString(16)
+    let { rawData, rawLength, DataLength, CRC /* CRC */ } = this
+    let allBytes = rawData.match(/.{2}/g)!.slice(0, -1).slice(1) // remove the first byte (seems a bug), and last byte (CRC)
+    let sum = allBytes.map(Hex2Int).reduce((sum, next) => sum + next, 0)
+    let sum16 = sum.toString(16)
     return (
-      rawData.length === rawLength * 2 && DataLength === 26
-      // && sum16.endsWith(CRC.toLowerCase()) // TODO, CRC not working ?!?!
+      rawData.length === rawLength * 2 &&
+      DataLength === 26 &&
+      sum16.endsWith(CRC.toLowerCase())
     )
   }
 

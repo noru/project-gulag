@@ -12,7 +12,7 @@ Server.on('request', function (req, res) {
   console.info('Payload', payload)
   let location = new Location(payload)
   if (location.isValid) {
-    MQClient.publish({ queue: { name: QUEUE.GPS_UPLOAD } }, payload.toJson())
+    MQClient.publish({ queue: { name: QUEUE.GPS_UPLOAD } }, location.toJson())
     res.end('OK')
   } else {
     res.end('Invalid payload')
