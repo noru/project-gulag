@@ -22,7 +22,8 @@
     "koa-router": "^8.0.8",
     "koa-static": "^5.0.0",
     "node-rabbitmq-client": "^3.0.2",
-    "prettyjson": "^1.2.1"
+    "prettyjson": "^1.2.1",
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@types/koa": "^2.11.3",
