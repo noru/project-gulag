@@ -2,32 +2,18 @@ version: '3.1'
 
 volumes:
   db:
-  ftp:
 
 services:
-  # ftp:
-  #   image: stilliard/pure-ftpd
-  #   ports:
-  #     - '21:21'
-  #     - '30000-30009:30000-30009'
-  #   volumes:
-  #     - 'C:/TEST:/home/ftp/'
-  #     - 'C:/TEST/passwd:/etc/pure-ftpd/passwd'
-  #   environment:
-  #     PUBLICHOST: 'localhost'
-  #     FTP_USER_NAME: ftp
-  #     FTP_USER_PASS: ftp
-  #     FTP_USER_HOME: /home/ftp
   redis:
     image: redis:5.0.8-alpine3.11
     ports:
       - 6379:6379
-  # redis-admin:
-  #   image: rediscommander/redis-commander:latest
-  #   environment:
-  #     - REDIS_HOSTS=local:redis:6379
-  #   ports:
-  #     - 8081:8081
+  redis-admin:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - 8081:8081
   rabbitmq:
     image: rabbitmq:management-alpine
     environment:
