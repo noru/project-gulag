@@ -61,7 +61,6 @@ export class Location implements LocationMeta {
     { name: 'CRC', deserializer: identity, from: 90, length: 2 },
   ]
 
-  rawLength = 0
   rawData: string = ''
 
   TransitCode!: string
@@ -82,13 +81,9 @@ export class Location implements LocationMeta {
   CRC!: string
 
   constructor(raw: string) {
-    // raw string example: 46,0114013436303131333031333936303533371A5E8EBB7501589FAE06CA2D460000000020000C00070007000053C2
-    // prettier: 46, 0114 01 343630313133303133393630353337 1A 5E8EBB75 01589FAE 06CA2D46 00 0000 0020 000C 0007 0007 0000 53 C2
-    let [length, rawData] = raw.split(',')
-
-    this.rawLength = +length
-    this.rawData = rawData
-
+    // raw string example: 0114013436303131333031333936303533371A5E8EBB7501589FAE06CA2D460000000020000C00070007000053C2
+    // prettier: 0114 01 343630313133303133393630353337 1A 5E8EBB75 01589FAE 06CA2D46 00 0000 0020 000C 0007 0007 0000 53 C2
+    this.rawData = raw
     Location.FRAME_FORMAT.reduce((obj, nextField) => {
       let { name, deserializer, from, length } = nextField
       obj[name] = deserializer(this.rawData.substr(from, length))
@@ -97,15 +92,11 @@ export class Location implements LocationMeta {
   }
 
   get isValid() {
-    let { rawData, rawLength, DataLength, CRC /* CRC */ } = this
+    let { rawData, DataLength, CRC /* CRC */ } = this
     let allBytes = rawData.match(/.{2}/g)!.slice(0, -1).slice(1) // remove the first byte (seems a bug), and last byte (CRC)
     let sum = allBytes.map(Hex2Int).reduce((sum, next) => sum + next, 0)
     let sum16 = sum.toString(16)
-    return (
-      rawData.length === rawLength * 2 &&
-      DataLength === 26 &&
-      sum16.endsWith(CRC.toLowerCase())
-    )
+    return DataLength === 26 && sum16.endsWith(CRC.toLowerCase())
   }
 
   toJson(): LocationMeta {
