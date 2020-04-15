@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf ./dist __*",
-    "build": "npm run clean && tslint --project . && tsc && cp -r ./static ./dist",
+    "build": "npm run clean && tsc",
     "dev": "cross-env NODE_ENV=development tsc && node ./dist/src/index.js",
-    "prod": "cross-env npm run build && NODE_ENV=production node ./dist/server.js"
+    "prod": "cross-env NODE_ENV=production node ./dist/src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "koa-mount": "^4.0.0",
     "koa-router": "^8.0.8",
     "koa-static": "^5.0.0",
+    "mongoose": "^5.9.9",
     "node-rabbitmq-client": "^3.0.2",
     "prettyjson": "^1.2.1",
     "rimraf": "^3.0.2"
