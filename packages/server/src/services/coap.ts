@@ -1,7 +1,7 @@
 import * as coap from 'coap'
 import MQClient, { QUEUE } from '../clients/mq'
 import { Location } from '../models/location'
-import { getLogger } from 'src/utils'
+import { getLogger } from '../utils'
 
 const Server = coap.createServer()
 const logger = getLogger('COAP SERVER')
@@ -42,6 +42,7 @@ function handleGPSUpload(payload, res) {
     MQClient.publish({ queue: { name: QUEUE.GPS_UPLOAD } }, location.toJson())
     res.end(UPLOAD_GPS_OK)
   } else {
+    logger.error('invalid gps payload: ', payload)
     res.end('Invalid Upload GPS payload')
   }
 }
