@@ -1,26 +1,19 @@
 import Koa from 'koa'
+import mount from 'koa-mount'
 import serve from 'koa-static'
-// import * as mount from 'koa-mount'
-import * as prettyjson from 'prettyjson'
-import { logger } from './logging'
-import config from '../../../config'
-import routes from './routes'
+import { logger, koaLogger } from './logging'
+import routes, { StaticsPath } from './routes'
 
-const staticServer = new Koa()
-staticServer.use(serve(config.staticContentPath, {}))
+const { KOA_PORT } = process.env
 
-const fileStorage = new Koa()
-fileStorage.use(serve(config.volumn))
-fileStorage.use(serve(config.rootPath + config.tempFileDir))
+const statics = new Koa()
+statics.use(serve(StaticsPath))
 
 const app = new Koa()
-// app.use(mount('/static', staticServer))
-// app.use(mount('/files/', fileStorage))
-app.use(logger)
+app.use(koaLogger)
+app.use(mount(statics))
 app.use(routes)
 
-app.listen(config.port)
+app.listen(KOA_PORT)
 
-console.info(`Server running on port ${config.port}`)
-console.info('With configuration:')
-console.info(prettyjson.render(config))
+logger(`Server running on port ${KOA_PORT}`)

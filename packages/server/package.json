@@ -6,8 +6,8 @@
   "scripts": {
     "clean": "rimraf ./dist __*",
     "build": "npm run clean && tsc",
-    "dev": "cross-env NODE_ENV=development tsc && node ./dist/src/index.js",
-    "prod": "cross-env NODE_ENV=production node ./dist/src/index.js"
+    "dev": "cross-env NODE_ENV=development tsc && node ./dist/index.js",
+    "prod": "cross-env NODE_ENV=production node ./dist/index.js"
   },
   "author": "",
   "license": "ISC",

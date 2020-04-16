@@ -5,15 +5,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('mini-css-extract-plugin')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const extractProjectStyle = new ExtractTextPlugin({
-  filename: 'assets/css/[name].[chunkhash].css',
-  chunkFilename: 'assets/css/[name].[id].[chunkhash].css',
+  filename: 'statics/css/[name].[chunkhash].css',
+  chunkFilename: 'statics/css/[name].[id].[chunkhash].css',
 })
 
 const devMode = process.env.NODE_ENV !== 'production'
 
 const alias = {
   '#': path.resolve(__dirname, '../src'),
-  assets: path.resolve(__dirname, '../src/assets'),
 }
 
 const GLOBALS = {
@@ -24,14 +23,18 @@ const GLOBALS = {
 
 module.exports = {
   output: {
-    filename: 'assets/js/[name].[chunkhash].js',
-    chunkFilename: 'assets/js/[name].[chunkhash].js',
+    filename: 'statics/js/[name].[chunkhash].js',
+    chunkFilename: 'statics/js/[name].[chunkhash].js',
     path: path.resolve(__dirname, '../build'),
   },
   resolve: {
     alias,
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.scss', '.css', '.sass'],
-    plugins: [new TsconfigPathsPlugin({ configFile: path.resolve(__dirname, '../tsconfig.json') })]
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: path.resolve(__dirname, '../tsconfig.json'),
+      }),
+    ],
   },
   plugins: [
     new webpack.DefinePlugin(GLOBALS),

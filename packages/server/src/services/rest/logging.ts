@@ -1,5 +1,7 @@
 import * as Koa from 'koa'
-import config from '../../../config'
+import { getLogger } from '../../utils'
+
+export const logger = getLogger('KOA')
 
 interface ILogData {
   method: string
@@ -16,12 +18,12 @@ interface ILogData {
 }
 
 function outputLog(data: Partial<ILogData>, thrownError: any) {
-  if (config.prettyLog) {
-    console.info(
+  if (process.env.NODE_ENV === 'production') {
+    logger(
       `${data.statusCode} ${data.method} ${data.url} - ${data.responseTime}ms`,
     )
     if (thrownError) {
-      console.error(thrownError)
+      logger.error(thrownError)
     }
   } else if (data.statusCode! < 400) {
     process.stdout.write(JSON.stringify(data) + '\n')
@@ -30,7 +32,7 @@ function outputLog(data: Partial<ILogData>, thrownError: any) {
   }
 }
 
-export async function logger(ctx: Koa.Context, next: () => Promise<any>) {
+export async function koaLogger(ctx: Koa.Context, next: () => Promise<any>) {
   const start = new Date().getMilliseconds()
 
   const logData: Partial<ILogData> = {

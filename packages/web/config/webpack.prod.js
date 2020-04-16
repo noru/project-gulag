@@ -16,8 +16,8 @@ module.exports = merge(config, {
     app: path.join(__dirname, '../src/index'),
   },
   output: {
-    filename: 'assets/js/[name].[chunkhash].js',
-    chunkFilename: 'assets/js/[name].[chunkhash].js',
+    filename: 'statics/js/[name].[chunkhash].js',
+    chunkFilename: 'statics/js/[name].[chunkhash].js',
     path: path.resolve(__dirname, '../dist'),
   },
   plugins: [
