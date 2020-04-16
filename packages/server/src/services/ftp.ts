@@ -4,13 +4,7 @@ import { getLogger } from '../utils'
 
 const logger = getLogger('FTP')
 
-const {
-  FTP_HOST,
-  FTP_USER,
-  FTP_PASS,
-  FTP_LOCAL_DIR,
-  FTP_REMOTE_DIR,
-} = process.env
+const { FTP_HOST, FTP_USER, FTP_PASS, FTP_LOCAL_DIR, FTP_REMOTE_DIR } = process.env
 
 async function ftpSync() {
   const client = new ftp.Client()
@@ -28,7 +22,7 @@ async function ftpSync() {
       logger('Local files cleared')
     })
   } catch (err) {
-    console.error(err)
+    logger.error(err)
   } finally {
     client.close()
     setTimeout(ftpSync, 1800000) // half an hour

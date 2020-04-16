@@ -1,7 +1,9 @@
 import MQClient, { QUEUE } from '../clients/mq'
 import { LocationMeta } from '../models/location'
-import { dateStr } from '../utils'
+import { dateStr, getLogger } from '../utils'
 import fs from 'fs'
+
+const logger = getLogger('Worker')
 
 class LocationLogGenerator {
   static Limit = 100
@@ -21,29 +23,23 @@ class LocationLogGenerator {
     setTimeout(() => {
       try {
         if (this.LocationRecords.length > 0) {
-          console.info('Generating Location File...')
+          logger('Generating Location File...')
           let date = dateStr()
           let fileName = `${'单位编码'}_SSSJ_${date}.txt`
-          let fileBody =
-            `${date};${this.LocationRecords.length}~` + this.getLines() + '~||'
+          let fileBody = `${date};${this.LocationRecords.length}~` + this.getLines() + '~||'
           this.LocationRecords = []
 
-          console.info(`File Name: ${fileName}`)
-          fs.writeFile(
-            process.env.FTP_LOCAL_DIR + '/' + fileName.replace(/:/g, '_'),
-            fileBody,
-            function (e) {
-              if (e) {
-                // TODO: logging
-                console.error(e)
-              } else {
-                console.info(`File Generated: ${fileName}`)
-              }
-            },
-          )
+          logger(`File Name: ${fileName}`)
+          fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName.replace(/:/g, '_'), fileBody, function (e) {
+            if (e) {
+              logger.error(e)
+            } else {
+              logger(`File Generated: ${fileName}`)
+            }
+          })
         }
-      } catch (error) {
-        // TODO: logging
+      } catch (e) {
+        logger.error(e)
       }
       this.generate()
     }, LocationLogGenerator.Interval)
@@ -74,7 +70,7 @@ class LocationLogGenerator {
 const locationLogGenerator = new LocationLogGenerator()
 
 MQClient.consume({ queue: { name: QUEUE.GPS_UPLOAD } }, (data) => {
-  console.info('Incomming location record')
+  logger('Incomming location record')
   locationLogGenerator.push(data)
   return Promise.resolve()
 })

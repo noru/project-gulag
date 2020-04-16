@@ -7,6 +7,7 @@ export function dateStr(input?: any, offset = 0) {
 type LogFunc = (message?: any, ...optionalParams: any[]) => void
 interface Logger {
   log: LogFunc
+  info: LogFunc
   warn: LogFunc
   error: LogFunc
 }
@@ -18,6 +19,7 @@ export function getLogger(name: string): LogFunc & Logger {
 
   let logger: LogFunc & Logger = log as any
   logger.log = log
+  logger.info = log
   logger.warn = warn
   logger.error = error
   return logger
