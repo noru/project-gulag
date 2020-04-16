@@ -1,7 +1,6 @@
 const path = require('path')
 const merge = require('webpack-merge')
 const webpack = require('webpack')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const config = require('./webpack.base')
 
 const GLOBALS = {
@@ -27,7 +26,6 @@ module.exports = merge(config, {
       minimize: true,
       debug: false,
     }),
-    new BundleAnalyzerPlugin({ analyzerMode: 'disabled', generateStatsFile: true }),
   ],
   module: {
     rules: [
