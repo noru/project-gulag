@@ -2,27 +2,39 @@ ARG FOO=bar
 FROM node:13.13.0
 
 RUN npm i -g cnpm
-RUN mkdir /app
+RUN mkdir -p /app/ftp
+
+# install node modules at front for caching
+RUN mkdir -p /app/packages/server
+RUN mkdir -p /app/packages/web
+COPY ./packages/server/package.json /app/packages/server
+COPY ./packages/web/package.json /app/packages/web
+WORKDIR /app/packages/server
+RUN cnpm install --silent
+WORKDIR /app/packages/web
+RUN cnpm install --silent
+
 WORKDIR /app
-RUN mkdir ftp
 
 ARG FOO
 RUN git clone https://github.com/noru/project-gulag.git
-
-# Environment vars & credentials
-COPY ./.dev.env /app/project-gulag/packages/server/.env
+# RUN rsync -av /app/project-gulag/ /app/
+RUN cp -r /app/project-gulag/* /app/
 
 # build web files
-WORKDIR /app/project-gulag/packages/web
-RUN cnpm install --silent
+WORKDIR /app/packages/web
 RUN npm run build
 
 # build and start the server
-WORKDIR /app/project-gulag/packages/server
-RUN cnpm install --silent
+WORKDIR /app/packages/server
 RUN npm run build
 
+# Environment vars & credentials
+COPY ./docker/.dev.env /app/packages/server/.env
+
+# CoAP port
 EXPOSE 5683
+# Web & API port
 EXPOSE 80
 
 CMD npm run prod

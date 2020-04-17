@@ -54,7 +54,9 @@ services:
   #     - rabbitmq
 
   gulag:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - 8081:80
       - 5683:5683/udp
