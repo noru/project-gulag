@@ -3,6 +3,7 @@ import path from 'path'
 import { createReadStream } from 'fs'
 const { KOA_STATICS_PATH } = process.env
 export const StaticsPath = path.resolve(__dirname, KOA_STATICS_PATH!)
+
 const router = new Router()
 
 router.get('/health', async (ctx) => {
@@ -14,5 +15,4 @@ router.all('/*', async (ctx, _next) => {
   ctx.body = createReadStream(`${StaticsPath}/index.html`)
 })
 
-export default router.routes()
-export { router }
+export const shared = router.routes()

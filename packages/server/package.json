@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rimraf ./dist __*",
     "build": "npm run clean && tsc",
-    "dev": "cross-env NODE_ENV=development tsc && node ./dist/index.js",
+    "compile": "tsc && node ./dist/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon -e ts --exec 'npm run compile'",
     "prod": "cross-env NODE_ENV=production node ./dist/index.js"
   },
   "author": "",
@@ -17,7 +18,10 @@
     "coap": "^0.23.1",
     "dayjs": "^1.8.24",
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.11.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-jwt": "^3.6.0",
     "koa-mount": "^4.0.0",
     "koa-router": "^8.0.8",
     "koa-static": "^5.0.0",
@@ -28,10 +32,11 @@
   },
   "devDependencies": {
     "@types/koa": "^2.11.3",
+    "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-router": "^7.4.0",
     "@types/mongoose": "^5.7.10",
     "cross-env": "^7.0.2",
-    "nodemon": "^2.0.2",
+    "nodemon": "^2.0.3",
     "typescript": "^3.8.3"
   }
 }
