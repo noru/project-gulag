@@ -30,7 +30,7 @@ WORKDIR /app/packages/server
 RUN npm run build
 
 # Environment vars & credentials
-COPY ./docker/.dev.env /app/packages/server/.env
+COPY ./docker/.env /app/packages/server/.env
 
 # CoAP port
 EXPOSE 5683
