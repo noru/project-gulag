@@ -8,7 +8,7 @@ const router = new Router()
 const genJWT = (payload) => jwt.sign({ payload }, KOA_JWT_SECRET, { expiresIn: '0.5h' })
 
 router.post('/api/authenticate', async (ctx) => {
-  let { user, password } = ctx.request.body
+  let { username, password } = ctx.request.body
 
   let issue = (data) => {
     let token = genJWT(data)
@@ -25,17 +25,22 @@ router.post('/api/authenticate', async (ctx) => {
       error: 'invalid_credentials',
     }
   }
-  if (user === '$uper') {
+  if (username === '$uper') {
     let flag = await mongoClient.metadata.findOne({ name: 'super_user_disabled' })
     if (flag?.data === true || password !== KOA_SUPER_PASS) {
       reject()
     } else {
-      issue({ user })
+      issue({ username })
     }
     return
   }
 
-  // let user = await mongoClient.user.findOne({ name: user })
+  let userData = await mongoClient.user.authenticate(username, password)
+  if (userData) {
+    issue(userData)
+  } else {
+    reject()
+  }
 })
 
 router.post('/api/reauth', async (ctx) => {
@@ -55,6 +60,18 @@ router.post('/api/init', async (ctx) => {
       name: 'super_user_disabled',
       description: "Allow super user login or not. Useful at the beginning where no user's been created",
       data: false,
+    },
+    { upsert: true, setDefaultsOnInsert: true },
+  )
+  await mongoClient.user.update(
+    { username: 'admin' },
+    {
+      username: 'admin',
+      email: 'admin@admin.com',
+      role: 'admin',
+      displayName: 'I am Admin',
+      salt: 'randomstr',
+      hashedPwd: '6887a953000343b53d1c42219ecd066f1e3b6102382807cccb2646513c817082',
     },
     { upsert: true, setDefaultsOnInsert: true },
   )

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import { getLogger } from '../../utils'
 import { Personale } from './models/personale'
-import { User } from './models/user'
+import user from './models/user'
 import metadata from './models/meta'
 
 const logger = getLogger('DB')
@@ -31,7 +31,7 @@ connect()
 class MongoClient {
   connection = connection
   metadata = metadata
-  user = mongoose.model('User', User)
+  user = user
   personale = mongoose.model('Personale', Personale)
 }
 
