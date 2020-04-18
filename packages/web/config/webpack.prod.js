@@ -40,7 +40,7 @@ module.exports = merge(config, {
           {
             loader: 'ts-loader',
             options: {
-              ignoreDiagnostics: [2403],
+              ignoreDiagnostics: [2403, 2345, 2322, 2769, 6133], // wtf?!
             },
           },
         ],

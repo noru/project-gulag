@@ -8,7 +8,7 @@ export function getAuthToken() {
 
 export function goAuth() {
   localStorage.removeItem(TOKEN_KEY)
-  window.location.href = '/login'
+  window.location.pathname !== '/login' && (window.location.href = '/login')
 }
 
 function _use(interceptor: any, port: any) {

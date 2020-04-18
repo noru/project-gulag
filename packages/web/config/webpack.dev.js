@@ -15,14 +15,21 @@ module.exports = merge(config, {
   cache: true,
   devtool: 'cheap-module-eval-source-map',
   entry: {
-    app: ['react-hot-loader/patch', 'webpack/hot/only-dev-server', path.join(__dirname, '../src/index')],
+    app: [
+      'react-hot-loader/patch',
+      'webpack/hot/only-dev-server',
+      path.join(__dirname, '../src/index'),
+    ],
     vendor: ['react', 'react-dom', 'react-router', 'react-router-dom'],
   },
   output: {
     filename: 'assets/js/[name].js',
     chunkFilename: 'assets/js/[name].js',
   },
-  plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.DefinePlugin(GLOBALS)],
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin(GLOBALS),
+  ],
   devServer: {
     overlay: true,
     hot: true,

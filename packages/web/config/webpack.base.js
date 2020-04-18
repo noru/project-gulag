@@ -27,7 +27,7 @@ module.exports = {
   output: {
     filename: 'statics/js/[name].[chunkhash].js',
     chunkFilename: 'statics/js/[name].[chunkhash].js',
-    path: path.resolve(__dirname, '../build'),
+    path: path.resolve(__dirname, '../dist'),
   },
   resolve: {
     alias,
@@ -84,7 +84,9 @@ module.exports = {
         use: [
           {
             loader: 'ts-loader',
-            options: { configFile: 'tsconfig.dev.json' },
+            options: {
+              configFile: 'tsconfig.dev.json',
+            },
           },
         ],
       },
@@ -94,7 +96,9 @@ module.exports = {
           'babel-loader',
           {
             loader: 'ts-loader',
-            options: { configFile: 'tsconfig.dev.json' },
+            options: {
+              configFile: 'tsconfig.dev.json',
+            },
           },
         ],
       },

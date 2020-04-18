@@ -28,7 +28,7 @@ export const LoginWrapper = styled.div`
   max-width: 500px;
   height: 100%;
   background: #ddd;
-  transition: all 0.4s ease-out;
+  transition: all 0.8s ease-out;
   flex: 1;
   position: relative;
   text-align: center;
@@ -40,9 +40,12 @@ export const LoginWrapper = styled.div`
     width: 500px;
     margin: 40vh auto;
     padding: 0 36px;
-
+    .ant-form-item-has-error .ant-form-item-explain {
+      text-align: right;
+    }
     .login-btn {
       width: 100%;
+      margin-top: 16px;
     }
   }
 `
