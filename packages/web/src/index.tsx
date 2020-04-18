@@ -1,16 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
+import { Routes } from './routes'
 
 const rootElement = document.getElementById('app')
 
-const App = 
+const App = (
   <AppContainer>
-    <div>
-      stub
-    </div>
+    <Routes />
   </AppContainer>
-
+)
 
 render(App, rootElement)
 
