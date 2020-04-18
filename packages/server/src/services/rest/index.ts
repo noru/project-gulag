@@ -16,7 +16,7 @@ app.use(bodyParser())
 app.use(koaLogger)
 app.use(mount(statics))
 
-app.use(jwt({ secret: KOA_JWT_SECRET! }).unless({ path: [/^\/api\/authenticate/, /^\/health/] }))
+app.use(jwt({ secret: KOA_JWT_SECRET! }).unless({ path: [/^\/api\/authenticate/, /^\/(?!api)(.*)$/] }))
 app.use(auth)
 app.use(personale)
 app.use(shared)

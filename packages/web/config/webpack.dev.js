@@ -47,7 +47,7 @@ module.exports = merge(config, {
     port: process.env.PORT || 8888,
     disableHostCheck: true,
     proxy: {
-      '/api': process.env.PROXY_ENDPOINT || 'http://localhost:5880',
+      '/api': process.env.PROXY_ENDPOINT || 'http://localhost:8081',
     },
   },
 })
