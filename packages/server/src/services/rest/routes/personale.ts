@@ -34,6 +34,7 @@ router.post('/api/personales', async (ctx) => {
           default:
             r(ctx, ErrorCode.Unknown, e)
         }
+        break
       default:
         r(ctx, ErrorCode.Unknown, e)
     }
