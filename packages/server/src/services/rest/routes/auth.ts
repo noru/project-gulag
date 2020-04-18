@@ -2,6 +2,7 @@ import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
 import mongoClient from '../../../clients/mongo'
 import { responseHelper, ErrorCode } from './utils/response'
+import { Role } from 'src/clients/mongo/models/user'
 
 const { KOA_JWT_SECRET, KOA_SUPER_PASS } = process.env
 const router = new Router()
@@ -64,7 +65,7 @@ router.post('/api/authInit', async (ctx) => {
     {
       username: 'admin',
       email: 'admin@admin.com',
-      role: 'admin',
+      role: Role.Admin,
       displayName: 'I am Admin',
       salt: 'randomstr',
       hashedPwd: '6887a953000343b53d1c42219ecd066f1e3b6102382807cccb2646513c817082',
