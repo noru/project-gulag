@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
-import { Personale } from './models/personale'
 import { getLogger } from '../../utils'
+import { Personale } from './models/personale'
+import { User } from './models/user'
+import metadata from './models/meta'
 
 const logger = getLogger('DB')
-
-mongoose.model('Personale', Personale)
 
 const connect = async () =>
   await mongoose.connect(`mongodb://${process.env.MONGO_HOST}/${process.env.MONGO_DB}`, {
@@ -28,4 +28,11 @@ connection.on('disconnected', () => {
 
 connect()
 
-export default connection
+class MongoClient {
+  connection = connection
+  metadata = metadata
+  user = mongoose.model('User', User)
+  personale = mongoose.model('Personale', Personale)
+}
+
+export default new MongoClient()
