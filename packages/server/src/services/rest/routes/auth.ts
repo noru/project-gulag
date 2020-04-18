@@ -2,7 +2,7 @@ import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
 import mongoClient from '../../../clients/mongo'
 import { responseHelper, ErrorCode } from './utils/response'
-import { Role } from 'src/clients/mongo/models/user'
+import { Role } from '../../../clients/mongo/models/user'
 
 const { KOA_JWT_SECRET, KOA_SUPER_PASS } = process.env
 const router = new Router()
