@@ -1,6 +1,7 @@
 import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
 import mongoClient from '../../../clients/mongo'
+import { responseHelper, ErrorCode } from './utils/response'
 
 const { KOA_JWT_SECRET, KOA_SUPER_PASS } = process.env
 const router = new Router()
@@ -19,12 +20,7 @@ router.post('/api/authenticate', async (ctx) => {
       serverTime,
     }
   }
-  let reject = () => {
-    ctx.status = 401
-    ctx.body = {
-      error: 'invalid_credentials',
-    }
-  }
+  let reject = () => responseHelper(ctx, ErrorCode.Unauthorized)
   if (username === '$uper') {
     let flag = await mongoClient.metadata.findOne({ name: 'super_user_disabled' })
     if (flag?.data === true || password !== KOA_SUPER_PASS) {
