@@ -3,24 +3,17 @@
     "target": "es5",
     "module": "esnext",
     "downlevelIteration": true,
-    "lib": [
-      "es5",
-      "es2015",
-      "es2017",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ],
+    "lib": ["es5", "es2015", "es2017", "dom", "dom.iterable", "scripthost"],
     "allowJs": true,
     "jsx": "react",
     "strict": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
-    "noImplicitThis": true,
+    "noImplicitThis": false,
     "alwaysStrict": true,
     "skipLibCheck": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noImplicitReturns": false,
     "moduleResolution": "node",
     "baseUrl": "./",
@@ -31,10 +24,5 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    "test"
-  ]
+  "exclude": ["node_modules", "build", "dist", "test"]
 }

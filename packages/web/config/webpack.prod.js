@@ -31,11 +31,19 @@ module.exports = merge(config, {
     rules: [
       {
         test: /\.ts$/,
-        loader: 'ts-loader',
+        use: ['ts-loader'],
       },
       {
         test: /\.tsx$/,
-        use: ['babel-loader', 'ts-loader'],
+        use: [
+          'babel-loader',
+          {
+            loader: 'ts-loader',
+            options: {
+              ignoreDiagnostics: [2403],
+            },
+          },
+        ],
       },
     ],
   },

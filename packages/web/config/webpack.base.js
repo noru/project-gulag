@@ -17,7 +17,9 @@ const alias = {
 
 const GLOBALS = {
   'process.env': {
-    VERSION_STRING: JSON.stringify(process.env.VERSION_STRING || '(Development)'),
+    VERSION_STRING: JSON.stringify(
+      process.env.VERSION_STRING || '(Development)'
+    ),
   },
 }
 
@@ -29,7 +31,16 @@ module.exports = {
   },
   resolve: {
     alias,
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.scss', '.css', '.sass'],
+    extensions: [
+      '.js',
+      '.jsx',
+      '.ts',
+      '.tsx',
+      '.json',
+      '.scss',
+      '.css',
+      '.sass',
+    ],
     plugins: [
       new TsconfigPathsPlugin({
         configFile: path.resolve(__dirname, '../tsconfig.json'),
@@ -56,8 +67,8 @@ module.exports = {
     }),
     // new CopyWebpackPlugin([
     //   {
-    //     from: 'src/assets',
-    //     to: 'assets',
+    //     from: 'src/assets/*',
+    //     to: 'statics',
     //   },
     // ]),
     extractProjectStyle,
@@ -70,20 +81,31 @@ module.exports = {
       },
       {
         test: /\.ts$/,
-        use: ['babel-loader', { loader: 'ts-loader', options: { configFile: 'tsconfig.dev.json' } }],
+        use: [
+          {
+            loader: 'ts-loader',
+            options: { configFile: 'tsconfig.dev.json' },
+          },
+        ],
       },
       {
         test: /\.tsx$/,
-        use: ['babel-loader', { loader: 'ts-loader', options: { configFile: 'tsconfig.dev.json' } }],
+        use: [
+          'babel-loader',
+          {
+            loader: 'ts-loader',
+            options: { configFile: 'tsconfig.dev.json' },
+          },
+        ],
       },
       // Images
       // Inline base64 URLs for <=8k images, direct URLs for the rest
       {
-        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        test: /\.(png|jpg|jpeg|gif|svg|webp)$/,
         loader: 'url-loader',
         query: {
           limit: 8192,
-          name: 'img/[name].[hash].[ext]',
+          name: 'statics/imgs/[name].[hash].[ext]',
         },
       },
       // Fonts
@@ -92,7 +114,7 @@ module.exports = {
         loader: 'url-loader',
         query: {
           limit: 8192,
-          name: 'fonts/[name].[ext]?[hash]',
+          name: 'statics/fonts/[name].[ext]?[hash]',
         },
       },
       {
@@ -102,7 +124,12 @@ module.exports = {
       },
       {
         test: /\.(css|scss|sass)$/,
-        use: [devMode ? 'style-loader' : ExtractTextPlugin.loader, 'css-loader', 'sass-loader', 'postcss-loader'],
+        use: [
+          devMode ? 'style-loader' : ExtractTextPlugin.loader,
+          'css-loader',
+          'sass-loader',
+          'postcss-loader',
+        ],
       },
     ],
   },

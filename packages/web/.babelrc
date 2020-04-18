@@ -1,3 +1,9 @@
 {
-  "plugins": ["emotion"]
+  "plugins": [
+    "emotion",
+    [
+      "import",
+      { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }
+    ]
+  ]
 }
