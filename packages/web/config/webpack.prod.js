@@ -30,8 +30,12 @@ module.exports = merge(config, {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.ts$/,
+        loader: 'ts-loader',
+      },
+      {
+        test: /\.tsx$/,
+        use: ['babel-loader', 'ts-loader'],
       },
     ],
   },

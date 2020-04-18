@@ -1,5 +1,6 @@
 import React from 'react'
+import { Wrapper } from './styles'
 
 export function Login() {
-  return <div>Login</div>
+  return <Wrapper>Login</Wrapper>
 }

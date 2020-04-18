@@ -23,18 +23,6 @@ module.exports = merge(config, {
     chunkFilename: 'assets/js/[name].js',
   },
   plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.DefinePlugin(GLOBALS)],
-  module: {
-    rules: [
-      // Typescript
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        options: {
-          configFile: 'tsconfig.dev.json',
-        },
-      },
-    ],
-  },
   devServer: {
     overlay: true,
     hot: true,

@@ -64,11 +64,17 @@ module.exports = {
   ],
   module: {
     rules: [
-      // JavaScript / ES6
       {
         test: /\.jsx?$/,
-        include: path.resolve(__dirname, '../src/js'),
         use: 'babel-loader',
+      },
+      {
+        test: /\.ts$/,
+        use: ['babel-loader', { loader: 'ts-loader', options: { configFile: 'tsconfig.dev.json' } }],
+      },
+      {
+        test: /\.tsx$/,
+        use: ['babel-loader', { loader: 'ts-loader', options: { configFile: 'tsconfig.dev.json' } }],
       },
       // Images
       // Inline base64 URLs for <=8k images, direct URLs for the rest
@@ -92,43 +98,11 @@ module.exports = {
       {
         type: 'javascript/auto',
         test: /\.json$/,
-        use: [{ loader: 'raw-loader' }],
+        use: ['raw-loader'],
       },
       {
         test: /\.(css|scss|sass)$/,
-        exclude: [/node_modules/, path.resolve(__dirname, '../src/css/3rd.scss')],
-        use: [
-          devMode ? 'style-loader' : ExtractTextPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              localIdentName: '[local]-[hash:base64:5]',
-            },
-          },
-          {
-            loader: 'sass-loader',
-            query: {
-              outputStyle: 'expanded',
-            },
-          },
-          'postcss-loader',
-        ],
-      },
-      {
-        test: /\.(css|scss|sass)$/,
-        include: [/node_modules/, path.resolve(__dirname, '../src/css/3rd.scss')],
-        use: [
-          devMode ? 'style-loader' : ExtractTextPlugin.loader,
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            query: {
-              outputStyle: 'expanded',
-            },
-          },
-          'postcss-loader',
-        ],
+        use: [devMode ? 'style-loader' : ExtractTextPlugin.loader, 'css-loader', 'sass-loader', 'postcss-loader'],
       },
     ],
   },
