@@ -18,7 +18,6 @@ WORKDIR /app
 
 ARG FOO
 RUN git clone https://github.com/noru/project-gulag.git
-# RUN rsync -av /app/project-gulag/ /app/
 RUN cp -r /app/project-gulag/* /app/
 
 # build web files
