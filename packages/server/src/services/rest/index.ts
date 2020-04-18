@@ -6,7 +6,7 @@ import { logger, koaLogger } from './logging'
 import { shared, api, StaticsPath } from './routes'
 import jwt from 'koa-jwt'
 
-const { KOA_PORT } = process.env
+const { KOA_PORT, KOA_JWT_SECRET } = process.env
 
 const statics = new Koa()
 statics.use(serve(StaticsPath))
@@ -16,7 +16,7 @@ app.use(bodyParser())
 app.use(koaLogger)
 app.use(mount(statics))
 
-app.use(jwt({ secret: 'sometext' }).unless({ path: [/^\/api\/authenticate/, /^\/health/] }))
+app.use(jwt({ secret: KOA_JWT_SECRET! }).unless({ path: [/^\/api\/authenticate/, /^\/health/] }))
 app.use(api)
 app.use(shared)
 

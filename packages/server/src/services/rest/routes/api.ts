@@ -1,13 +1,16 @@
 import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
 
+const { KOA_JWT_SECRET } = process.env
 const router = new Router()
+
+const genJWT = (payload) => jwt.sign({ payload }, KOA_JWT_SECRET, { expiresIn: '0.5h' })
 
 router.post('/api/authenticate', async (ctx) => {
   let { user, password } = ctx.request.body
 
   if (user === 'test' && password === 'abcd') {
-    let token = jwt.sign({ foo: 'bar' }, 'sometext', { expiresIn: '0.5h' })
+    let token = genJWT({ foo: 'bar' })
     let serverTime = Date.now()
     ctx.body = {
       token,
@@ -22,9 +25,13 @@ router.post('/api/authenticate', async (ctx) => {
   }
 })
 
-router.post('/api/test', async (ctx) => {
+router.post('/api/reauth', async (ctx) => {
+  let token = genJWT(ctx.state.user.payload)
+  let serverTime = Date.now()
   ctx.body = {
-    data: 'abc',
+    token,
+    expiresIn: serverTime + 1800000,
+    serverTime,
   }
 })
 
