@@ -23,7 +23,7 @@ export interface IUserExtra {
 export interface IUser extends Document, IUserBasic, IUserExtra {}
 
 export interface IUserSchema {
-  validate(user: string, password: string): IUser | null
+  validate(user: string, password: string): IUserBasic | null
 }
 
 export const UserSchema = new Schema<IUserSchema>({
@@ -37,7 +37,7 @@ export const UserSchema = new Schema<IUserSchema>({
 })
 
 interface IUserModel extends Model<IUser> {
-  authenticate(user: string, password: string): Promise<IUser | null>
+  authenticate(user: string, password: string): Promise<IUserBasic | null>
 }
 
 UserSchema.statics.authenticate = async function (this: Model<IUser>, user, password) {

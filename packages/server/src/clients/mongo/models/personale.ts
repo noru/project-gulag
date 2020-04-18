@@ -1,19 +1,43 @@
-import mongoose from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose'
 
-const Schema = mongoose.Schema
+export interface IPersonale extends Document {
+  id: string
+  IMEI: string
+  name: string
+  nationalID: string
+  jobTitle: string
+  department: string
+  isExternal: string
+  sex: string
+  education: string
+  maritalStatus: string
+  phone: string
+  address: string
+  certificates: any[]
+}
 
-export const Personale = new Schema({
-  Id: String,
-  IMSI: { type: String, default: '' },
-  Name: { type: String, default: '' },
-  NationalID: { type: String, default: '' },
-  JobTitle: { type: String, default: '' },
-  Department: { type: String, default: '' },
-  IsExternal: { type: Boolean, default: false },
-  Sex: { type: String, default: '' },
-  Education: { type: String, default: '' },
-  MaritalStatus: { type: String, default: '' },
-  Phone: { type: String, default: '' },
-  Address: { type: String, default: '' },
-  Certificates: { type: Array, default: [] },
+export const PersonaleSchema = new Schema({
+  id: { type: String, required: true, index: { unique: true } },
+  IMEI: { type: String, index: { unique: true }, minlength: 15, maxlength: 15 },
+  name: { type: String, required: true, minlength: 1 },
+  nationalID: { type: String, default: '' },
+  jobTitle: { type: String, default: '' },
+  department: { type: String, default: '' },
+  isExternal: { type: Boolean, default: false },
+  sex: { type: String, default: '' },
+  education: { type: String, default: '' },
+  maritalStatus: { type: String, default: '' },
+  phone: { type: String, default: '' },
+  address: { type: String, default: '' },
+  certificates: { type: Array, default: [] },
 })
+
+interface IPersonaleModel extends Model<IPersonale> {
+  findByIMEI(imei: string): Promise<IPersonale | null>
+}
+
+PersonaleSchema.statics.findByIMEI = async function (this: Model<IPersonale>, IMEI: string) {
+  return await this.findOne({ IMEI })
+}
+
+export default mongoose.model<IPersonale, IPersonaleModel>('Personale', PersonaleSchema)

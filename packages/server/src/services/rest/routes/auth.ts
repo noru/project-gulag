@@ -53,7 +53,7 @@ router.post('/api/reauth', async (ctx) => {
   }
 })
 
-router.post('/api/init', async (ctx) => {
+router.post('/api/authInit', async (ctx) => {
   await mongoClient.metadata.update(
     { name: 'super_user_disabled' },
     {
@@ -78,4 +78,4 @@ router.post('/api/init', async (ctx) => {
   ctx.body = 'OK'
 })
 
-export const api = router.routes()
+export const auth = router.routes()

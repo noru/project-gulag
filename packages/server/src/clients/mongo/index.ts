@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { getLogger } from '../../utils'
-import { Personale } from './models/personale'
+import personale from './models/personale'
 import user from './models/user'
 import metadata from './models/meta'
 
@@ -32,7 +32,7 @@ class MongoClient {
   connection = connection
   metadata = metadata
   user = user
-  personale = mongoose.model('Personale', Personale)
+  personale = personale
 }
 
 export default new MongoClient()

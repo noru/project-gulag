@@ -3,7 +3,7 @@ import mount from 'koa-mount'
 import bodyParser from 'koa-bodyparser'
 import serve from 'koa-static'
 import { logger, koaLogger } from './logging'
-import { shared, api, StaticsPath } from './routes'
+import { shared, auth, personale, StaticsPath } from './routes'
 import jwt from 'koa-jwt'
 
 const { KOA_PORT, KOA_JWT_SECRET } = process.env
@@ -17,7 +17,8 @@ app.use(koaLogger)
 app.use(mount(statics))
 
 app.use(jwt({ secret: KOA_JWT_SECRET! }).unless({ path: [/^\/api\/authenticate/, /^\/health/] }))
-app.use(api)
+app.use(auth)
+app.use(personale)
 app.use(shared)
 
 app.listen(KOA_PORT)
