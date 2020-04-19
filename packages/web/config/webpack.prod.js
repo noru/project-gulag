@@ -28,23 +28,6 @@ module.exports = merge(config, {
     }),
   ],
   module: {
-    rules: [
-      {
-        test: /\.ts$/,
-        use: ['ts-loader'],
-      },
-      {
-        test: /\.tsx$/,
-        use: [
-          'babel-loader',
-          {
-            loader: 'ts-loader',
-            options: {
-              ignoreDiagnostics: [2403, 2345, 2322, 2769, 6133], // wtf?!
-            },
-          },
-        ],
-      },
-    ],
+    rules: [],
   },
 })

@@ -76,31 +76,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(t|j)sx?$/,
         use: 'babel-loader',
-      },
-      {
-        test: /\.ts$/,
-        use: [
-          {
-            loader: 'ts-loader',
-            options: {
-              configFile: 'tsconfig.dev.json',
-            },
-          },
-        ],
-      },
-      {
-        test: /\.tsx$/,
-        use: [
-          'babel-loader',
-          {
-            loader: 'ts-loader',
-            options: {
-              configFile: 'tsconfig.dev.json',
-            },
-          },
-        ],
       },
       // Images
       // Inline base64 URLs for <=8k images, direct URLs for the rest
