@@ -24,5 +24,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "exclude": ["node_modules", "build", "dist", "test"]
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "test",
+    "config",
+    "**/*.config.js"
+  ]
 }

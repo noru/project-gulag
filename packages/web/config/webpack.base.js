@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 // const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('mini-css-extract-plugin')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const extractProjectStyle = new ExtractTextPlugin({
   filename: 'statics/css/[name].[chunkhash].css',
   chunkFilename: 'statics/css/[name].[id].[chunkhash].css',
@@ -24,6 +25,7 @@ const GLOBALS = {
 }
 
 module.exports = {
+  context: path.resolve(__dirname, '..'),
   output: {
     filename: 'statics/js/[name].[chunkhash].js',
     chunkFilename: 'statics/js/[name].[chunkhash].js',
@@ -72,6 +74,7 @@ module.exports = {
     //   },
     // ]),
     extractProjectStyle,
+    new ForkTsCheckerWebpackPlugin(),
   ],
   module: {
     rules: [
