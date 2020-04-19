@@ -18,6 +18,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     'react/prop-types': 'off',
+    '@typescript-eslint/member-delimiter-style': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
   },
   settings: {
     react: {
