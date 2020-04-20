@@ -1,14 +1,19 @@
 import React, { useEffect, useMemo } from 'react'
-import { Wrapper, ActionBar } from '#/styles'
+import { Wrapper, ActionBar, TableActions } from '#/styles'
 import { Table, Button, Modal, Input } from 'antd'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { PersonaleStore } from '#/stores'
 import { useHistory } from 'react-router-dom'
 import { IPersonale } from '@/clients/mongo/models/personale'
-import { PlusCircleOutlined, EditOutlined } from '@ant-design/icons'
+import {
+  PlusCircleOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  FormOutlined,
+} from '@ant-design/icons'
 import { IMEI } from './styles'
 
-const Columns = [
+const Columns: any[] = [
   {
     title: 'ID',
     dataIndex: 'id',
@@ -103,8 +108,30 @@ export function PersonaleList() {
         </IMEI>
       )
     }
+    Columns.push({
+      title: '操作',
+      key: 'action',
+      render: (_, record) => (
+        <TableActions>
+          <FormOutlined
+            onClick={() => history.push(`/personales/${record.id}?edit=true`)}
+          />
+          <DeleteOutlined
+            style={{ color: 'palevioletred' }}
+            onClick={() =>
+              Modal.confirm({
+                title: '确定要删除这个人员吗?',
+                async onOk() {
+                  await PersonaleStore.delelePersonale(record.id)
+                },
+              })
+            }
+          />
+        </TableActions>
+      ),
+    })
     return Columns
-  }, [])
+  }, [1])
 
   let updateImei = async () => {
     if (!store.editPersonale) return

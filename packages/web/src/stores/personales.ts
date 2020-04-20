@@ -15,4 +15,9 @@ export const PersonaleStore = observable({
   async updatePersonale(data) {
     return await adminService.updatePersonale(data)
   },
+
+  async delelePersonale(id: string) {
+    await adminService.deletePersonale(id)
+    this.getAllPersonales()
+  },
 })

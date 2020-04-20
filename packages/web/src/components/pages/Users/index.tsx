@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
-import { Wrapper, ActionBar } from '#/styles'
-import { Table, Button } from 'antd'
+import React, { useEffect, useMemo } from 'react'
+import { Wrapper, ActionBar, TableActions } from '#/styles'
+import { Table, Button, Modal } from 'antd'
 import { useObserver } from 'mobx-react'
 import { AuthStore } from '#/stores'
 import { useHistory } from 'react-router'
+import { FormOutlined, DeleteOutlined } from '@ant-design/icons'
 
-const Columns = [
+const Columns: any[] = [
   {
     title: '用户名',
     dataIndex: 'username',
@@ -30,6 +31,31 @@ export function UserList() {
     users: AuthStore.users,
     user: AuthStore.user,
   }))
+  let columns = useMemo(() => {
+    Columns.push({
+      title: '操作',
+      key: 'action',
+      render: (_, record) => (
+        <TableActions>
+          <FormOutlined
+            onClick={() => history.push(`/users/${record.username}?edit=true`)}
+          />
+          <DeleteOutlined
+            style={{ color: 'palevioletred' }}
+            onClick={() =>
+              Modal.confirm({
+                title: '确定要删除这个人员吗?',
+                async onOk() {
+                  await AuthStore.deleteUser(record.username)
+                },
+              })
+            }
+          />
+        </TableActions>
+      ),
+    })
+    return Columns
+  }, [1])
 
   useEffect(() => {
     AuthStore.getUsers()
@@ -44,7 +70,7 @@ export function UserList() {
       </ActionBar>
       <Table
         dataSource={store.users}
-        columns={Columns as any}
+        columns={columns as any}
         rowKey="username"
       />
     </Wrapper>

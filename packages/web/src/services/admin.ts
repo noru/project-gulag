@@ -13,6 +13,10 @@ class AdminService {
       .put('/api/personales/' + data.id, data)
       .then((resp) => resp.data)
   }
+
+  async deletePersonale(id: string) {
+    return await client.delete(`/api/personales/${id}`)
+  }
 }
 
 export const adminService = new AdminService()

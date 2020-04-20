@@ -31,6 +31,10 @@ class AuthService {
   async createUser(data) {
     await client.post('/api/users', data)
   }
+
+  async deleteUser(username: string) {
+    await client.delete('/api/users/' + username)
+  }
 }
 
 export const authService = new AuthService()

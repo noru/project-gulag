@@ -11,3 +11,12 @@ export const ActionBar = styled.div`
   vertical-align: middle;
   padding-bottom: 16px;
 `
+
+export const TableActions = styled.div`
+  display: flex;
+  align-items: center;
+  > * {
+    margin-right: 16px;
+    font-size: 1.2em;
+  }
+`
