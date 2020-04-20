@@ -27,7 +27,7 @@ export interface IPersonale extends Document {
 export const PersonaleSchema = new Schema({
   id: { type: String, required: true, index: { unique: true } },
   imei: { type: String, index: { unique: true, sparse: true }, minlength: 15, maxlength: 15 },
-  name: { type: String, required: true, index: { unique: true }, minlength: 1 },
+  name: { type: String, required: true, minlength: 1 },
   nationalId: { type: String, default: '' },
   jobTitle: { type: String, default: '' },
   department: { type: String, default: '' },
