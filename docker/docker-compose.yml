@@ -35,7 +35,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/init.js:ro
       - db:/data/db
   mongo-admin:
     image: mongo-express
@@ -44,11 +44,8 @@ services:
     ports:
       - 8084:8081
     environment:
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'false'
-      ME_CONFIG_MONGODB_AUTH_DATABASE: gulag
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: admin
-
   # If there is a built image on the hub, use it
   # project-gulag:
   #   image: noru/project-gulag:latest
@@ -56,7 +53,6 @@ services:
   #     - redis
   #     - mongo
   #     - rabbitmq
-
   gulag:
     build:
       context: ..
