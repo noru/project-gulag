@@ -13,6 +13,7 @@ import { Route, useHistory } from 'react-router'
 import { LiveLocation } from '../LiveLocation'
 import { UserManagement } from '../UserManagement'
 import { PersonaleManagement } from '../PersonaleManagement'
+import { PersonaleDetail } from '../PersonaleManagement/Detail'
 
 export function Main() {
   let history = useHistory()
@@ -37,8 +38,8 @@ export function Main() {
             <span>实时位置</span>
           </Menu.Item>
           <Menu.Item
-            key="/personale"
-            onClick={() => history.push('/personale')}
+            key="/personales"
+            onClick={() => history.push('/personales')}
           >
             <TeamOutlined />
             <span>人员管理</span>
@@ -46,7 +47,7 @@ export function Main() {
         </Menu>
         <MenuSpace />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['live']}>
-          <Menu.Item key="/user" onClick={() => history.push('/user')}>
+          <Menu.Item key="/users" onClick={() => history.push('/users')}>
             <SettingOutlined />
             <span>系统用户</span>
           </Menu.Item>
@@ -59,8 +60,9 @@ export function Main() {
       <Content>
         <Route path="/" exact component={LiveLocation} />
         <Route path="/live" component={LiveLocation} />
-        <Route path="/user" component={UserManagement} />
-        <Route path="/personale" component={PersonaleManagement} />
+        <Route path="/users" component={UserManagement} />
+        <Route path="/personales" exact component={PersonaleManagement} />
+        <Route path="/personales/:id" component={PersonaleDetail} />
       </Content>
     </Layout>
   )

@@ -22,6 +22,11 @@ class AuthService {
     localStorage.setItem(TOKEN_KEY, token)
     return jwtDecode(token).payload
   }
+
+  async getUsers() {
+    let { data } = await client.get('/api/users')
+    return data
+  }
 }
 
 export const authService = new AuthService()

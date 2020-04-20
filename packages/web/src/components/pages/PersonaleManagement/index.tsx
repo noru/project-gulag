@@ -23,30 +23,6 @@ const Columns = [
     },
   },
   {
-    title: 'IMEI',
-    dataIndex: 'imei',
-    fixed: true,
-  },
-
-  {
-    title: '工种/职务',
-    dataIndex: 'jobTitle',
-  },
-  {
-    title: '身份证号',
-    dataIndex: 'nationalId',
-  },
-  {
-    title: '性别',
-    dataIndex: 'sex',
-    width: 50,
-    align: 'center',
-  },
-  {
-    title: '电话',
-    dataIndex: 'phone',
-  },
-  {
     title: '家庭住址',
     dataIndex: 'address',
     ellipsis: true,

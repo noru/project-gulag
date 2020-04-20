@@ -75,4 +75,8 @@ router.post('/api/authInit', async (ctx) => {
   ctx.body = 'OK'
 })
 
+router.get('/api/users', async (ctx) => {
+  ctx.body = await mongoClient.user.find()
+})
+
 export const auth = router.routes()

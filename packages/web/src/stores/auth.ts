@@ -7,6 +7,7 @@ import jwtDecode from 'jwt-decode'
 let reauthTimer
 
 export const AuthStore = observable({
+  users: [],
   user: attempt(
     () => jwtDecode(localStorage.getItem(TOKEN_KEY)!).payload,
     null
@@ -16,8 +17,12 @@ export const AuthStore = observable({
     return !!this.user
   },
 
+  async getUsers() {
+    this.users = await authService.getUsers()
+  },
+
   async login(username: string, password: string) {
-    this.user = authService.login(username, password)
+    this.user = await authService.login(username, password)
     function reauth() {
       authService.reauth()
       reauthTimer = setTimeout(reauth, 60 * 1000 * 25)
