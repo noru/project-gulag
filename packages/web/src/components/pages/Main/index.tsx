@@ -11,9 +11,10 @@ import {
 } from '@ant-design/icons'
 import { Route, useHistory } from 'react-router'
 import { LiveLocation } from '../LiveLocation'
-import { UserManagement } from '../UserManagement'
-import { PersonaleManagement } from '../PersonaleManagement'
-import { PersonaleDetail } from '../PersonaleManagement/Detail'
+import { UserList } from '../Users'
+import { PersonaleList } from '../Personales'
+import { PersonaleDetail } from '../Personales/Detail'
+import { UserDetail } from '../Users/Detail'
 
 export function Main() {
   let history = useHistory()
@@ -60,8 +61,9 @@ export function Main() {
       <Content>
         <Route path="/" exact component={LiveLocation} />
         <Route path="/live" component={LiveLocation} />
-        <Route path="/users" component={UserManagement} />
-        <Route path="/personales" exact component={PersonaleManagement} />
+        <Route path="/users" exact component={UserList} />
+        <Route path="/users/:id" component={UserDetail} />
+        <Route path="/personales" exact component={PersonaleList} />
         <Route path="/personales/:id" component={PersonaleDetail} />
       </Content>
     </Layout>

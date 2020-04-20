@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import { Wrapper, ActionBar } from './styles'
+import { Wrapper, ActionBar } from '#/styles'
 import { Table, Button } from 'antd'
 import { useObserver } from 'mobx-react'
 import { AuthStore } from '#/stores'
+import { useHistory } from 'react-router'
 
 const Columns = [
   {
@@ -23,8 +24,12 @@ const Columns = [
   },
 ]
 
-export function UserManagement() {
-  let store = useObserver(() => ({ users: AuthStore.users }))
+export function UserList() {
+  let history = useHistory()
+  let store = useObserver(() => ({
+    users: AuthStore.users,
+    user: AuthStore.user,
+  }))
 
   useEffect(() => {
     AuthStore.getUsers()
@@ -32,7 +37,10 @@ export function UserManagement() {
   return (
     <Wrapper>
       <ActionBar>
-        <Button type="primary">新建</Button>
+        <Button type="primary" onClick={() => history.push('/users/new')}>
+          新建
+        </Button>
+        <h2>你好, {store.user.displayName || store.user.username}</h2>
       </ActionBar>
       <Table dataSource={store.users} columns={Columns as any} />
     </Wrapper>

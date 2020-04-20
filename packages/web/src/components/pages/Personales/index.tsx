@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Wrapper, ActionBar } from './styles'
+import { Wrapper, ActionBar } from '#/styles'
 import { Table, Button } from 'antd'
 import { useObserver } from 'mobx-react'
 import { PersonaleStore } from '#/stores'
@@ -37,7 +37,7 @@ const Columns = [
   },
 ]
 
-export function PersonaleManagement() {
+export function PersonaleList() {
   let store = useObserver(() => ({ personales: PersonaleStore.personales }))
 
   useEffect(() => {

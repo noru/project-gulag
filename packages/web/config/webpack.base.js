@@ -30,6 +30,7 @@ module.exports = {
     filename: 'statics/js/[name].[chunkhash].js',
     chunkFilename: 'statics/js/[name].[chunkhash].js',
     path: path.resolve(__dirname, '../dist'),
+    publicPath: '/',
   },
   resolve: {
     alias,

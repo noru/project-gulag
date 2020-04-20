@@ -27,7 +27,7 @@ router.post('/api/authenticate', async (ctx) => {
     if (flag?.data === true || password !== KOA_SUPER_PASS) {
       reject()
     } else {
-      issue({ username })
+      issue({ username, displayName: '超级用户' })
     }
     return
   }

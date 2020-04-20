@@ -23,8 +23,8 @@ module.exports = merge(config, {
     vendor: ['react', 'react-dom', 'react-router', 'react-router-dom'],
   },
   output: {
-    filename: 'assets/js/[name].js',
-    chunkFilename: 'assets/js/[name].js',
+    filename: 'statics/js/[name].js',
+    chunkFilename: 'statics/js/[name].js',
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
