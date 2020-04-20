@@ -21,7 +21,7 @@ function _use(interceptor: any, port: any) {
 
 function AuthTokenInject(request) {
   if (request.url !== '/api/authenticate') {
-    request.headers['x-auth-token'] = getAuthToken() || ''
+    request.headers['Authorization'] = `Bearer ${getAuthToken()}`
   }
   return request
 }

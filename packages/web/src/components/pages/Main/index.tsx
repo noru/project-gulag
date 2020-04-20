@@ -22,27 +22,35 @@ export function Main() {
     store.logout()
     history.push('/login')
   }
+
   return (
     <Layout>
       <Sider>
         <Logo />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['live']}>
-          <Menu.Item key="live" onClick={() => history.push('/live')}>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={[history.location.pathname]}
+        >
+          <Menu.Item key="/live" onClick={() => history.push('/live')}>
             <EnvironmentOutlined />
             <span>实时位置</span>
           </Menu.Item>
-          <Menu.Item key="personale" onClick={() => history.push('/personale')}>
+          <Menu.Item
+            key="/personale"
+            onClick={() => history.push('/personale')}
+          >
             <TeamOutlined />
             <span>人员管理</span>
           </Menu.Item>
         </Menu>
         <MenuSpace />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['live']}>
-          <Menu.Item key="user" onClick={() => history.push('/user')}>
+          <Menu.Item key="/user" onClick={() => history.push('/user')}>
             <SettingOutlined />
             <span>系统用户</span>
           </Menu.Item>
-          <Menu.Item key="logout" onClick={logout}>
+          <Menu.Item key="/logout" onClick={logout}>
             <LogoutOutlined />
             <span>注销登录</span>
           </Menu.Item>

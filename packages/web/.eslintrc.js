@@ -20,6 +20,7 @@ module.exports = {
     'react/prop-types': 'off',
     '@typescript-eslint/member-delimiter-style': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
+    'react/display-name': 'off',
   },
   settings: {
     react: {

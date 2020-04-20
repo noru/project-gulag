@@ -1,17 +1,10 @@
-import { Layout } from 'antd'
 import styled from '@emotion/styled'
 
-export const Sider = styled(Layout.Sider)`
-  overflow: auto;
-  height: 100vh;
-  position: fixed;
-  left: 0;
+export const Wrapper = styled.div`
+  width: 100%;
+  padding: 24px 16px;
 `
-
-export const Logo = styled.div`
-  height: 150px;
-`
-
-export const Content = styled.div`
-  margin-left: 200px;
+export const ActionBar = styled.div`
+  text-align: right;
+  padding-bottom: 16px;
 `
