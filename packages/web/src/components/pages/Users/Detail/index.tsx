@@ -1,9 +1,10 @@
 import React from 'react'
 import { Wrapper } from '#/styles'
 import { Form } from './styles'
-import { Input, Tooltip, Button, Form as F, Space } from 'antd'
+import { Input, Tooltip, Button, Form as F, Space, Modal } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { AuthStore } from '#/stores'
+import { useHistory } from 'react-router'
 
 const formItemLayout = {
   labelCol: {
@@ -30,8 +31,25 @@ const tailFormItemLayout = {
 }
 
 export function UserDetail() {
+  let history = useHistory()
   let onFinish = (values) => {
     AuthStore.createUser(values)
+      .then(() => {
+        Modal.success({
+          title: '创建成功',
+          content: '系统用户创建成功, 您可以使用该用户登录。',
+          onOk() {
+            history.push('/users')
+          },
+        })
+      })
+      .catch((e) => {
+        console.error(e)
+        Modal.error({
+          title: '创建失败',
+          content: '未知错误, 请稍后重试',
+        })
+      })
   }
   return (
     <Wrapper>
