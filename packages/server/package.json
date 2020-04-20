@@ -6,8 +6,8 @@
   "scripts": {
     "clean": "rimraf ./dist __*",
     "build": "npm run clean && tsc",
-    "compile": "tsc && node ./dist/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon -e ts --exec 'npm run compile'",
+    "compileRun": "tsc && node ./dist/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon -e ts --exec 'npm run compileRun'",
     "prod": "cross-env NODE_ENV=production node ./dist/index.js"
   },
   "author": "",
