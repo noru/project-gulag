@@ -1,7 +1,7 @@
 import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
 import mongoClient from '../../../clients/mongo'
-import { responseHelper, ErrorCode } from './utils/response'
+import { responseHelper as error, ErrorCode, ok } from './utils/response'
 
 const { metadata, user } = mongoClient
 const { KOA_JWT_SECRET, KOA_SUPER_PASS } = process.env
@@ -21,7 +21,7 @@ router.post('/api/authenticate', async (ctx) => {
       serverTime,
     }
   }
-  let reject = () => responseHelper(ctx, ErrorCode.Unauthorized)
+  let reject = () => error(ctx, ErrorCode.Unauthorized)
   if (username === '$uper') {
     let flag = await metadata.findOne({ name: 'super_user_disabled' })
     if (flag?.data === true || password !== KOA_SUPER_PASS) {
@@ -75,5 +75,16 @@ router.post('/api/users', async (ctx) => {
     ...rest,
   }
 })
+
+router.delete('/api/users/:username', async ctx => {
+  let { username } = ctx.params
+  let resp = await user.deleteOne({ username })
+  if (resp.n === 0) {
+    error(ctx, ErrorCode.NotFound)
+  } else {
+    ok(ctx, resp)
+  }
+})
+
 
 export const auth = router.routes()

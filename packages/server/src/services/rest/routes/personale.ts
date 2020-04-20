@@ -53,4 +53,14 @@ router.put('/api/personales/:id', async ctx => {
   }
 })
 
+router.delete('/api/personales/:id', async ctx => {
+  let { id } = ctx.params
+  let resp = await model.deleteOne({ id })
+  if (resp.n === 0) {
+    error(ctx, ErrorCode.NotFound)
+  } else {
+    ok(ctx, resp)
+  }
+})
+
 export const personale = router.routes()
