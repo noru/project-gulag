@@ -8,6 +8,10 @@ export const PersonaleStore = observable({
     this.personales = await adminService.getAllPersonales()
   },
 
+  async createPersonale(data) {
+    return await adminService.createPersonale(data)
+  },
+
   async updatePersonale(data) {
     return await adminService.updatePersonale(data)
   },

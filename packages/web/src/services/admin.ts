@@ -4,6 +4,10 @@ class AdminService {
     return await client.get('/api/personales').then((resp) => resp.data)
   }
 
+  async createPersonale(data) {
+    return await client.post('/api/personales', data).then((resp) => resp.data)
+  }
+
   async updatePersonale(data) {
     return await client
       .put('/api/personales/' + data.id, data)

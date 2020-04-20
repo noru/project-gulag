@@ -22,7 +22,7 @@ const Columns = [
     render: (text, record) => {
       let history = useHistory()
       return (
-        <a onClick={() => history.push(`/personale/${record.id}`)}>{text}</a>
+        <a onClick={() => history.push(`/personales/${record.id}`)}>{text}</a>
       )
     },
     fixed: true,
@@ -70,6 +70,7 @@ interface LocalStore {
 }
 
 export function PersonaleList() {
+  let history = useHistory()
   useEffect(() => {
     PersonaleStore.getAllPersonales()
   }, [])
@@ -117,13 +118,16 @@ export function PersonaleList() {
   return useObserver(() => (
     <Wrapper>
       <ActionBar>
-        <Button type="primary">新建</Button>
+        <Button type="primary" onClick={() => history.push('/personales/new')}>
+          新建
+        </Button>
       </ActionBar>
       <Table
         dataSource={PersonaleStore.personales}
         columns={columns as any}
         size="small"
         pagination={{ pageSize: 30 }}
+        rowKey="id"
       />
       {store.editPersonale && (
         <Modal

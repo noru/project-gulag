@@ -42,7 +42,11 @@ export function UserList() {
         </Button>
         <h2>你好, {store.user.displayName || store.user.username}</h2>
       </ActionBar>
-      <Table dataSource={store.users} columns={Columns as any} />
+      <Table
+        dataSource={store.users}
+        columns={Columns as any}
+        rowKey="username"
+      />
     </Wrapper>
   )
 }
