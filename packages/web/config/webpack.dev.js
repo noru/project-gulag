@@ -45,4 +45,8 @@ module.exports = merge(config, {
       '/api': process.env.PROXY_ENDPOINT || 'http://localhost:8081',
     },
   },
+  watchOptions: {
+    poll: 5000,
+    ignored: ['node_modules'],
+  },
 })

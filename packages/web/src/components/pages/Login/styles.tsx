@@ -28,7 +28,7 @@ export const LoginWrapper = styled.div`
   max-width: 500px;
   height: 100%;
   background: #ddd;
-  transition: all 0.8s ease-out;
+  transition: all 0.3s ease-out;
   flex: 1;
   position: relative;
   text-align: center;
