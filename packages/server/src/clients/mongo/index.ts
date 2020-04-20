@@ -12,7 +12,7 @@ const connect = async () =>
     useUnifiedTopology: true,
     user: process.env.MONGO_USER,
     pass: process.env.MONGO_PASS,
-    authSource: 'admin',
+    authSource: process.env.MONGO_DB,
   })
 
 export const connection = mongoose.connection
