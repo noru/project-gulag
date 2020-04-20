@@ -45,6 +45,7 @@ router.put('/api/personales/:id', async ctx => {
   let { id } = ctx.params
   let body = ctx.request.body
   body.id = id
+  body.updateAt = Date.now()
   let resp = await model.updateOne({ id }, body)
   if (resp.n === 0) {
     error(ctx, ErrorCode.NotFound)

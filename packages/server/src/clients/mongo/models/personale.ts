@@ -42,6 +42,8 @@ export const PersonaleSchema = new Schema({
   vehicleId: { type: String, default: '' },
   vehicleTerminalId: { type: String, default: '' },
   certificates: { type: Array, default: [] },
+  createAt: { type: Date, default: Date.now },
+  updateAt: { type: Date, default: Date.now },
 })
 
 interface IPersonaleModel extends Model<IPersonaleDoc> {
