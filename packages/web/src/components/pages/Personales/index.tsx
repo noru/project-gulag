@@ -10,6 +10,7 @@ const Columns = [
     title: 'ID',
     dataIndex: 'id',
     fixed: true,
+    width: 80,
   },
   {
     title: '姓名',
@@ -21,6 +22,28 @@ const Columns = [
         <a onClick={() => history.push(`/personale/${record.id}`)}>{text}</a>
       )
     },
+    fixed: true,
+  },
+  {
+    title: 'IMEI',
+    dataIndex: 'imei',
+    fixed: true,
+  },
+  {
+    title: '职务/工位',
+    dataIndex: 'jobTitle',
+    width: 100,
+  },
+  {
+    title: '部门',
+    dataIndex: 'department',
+    width: 100,
+  },
+  {
+    title: '性别',
+    dataIndex: 'sex',
+    width: 50,
+    align: 'center',
   },
   {
     title: '家庭住址',
@@ -52,7 +75,7 @@ export function PersonaleList() {
         dataSource={store.personales}
         columns={Columns as any}
         size="small"
-        pagination={{ pageSize: 50 }}
+        pagination={{ pageSize: 30 }}
       />
     </Wrapper>
   )

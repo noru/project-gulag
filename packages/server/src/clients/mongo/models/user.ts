@@ -56,8 +56,8 @@ UserSchema.statics.allUsers = async function (this: Model<IUser>) {
 }
 
 UserSchema.statics.createUser = async function (this: Model<IUser>, username, password, rest = {}) {
-  let salt = SHA256('' + Math.random())
-  let hashedPwd = SHA256(password + salt)
+  let salt = SHA256('' + Math.random()).toString('hex')
+  let hashedPwd = SHA256(password + salt).toString('hex')
   this.create({
     username,
     salt,
