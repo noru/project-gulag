@@ -16,7 +16,9 @@ export const AuthStore = observable({
   get isAuthenticated() {
     return !!this.user
   },
-
+  async createUser(data) {
+    await authService.createUser(data)
+  },
   async getUsers() {
     this.users = await authService.getUsers()
   },

@@ -27,6 +27,10 @@ class AuthService {
     let { data } = await client.get('/api/users')
     return data
   }
+
+  async createUser(data) {
+    await client.post('/api/users', data)
+  }
 }
 
 export const authService = new AuthService()

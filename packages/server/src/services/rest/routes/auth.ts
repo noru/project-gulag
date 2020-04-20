@@ -2,8 +2,8 @@ import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
 import mongoClient from '../../../clients/mongo'
 import { responseHelper, ErrorCode } from './utils/response'
-import { Role } from '../../../clients/mongo/models/user'
 
+const { metadata, user } = mongoClient
 const { KOA_JWT_SECRET, KOA_SUPER_PASS } = process.env
 const router = new Router()
 
@@ -23,7 +23,7 @@ router.post('/api/authenticate', async (ctx) => {
   }
   let reject = () => responseHelper(ctx, ErrorCode.Unauthorized)
   if (username === '$uper') {
-    let flag = await mongoClient.metadata.findOne({ name: 'super_user_disabled' })
+    let flag = await metadata.findOne({ name: 'super_user_disabled' })
     if (flag?.data === true || password !== KOA_SUPER_PASS) {
       reject()
     } else {
@@ -32,7 +32,7 @@ router.post('/api/authenticate', async (ctx) => {
     return
   }
 
-  let userData = await mongoClient.user.authenticate(username, password)
+  let userData = await user.authenticate(username, password)
   if (userData) {
     issue(userData)
   } else {
@@ -51,7 +51,7 @@ router.post('/api/reauth', async (ctx) => {
 })
 
 router.post('/api/authInit', async (ctx) => {
-  await mongoClient.metadata.update(
+  await metadata.update(
     { name: 'super_user_disabled' },
     {
       name: 'super_user_disabled',
@@ -60,23 +60,16 @@ router.post('/api/authInit', async (ctx) => {
     },
     { upsert: true, setDefaultsOnInsert: true },
   )
-  await mongoClient.user.update(
-    { username: 'admin' },
-    {
-      username: 'admin',
-      email: 'admin@admin.com',
-      role: Role.Admin,
-      displayName: 'I am Admin',
-      salt: 'randomstr',
-      hashedPwd: '6887a953000343b53d1c42219ecd066f1e3b6102382807cccb2646513c817082',
-    },
-    { upsert: true, setDefaultsOnInsert: true },
-  )
   ctx.body = 'OK'
 })
 
 router.get('/api/users', async (ctx) => {
-  ctx.body = await mongoClient.user.find()
+  ctx.body = await user.find()
+})
+
+router.post('/api/users', async (ctx) => {
+  let { username, password, ...rest } = ctx.request.body
+  await user.createUser(username, password, rest)
 })
 
 export const auth = router.routes()
