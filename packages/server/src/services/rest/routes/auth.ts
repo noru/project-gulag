@@ -70,6 +70,10 @@ router.get('/api/users', async (ctx) => {
 router.post('/api/users', async (ctx) => {
   let { username, password, ...rest } = ctx.request.body
   await user.createUser(username, password, rest)
+  ctx.body = {
+    username,
+    ...rest,
+  }
 })
 
 export const auth = router.routes()
