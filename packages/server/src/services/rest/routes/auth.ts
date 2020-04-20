@@ -64,7 +64,7 @@ router.post('/api/authInit', async (ctx) => {
 })
 
 router.get('/api/users', async (ctx) => {
-  ctx.body = await user.find()
+  ctx.body = await user.allUsers()
 })
 
 router.post('/api/users', async (ctx) => {
