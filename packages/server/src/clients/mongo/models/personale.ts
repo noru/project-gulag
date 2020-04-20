@@ -6,7 +6,7 @@ export interface Certificate {
   validUntil: Date
 }
 
-export interface IPersonale extends Document {
+export interface IPersonale {
   id: string
   imei: string
   name: string
@@ -23,6 +23,8 @@ export interface IPersonale extends Document {
   vehicleTerminalId: string
   certificates: Certificate[]
 }
+
+export type IPersonaleDoc = IPersonale & Document
 
 export const PersonaleSchema = new Schema({
   id: { type: String, required: true, index: { unique: true } },
@@ -42,12 +44,12 @@ export const PersonaleSchema = new Schema({
   certificates: { type: Array, default: [] },
 })
 
-interface IPersonaleModel extends Model<IPersonale> {
-  findByIMEI(imei: string): Promise<IPersonale | null>
+interface IPersonaleModel extends Model<IPersonaleDoc> {
+  findByIMEI(imei: string): Promise<IPersonaleDoc | null>
 }
 
-PersonaleSchema.statics.findByIMEI = async function (this: Model<IPersonale>, imei: string) {
+PersonaleSchema.statics.findByIMEI = async function (this: Model<IPersonaleDoc>, imei: string) {
   return await this.findOne({ imei })
 }
 
-export default mongoose.model<IPersonale, IPersonaleModel>('Personale', PersonaleSchema)
+export default mongoose.model<IPersonaleDoc, IPersonaleModel>('Personale', PersonaleSchema)

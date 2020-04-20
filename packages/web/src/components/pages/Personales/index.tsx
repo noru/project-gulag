@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Wrapper, ActionBar } from '#/styles'
-import { Table, Button } from 'antd'
-import { useObserver } from 'mobx-react'
+import { Table, Button, Modal, Input } from 'antd'
+import { useObserver, useLocalStore } from 'mobx-react'
 import { PersonaleStore } from '#/stores'
 import { useHistory } from 'react-router-dom'
+import { IPersonale } from '@/clients/mongo/models/personale'
+import { PlusCircleOutlined, EditOutlined } from '@ant-design/icons'
+import { IMEI } from './styles'
 
 const Columns = [
   {
@@ -28,6 +31,7 @@ const Columns = [
     title: 'IMEI',
     dataIndex: 'imei',
     fixed: true,
+    width: 250,
   },
   {
     title: '职务/工位',
@@ -60,23 +64,81 @@ const Columns = [
   },
 ]
 
-export function PersonaleList() {
-  let store = useObserver(() => ({ personales: PersonaleStore.personales }))
+interface LocalStore {
+  editPersonale: null | IPersonale
+  loading: boolean
+}
 
+export function PersonaleList() {
   useEffect(() => {
     PersonaleStore.getAllPersonales()
   }, [])
-  return (
+  let store = useLocalStore<LocalStore>(() => ({
+    editPersonale: null,
+    loading: false,
+  }))
+  let columns = useMemo(() => {
+    // rewrite Col IMEI render
+    Columns[2].render = (text, record) => {
+      return (
+        <IMEI>
+          <a
+            onClick={() => {
+              store.editPersonale = { ...record }
+            }}
+          >
+            {text ? (
+              <>
+                <strong>{text}</strong>
+                <EditOutlined />
+              </>
+            ) : (
+              <>
+                <span>未绑定IMEI</span>
+                <PlusCircleOutlined style={{ color: 'lightgreen' }} />
+              </>
+            )}
+          </a>
+        </IMEI>
+      )
+    }
+    return Columns
+  }, [])
+
+  let updateImei = async () => {
+    if (!store.editPersonale) return
+    store.loading = true
+    let { id, imei } = store.editPersonale!
+    await PersonaleStore.updatePersonale({ id, imei })
+    store.loading = false
+    store.editPersonale = null
+    PersonaleStore.getAllPersonales()
+  }
+  return useObserver(() => (
     <Wrapper>
       <ActionBar>
         <Button type="primary">新建</Button>
       </ActionBar>
       <Table
-        dataSource={store.personales}
-        columns={Columns as any}
+        dataSource={PersonaleStore.personales}
+        columns={columns as any}
         size="small"
         pagination={{ pageSize: 30 }}
       />
+      {store.editPersonale && (
+        <Modal
+          title="绑定或更改改用户的IMEI"
+          visible
+          onOk={updateImei}
+          confirmLoading={store.loading}
+          onCancel={() => (store.editPersonale = null)}
+        >
+          <Input
+            value={store.editPersonale.imei}
+            onChange={(e) => (store.editPersonale!.imei = e.target.value)}
+          />
+        </Modal>
+      )}
     </Wrapper>
-  )
+  ))
 }

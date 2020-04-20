@@ -7,4 +7,8 @@ export const PersonaleStore = observable({
   async getAllPersonales() {
     this.personales = await adminService.getAllPersonales()
   },
+
+  async updatePersonale(data) {
+    return await adminService.updatePersonale(data)
+  },
 })

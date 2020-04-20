@@ -18,7 +18,8 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "#/*": ["src/*"]
+      "#/*": ["src/*"],
+      "@/*": ["../server/src/*"]
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,

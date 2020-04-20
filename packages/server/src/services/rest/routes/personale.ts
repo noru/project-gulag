@@ -1,6 +1,6 @@
 import Router from 'koa-router'
 import mongoClient from '../../../clients/mongo'
-import { responseHelper as r, ErrorCode } from './utils/response'
+import { responseHelper as error, ErrorCode, ok } from './utils/response'
 
 const model = mongoClient.personale
 
@@ -24,20 +24,32 @@ router.post('/api/personales', async (ctx) => {
   } catch (e) {
     switch (e.name) {
       case 'ValidationError':
-        r(ctx, ErrorCode.InvalidParams, e)
+        error(ctx, ErrorCode.InvalidParams, e)
         break
       case 'MongoError':
         switch (e.code) {
           case 11000:
-            r(ctx, ErrorCode.DuplicatedId, e)
+            error(ctx, ErrorCode.DuplicatedId, e)
             break
           default:
-            r(ctx, ErrorCode.Unknown, e)
+            error(ctx, ErrorCode.Unknown, e)
         }
         break
       default:
-        r(ctx, ErrorCode.Unknown, e)
+        error(ctx, ErrorCode.Unknown, e)
     }
+  }
+})
+
+router.put('/api/personales/:id', async ctx => {
+  let { id } = ctx.params
+  let body = ctx.request.body
+  body.id = id
+  let resp = await model.updateOne({ id }, body)
+  if (resp.n === 0) {
+    error(ctx, ErrorCode.NotFound)
+  } else {
+    ok(ctx, resp)
   }
 })
 

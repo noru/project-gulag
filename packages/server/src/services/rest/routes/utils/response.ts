@@ -6,11 +6,11 @@ export enum ErrorCode {
   Unknown = 'unknown',
 }
 
-function messageBuilder(code: ErrorCode, msg?: string, e?: Error) {
+function messageBuilder(code?: ErrorCode, msg?: string, detail?: Error | any) {
   return {
     error: code,
     msg,
-    detail: e,
+    detail,
   }
 }
 
@@ -36,4 +36,8 @@ export function responseHelper(ctx, code: ErrorCode, e?: any) {
       ctx.body = messageBuilder(ErrorCode.Unknown, 'Something bad happened, very bad')
       break
   }
+}
+
+export function ok(ctx, data?: any) {
+  ctx.body = messageBuilder(undefined, 'OK', data)
 }
