@@ -67,8 +67,8 @@ UserSchema.statics.createUser = async function (this: Model<IUser>, username, pa
   return null
 }
 
-function omitSensitive(user: IUser): IUserBasic {
-  return _.omit(user.toJSON(), ['_id', '__v', 'salt', 'hashedPwd', 'hashMethod'])
+export function omitSensitive(user: IUser): IUserBasic {
+  return _.omit(user.toJSON ? user.toJSON() : user, ['_id', '__v', 'salt', 'hashedPwd', 'hashMethod'])
 }
 
 export default mongoose.model<IUser, IUserModel>('User', UserSchema)

@@ -1,10 +1,12 @@
 import React from 'react'
-import { Wrapper } from '#/styles'
+import { Wrapper, ButtonGroup } from '#/styles'
 import { Form } from './styles'
-import { Input, Tooltip, Button, Form as F, Space, Modal } from 'antd'
+import { Input, Tooltip, Button, Form as F, Modal } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { AuthStore } from '#/stores'
-import { useHistory } from 'react-router'
+import { useHistory, useRouteMatch } from 'react-router'
+import { useEffectOnce, useSearchParam } from 'react-use'
+import { useLocalStore, useObserver } from 'mobx-react'
 
 const formItemLayout = {
   labelCol: {
@@ -32,6 +34,29 @@ const tailFormItemLayout = {
 
 export function UserDetail() {
   let history = useHistory()
+  let [formInstance] = F.useForm()
+  let {
+    params: { id },
+  } = useRouteMatch()
+  let isEditing = useSearchParam('edit') === 'true'
+
+  let local = useLocalStore(() => ({
+    get isNew() {
+      return this.id === 'new'
+    },
+    id,
+    isEditing: id === 'new' || isEditing,
+    initialValues: {},
+  }))
+  useEffectOnce(() => {
+    ;(async () => {
+      if (!local.isNew) {
+        local.initialValues = await AuthStore.getUser(local.id)
+        formInstance.resetFields()
+      }
+    })()
+  })
+
   let onFinish = (values) => {
     AuthStore.createUser(values)
       .then(() => {
@@ -51,13 +76,15 @@ export function UserDetail() {
         })
       })
   }
-  return (
+  return useObserver(() => (
     <Wrapper>
       <Form
         {...formItemLayout}
         name="register"
         onFinish={onFinish}
         scrollToFirstError
+        initialValues={local.initialValues}
+        form={formInstance}
       >
         <F.Item
           name="username"
@@ -69,19 +96,23 @@ export function UserDetail() {
             },
           ]}
         >
-          <Input />
+          <Input disabled={!local.isEditing} />
         </F.Item>
         <F.Item
           name="email"
           label="E-mail"
           rules={[
             {
+              required: true,
+              message: '请输入电子邮件',
+            },
+            {
               type: 'email',
               message: '电子邮件格式不正确',
             },
           ]}
         >
-          <Input />
+          <Input disabled={!local.isEditing} />
         </F.Item>
 
         <F.Item
@@ -95,7 +126,7 @@ export function UserDetail() {
             </span>
           }
         >
-          <Input />
+          <Input disabled={!local.isEditing} />
         </F.Item>
         <F.Item
           name="password"
@@ -108,7 +139,7 @@ export function UserDetail() {
           ]}
           hasFeedback
         >
-          <Input.Password />
+          <Input.Password disabled={!local.isEditing} />
         </F.Item>
 
         <F.Item
@@ -131,16 +162,43 @@ export function UserDetail() {
             }),
           ]}
         >
-          <Input.Password />
+          <Input.Password disabled={!local.isEditing} />
         </F.Item>
 
-        <F.Item {...tailFormItemLayout}>
-          <Space size="large" />
-          <Button type="primary" htmlType="submit">
-            创建系统用户
-          </Button>
+        <F.Item
+          {...tailFormItemLayout}
+          style={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <ButtonGroup>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={!local.isEditing}
+            >
+              {local.isNew ? '创建系统用户' : '保存'}
+            </Button>
+            {!local.isNew && local.isEditing && (
+              <Button
+                onClick={() => {
+                  local.isEditing = false
+                  formInstance.resetFields()
+                }}
+              >
+                取消
+              </Button>
+            )}
+            {!local.isNew && !local.isEditing && (
+              <Button
+                onClick={() => {
+                  local.isEditing = true
+                }}
+              >
+                编辑
+              </Button>
+            )}
+          </ButtonGroup>
         </F.Item>
       </Form>
     </Wrapper>
-  )
+  ))
 }

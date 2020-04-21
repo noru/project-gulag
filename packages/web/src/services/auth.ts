@@ -23,6 +23,13 @@ class AuthService {
     return jwtDecode(token).payload
   }
 
+  async getUser(username: string) {
+    let {
+      data: { detail },
+    } = await client.get('/api/users/' + username)
+    return detail
+  }
+
   async getUsers() {
     let { data } = await client.get('/api/users')
     return data

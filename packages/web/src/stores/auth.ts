@@ -16,12 +16,19 @@ export const AuthStore = observable({
   get isAuthenticated() {
     return !!this.user
   },
+
   async createUser(data) {
     await authService.createUser(data)
   },
   async deleteUser(username: string) {
     await authService.deleteUser(username)
     this.getUsers()
+  },
+  async getUser(username: string) {
+    return (
+      this.users.find((u) => u.username === username) ||
+      (await authService.getUser(username))
+    )
   },
   async getUsers() {
     this.users = await authService.getUsers()

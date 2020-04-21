@@ -1,7 +1,8 @@
 import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
-import mongoClient from '../../../clients/mongo'
+import mongoClient from '#/clients/mongo'
 import { responseHelper as error, ErrorCode, ok } from './utils/response'
+import { omitSensitive } from '#/clients/mongo/models/user'
 
 const { metadata, user } = mongoClient
 const { KOA_JWT_SECRET, KOA_SUPER_PASS } = process.env
@@ -67,6 +68,12 @@ router.get('/api/users', async (ctx) => {
   ctx.body = await user.allUsers()
 })
 
+router.get('/api/users/:username', async (ctx) => {
+  let { username } = ctx.params
+  let resp = await user.findOne({ username })
+  resp ? ok(ctx, omitSensitive(resp)) : error(ctx, ErrorCode.NotFound)
+})
+
 router.post('/api/users', async (ctx) => {
   let { username, password, ...rest } = ctx.request.body
   await user.createUser(username, password, rest)
@@ -76,7 +83,7 @@ router.post('/api/users', async (ctx) => {
   }
 })
 
-router.delete('/api/users/:username', async ctx => {
+router.delete('/api/users/:username', async (ctx) => {
   let { username } = ctx.params
   let resp = await user.deleteOne({ username })
   if (resp.n === 0) {
@@ -85,6 +92,5 @@ router.delete('/api/users/:username', async ctx => {
     ok(ctx, resp)
   }
 })
-
 
 export const auth = router.routes()
