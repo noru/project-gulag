@@ -32,7 +32,8 @@ export function UserList() {
     user: AuthStore.user,
   }))
   let columns = useMemo(() => {
-    Columns.push({
+    let cols = [...Columns]
+    cols.push({
       title: '操作',
       key: 'action',
       render: (_, record) => (
@@ -54,7 +55,7 @@ export function UserList() {
         </TableActions>
       ),
     })
-    return Columns
+    return cols
   }, [1])
 
   useEffect(() => {

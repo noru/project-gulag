@@ -85,7 +85,8 @@ export function PersonaleList() {
   }))
   let columns = useMemo(() => {
     // rewrite Col IMEI render
-    Columns[2].render = (text, record) => {
+    let cols = [...Columns]
+    cols[2].render = (text, record) => {
       return (
         <IMEI>
           <a
@@ -108,7 +109,7 @@ export function PersonaleList() {
         </IMEI>
       )
     }
-    Columns.push({
+    cols.push({
       title: '操作',
       key: 'action',
       render: (_, record) => (
@@ -130,7 +131,7 @@ export function PersonaleList() {
         </TableActions>
       ),
     })
-    return Columns
+    return cols
   }, [1])
 
   let updateImei = async () => {
