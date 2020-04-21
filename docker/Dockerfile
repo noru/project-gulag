@@ -1,4 +1,3 @@
-ARG FOO=bar
 FROM node:13.13.0
 
 RUN npm i -g cnpm
