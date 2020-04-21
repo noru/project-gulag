@@ -5,11 +5,6 @@ import { CustomMap } from './Map'
 // import { useObserver } from 'mobx-react'
 // import { AuthStore } from '#/stores/auth'
 
-// interface Point {
-//   lng: number
-//   lat: number
-// }
-
 export function LiveLocation() {
   // let store = useObserver(() => AuthStore)
 

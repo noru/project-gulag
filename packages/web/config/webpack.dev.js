@@ -43,6 +43,10 @@ module.exports = merge(config, {
     disableHostCheck: true,
     proxy: {
       '/api': `http://localhost:${process.env.API_PORT || 80}`,
+      '/ws': {
+        target: `ws://localhost:${process.env.API_PORT || 80}`,
+        ws: true,
+      },
     },
   },
   watchOptions: {

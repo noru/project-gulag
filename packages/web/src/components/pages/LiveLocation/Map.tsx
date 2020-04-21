@@ -1,9 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Map, Marker, InfoWindow, Polygon } from '@uiw/react-baidu-map'
+import useWebSocket from 'react-use-websocket'
+
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+const WSURL = protocol + '//' + window.location.host + '/ws/gps'
 
 export function CustomMap() {
   let [cord, setCord] = useState<BMap.Point | null>(null)
+  const [_sendMessage, lastMessage, _readyState] = useWebSocket(WSURL)
 
+  useEffect(() => {
+    if (lastMessage !== null) {
+      console.log(lastMessage.data)
+      // let cord = attempt(() => JSON.parse(lastMessage.data), {})
+      let cord = { lng: 120.2027911, lat: 49.14078494 }
+      cord.lat += Math.random() * 0.05
+      cord.lng += Math.random() * 0.05
+      setCord(cord)
+    }
+  }, [lastMessage])
   return (
     <>
       <Map
@@ -11,17 +26,19 @@ export function CustomMap() {
         widget={['NavigationControl']}
         zoom={14}
       >
-        <Marker
-          position={{ lng: 120.2027911, lat: 49.14078494 }}
-          enableClicking
-          // @ts-ignore
-          onMouseOver={() => {
-            setCord({ lng: 120.2027911, lat: 49.14078494 })
-          }}
-          onMouseOut={() => {
-            setCord(null)
-          }}
-        />
+        {cord && (
+          <Marker
+            position={cord}
+            enableClicking
+            // @ts-ignore
+            onMouseOver={() => {
+              setCord({ lng: 120.2027911, lat: 49.14078494 })
+            }}
+            onMouseOut={() => {
+              setCord(null)
+            }}
+          />
+        )}
         <Polygon
           enableEditing={true}
           strokeOpacity={0.8}
@@ -38,9 +55,7 @@ export function CustomMap() {
             setCord(null)
           }}
           position={cord!}
-          content={
-            '<div style="font-size:16px;">test123地址信息一地址信息一地址信息一地址信息一test123地址信息一地址信息一地址信息一地址信息一test123地址信息一地址信息一地址信息一地址信息一test123地址信息一地址信息一地址信息一地址信息一test123地址信息一地址信息一地址信息一地址信息一</div>'
-          }
+          content={`<div style="font-size:16px;">${cord?.imei}</div>`}
           height={200}
           title="<div style='font-size:18px;'>title</div>"
           offset={new BMap.Size(0, -40)}

@@ -74,7 +74,7 @@ class LocationLogGenerator {
 
 const locationLogGenerator = new LocationLogGenerator()
 
-MQClient.consume({ queue: { name: QUEUE.GPS_UPLOAD } }, (data) => {
+MQClient.consume({ queue: QUEUE.GPS_UPLOAD }, (data) => {
   logger('Incomming location record')
   locationLogGenerator.push(data)
   return Promise.resolve()

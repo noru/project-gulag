@@ -9,7 +9,7 @@ export const QUEUE = {
     options: {
       durable: true,
       arguments: {
-        'x-message-ttl': 5 * 60 * 100, // 5min,
+        'x-message-ttl': 10000, // 10sec,
         'x-max-length': 1000
       }
     }
