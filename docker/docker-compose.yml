@@ -12,6 +12,7 @@ services:
       - 6379:6379
   redis-admin:
     image: rediscommander/redis-commander:latest
+    restart: always
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
@@ -39,6 +40,7 @@ services:
       - db:/data/db
   mongo-admin:
     image: mongo-express
+    restart: always
     depends_on:
       - mongo
     ports:
@@ -54,6 +56,7 @@ services:
   #     - mongo
   #     - rabbitmq
   gulag:
+    restart: always
     build:
       context: ..
       dockerfile: docker/Dockerfile
