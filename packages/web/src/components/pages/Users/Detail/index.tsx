@@ -80,7 +80,7 @@ export function UserDetail() {
     <Wrapper>
       <Form
         {...formItemLayout}
-        name="register"
+        name="register_user"
         onFinish={onFinish}
         scrollToFirstError
         initialValues={local.initialValues}

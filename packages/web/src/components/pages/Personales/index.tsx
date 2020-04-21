@@ -123,7 +123,7 @@ export function PersonaleList() {
               Modal.confirm({
                 title: '确定要删除这个人员吗?',
                 async onOk() {
-                  await PersonaleStore.delelePersonale(record.id)
+                  await PersonaleStore.deletePersonale(record.id)
                 },
               })
             }

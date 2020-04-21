@@ -11,9 +11,8 @@ router.get('/api/personales', async (ctx) => {
 })
 
 router.get('/api/personales/:id', async (ctx) => {
-  let result = await model.findByIMEI(ctx.params.id)
-  ctx.body = result
-  ctx.status = result ? 200 : 404
+  let resp = await model.findOne({ id: ctx.params.id })
+  resp ? ok(ctx, resp) : error(ctx, ErrorCode.NotFound)
 })
 
 router.post('/api/personales', async (ctx) => {
@@ -41,7 +40,7 @@ router.post('/api/personales', async (ctx) => {
   }
 })
 
-router.put('/api/personales/:id', async ctx => {
+router.put('/api/personales/:id', async (ctx) => {
   let { id } = ctx.params
   let body = ctx.request.body
   body.id = id
@@ -54,7 +53,7 @@ router.put('/api/personales/:id', async ctx => {
   }
 })
 
-router.delete('/api/personales/:id', async ctx => {
+router.delete('/api/personales/:id', async (ctx) => {
   let { id } = ctx.params
   let resp = await model.deleteOne({ id })
   if (resp.n === 0) {

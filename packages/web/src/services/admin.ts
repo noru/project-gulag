@@ -1,5 +1,10 @@
 import { client } from './axios'
 class AdminService {
+  async getPersonaleById(id) {
+    return await client
+      .get('/api/personales/' + id)
+      .then((resp) => resp.data.detail)
+  }
   async getAllPersonales() {
     return await client.get('/api/personales').then((resp) => resp.data)
   }

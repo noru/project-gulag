@@ -4,6 +4,13 @@ import { adminService } from '#/services'
 export const PersonaleStore = observable({
   personales: [],
 
+  async getPersonale(id: string) {
+    return (
+      this.personales.find((p) => p.id === id) ||
+      (await adminService.getPersonaleById(id))
+    )
+  },
+
   async getAllPersonales() {
     this.personales = await adminService.getAllPersonales()
   },
@@ -16,7 +23,7 @@ export const PersonaleStore = observable({
     return await adminService.updatePersonale(data)
   },
 
-  async delelePersonale(id: string) {
+  async deletePersonale(id: string) {
     await adminService.deletePersonale(id)
     this.getAllPersonales()
   },
