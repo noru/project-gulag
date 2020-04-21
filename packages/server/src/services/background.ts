@@ -2,6 +2,7 @@ import MQClient, { QUEUE } from '../clients/mq'
 import { LocationMeta } from '../models/location'
 import { dateStr, getLogger } from '../utils'
 import fs from 'fs'
+import personaleModule from '../modules/personale'
 
 const logger = getLogger('Worker')
 
@@ -20,17 +21,16 @@ class LocationLogGenerator {
   }
 
   generate() {
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
         if (this.LocationRecords.length > 0) {
-          logger('Generating Location File...')
+          logger(`Generating Location File for ${this.LocationRecords.length} records...`)
           let date = dateStr()
-          let fileName = `${'单位编码'}_SSSJ_${date}.txt`
-          let fileBody = `${date};${this.LocationRecords.length}~` + this.getLines() + '~||'
+          let fileName = `${'单位编码'}_SSSJ_${date.replace(/:/g, '_')}.txt`
+          let fileBody = `${date};${this.LocationRecords.length}~` + await this.getLines() + '~||'
           this.LocationRecords = []
 
-          logger(`File Name: ${fileName}`)
-          fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName.replace(/:/g, '_'), fileBody, function (e) {
+          fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
             if (e) {
               logger.error(e)
             } else {
@@ -45,25 +45,31 @@ class LocationLogGenerator {
     }, LocationLogGenerator.Interval)
   }
 
-  getHeader() {
-    return
-  }
+  async getLines() {
 
-  getLines() {
-    return this.LocationRecords.map((loc) =>
-      LocationLineFormatter(
-        '0',
-        '0',
-        'person',
+    let lines = new Array
+
+    for (let i = 0; i < this.LocationRecords.length; i++) {
+      let loc = this.LocationRecords[i]
+      let user = await personaleModule.getByIMSI(loc.IMSI)
+
+      if (!user) continue
+
+      lines.push(LocationLineFormatter(
+        loc.IMSI,
         loc.Longitude,
         loc.Latitude,
         loc.Altitude,
         dateStr(loc.UTC, 8),
         '采区一',
+        user.vehicleTerminalId,
+        user.vehicleId,
         '1',
         '1',
-      ),
-    ).join('~')
+      ))
+    }
+
+    return lines.join('~')
   }
 }
 
@@ -76,16 +82,16 @@ MQClient.consume({ queue: { name: QUEUE.GPS_UPLOAD } }, (data) => {
 })
 
 const LocationLineFormatter = (
-  terminalId,
-  vehicleId,
-  personId,
+  imei,
   latitude,
   longitude,
   altitude,
   datetime,
   area,
-  terminalStatus,
-  personStatus,
+  vehicleTerminalId = '',
+  vehicleId = '',
+  terminalStatus = '1',
+  personStatus = '1',
 ) => {
   // 1	车载定位终端编号
   // 2	车辆编号
@@ -98,14 +104,5 @@ const LocationLineFormatter = (
   // 9	车载定位终端状态	1-正常;2-超速报警；3-超时停车；4-紧急报警；5-系统掉电；6-越界报警
   // 10	人员状态	1-在线；2-掉线
   // e.g. 140102B001101010000290001;车辆编号;140102B001101000000200001;116.397784;39.916321;75.000;2016-06-24 11:24:24;采区一;1;1
-  return `${terminalId};${vehicleId};${personId};${latitude};${longitude};${altitude};${datetime};${area};${terminalStatus};${personStatus};`
+  return `${vehicleTerminalId};${vehicleId};${imei};${latitude};${longitude};${altitude};${datetime};${area};${terminalStatus};${personStatus};`
 }
-
-// setTimeout(async () => {
-//   // PersonaleModule.upsertUser({
-//   //   Id: '123123',
-//   //   IMSI: '41234124123',
-//   // })
-//   let result = await PersonaleModule.getById('123123')
-//   console.log('test mongo', result)
-// }, 3000)

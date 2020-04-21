@@ -1,21 +1,22 @@
-import { connection } from '../clients/mongo'
+import mongoClient from '../clients/mongo'
+import NodeCache from 'node-cache'
+import { IPersonaleDoc } from '#/clients/mongo/models/personale'
 
-const PersonaleModel = connection.model('Personale')
+const cache = new NodeCache({ stdTTL: 3600, checkperiod: 3600 })
+const personale = mongoClient.personale
 
 class PersonaleModule {
-  async getById(Id: string) {
-    return await PersonaleModel.findOne({ Id })
+
+  async getByIMSI(imei: string) {
+    let key = '$imei_' + imei
+    let user = cache.get<IPersonaleDoc>(key)
+    if (!user) {
+      user = await personale.findByIMEI(imei) || undefined
+      user && cache.set(key, user)
+    }
+    return user
   }
 
-  async getByIMSI(IMSI: string) {
-    return await PersonaleModel.findOne({ IMSI })
-  }
-
-  async upsert(user) {
-    return await new PersonaleModel({
-      ...user,
-    }).save()
-  }
 }
 
 export default new PersonaleModule()

@@ -28,6 +28,7 @@
     "koa-static": "^5.0.0",
     "lodash": "^4.17.15",
     "mongoose": "^5.9.9",
+    "node-cache": "^5.1.0",
     "node-rabbitmq-client": "^3.0.2",
     "prettyjson": "^1.2.1",
     "rimraf": "^3.0.2",
