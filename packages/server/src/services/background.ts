@@ -7,7 +7,6 @@ import personaleModule from '../modules/personale'
 const logger = getLogger('Worker')
 
 class LocationLogGenerator {
-  static Limit = 100
   static Interval = 60000 // 60 sec
 
   LocationRecords: LocationMeta[] = []

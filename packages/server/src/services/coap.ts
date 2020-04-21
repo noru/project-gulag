@@ -39,7 +39,9 @@ Server.listen(function () {
 function handleGPSUpload(payload, res) {
   let location = new Location(payload)
   if (location.isValid) {
-    MQClient.publish({ queue: { name: QUEUE.GPS_UPLOAD } }, location.toJson())
+    let json = location.toJson()
+    MQClient.publish({ queue: QUEUE.GPS_UPLOAD }, json)
+    MQClient.publish({ queue: QUEUE.GPS_LIVE }, json)
     res.end(UPLOAD_GPS_OK)
   } else {
     logger.error('invalid gps payload: ', payload)
