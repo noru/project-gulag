@@ -7,8 +7,8 @@ const WSURL = protocol + '//' + window.location.host + '/ws/gps'
 
 export function CustomMap() {
   let [cord, setCord] = useState<BMap.Point | null>(null)
+  //@ts-ignore
   const [_sendMessage, lastMessage, _readyState] = useWebSocket(WSURL)
-
   useEffect(() => {
     if (lastMessage !== null) {
       console.log(lastMessage.data)
@@ -55,7 +55,7 @@ export function CustomMap() {
             setCord(null)
           }}
           position={cord!}
-          content={`<div style="font-size:16px;">${cord?.imei}</div>`}
+          content={`<div style="font-size:16px;">${JSON.stringify(cord)}</div>`}
           height={200}
           title="<div style='font-size:18px;'>title</div>"
           offset={new BMap.Size(0, -40)}
