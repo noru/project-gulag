@@ -4,10 +4,11 @@ import { client } from '#/clients/mq'
 
 const router = new Router()
 const logger = getLogger('WS')
-router.all('/ws/gps', async (ctx: any) => {
+router.all('/ws/gps/:clientId', async (ctx: any) => {
   // let batch = new Array
+  let { clientId } = ctx.params
   ctx.websocket.send('Connected. GPS data ready for streaming.')
-  let stopConsume = await client.webConsume(ctx.hostname, (data) => {
+  let stopConsume = await client.webConsume(clientId, (data) => {
     logger('Sending location data through websocket')
     ctx.websocket.send(
       JSON.stringify({

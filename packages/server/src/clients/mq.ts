@@ -59,11 +59,12 @@ class MQClient {
 
   webConsume(token, handler: (data: any) => Promise<any>) {
     let queue = QUEUE.GPS_LIVE
+    let nameWithToken = queue.name + '-' + token
     return (async () => {
       let ch = await this.channel
-      let assertQueue = await ch.assertQueue(queue.name + token, queue.options)
+      let assertQueue = await ch.assertQueue(nameWithToken, queue.options)
       ch.bindQueue(assertQueue.queue, MQClient.Exchange, '')
-      let consumer = await ch.consume(queue.name + token, (data) => {
+      let consumer = await ch.consume(nameWithToken, (data) => {
         try {
           let message = JSON.parse(data!.content.toString())
           return handler(message).then(() => {
