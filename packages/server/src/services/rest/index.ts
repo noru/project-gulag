@@ -4,7 +4,7 @@ import bodyParser from 'koa-bodyparser'
 import serve from 'koa-static'
 import websockify from 'koa-websocket'
 import { logger, koaLogger } from './logging'
-import { shared, auth, personale, ws, StaticsPath } from './routes'
+import { shared, auth, personale, ws, mock, StaticsPath } from './routes'
 import jwt from 'koa-jwt'
 
 const { KOA_PORT, KOA_JWT_SECRET } = process.env
@@ -20,6 +20,7 @@ app.use(mount(statics))
 app.use(jwt({ secret: KOA_JWT_SECRET! }).unless({ path: [/^\/api\/authenticate/, /^\/(?!api)(.*)$/] }))
 app.use(auth)
 app.use(personale)
+app.use(mock)
 app.use(shared)
 app.ws.use(ws)
 

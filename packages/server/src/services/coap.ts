@@ -6,8 +6,7 @@ import { getLogger } from '../utils'
 const Server = coap.createServer()
 const logger = getLogger('COAP SERVER')
 
-export const QUEUE_GPS_UPLOAD = 'GPS_UPLOAD'
-const CONNECTIVITI_OK = Uint8Array.from([0xaa, 0xaa, 0, 0])
+const CONNECTIVITY_OK = Uint8Array.from([0xaa, 0xaa, 0, 0])
 const UPLOAD_GPS_OK = Uint8Array.from([0xcc, 0xcc, 0, 0])
 const ALARM_OK = Uint8Array.from([0xdd, 0xdd, 0, 0])
 
@@ -21,7 +20,7 @@ Server.on('request', function (req, res) {
 
   switch (funcCode) {
     case '00':
-      res.end(CONNECTIVITI_OK)
+      res.end(CONNECTIVITY_OK)
       break
     case '01':
       handleGPSUpload(raw, res)

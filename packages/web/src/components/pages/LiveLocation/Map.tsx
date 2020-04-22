@@ -8,7 +8,8 @@ const WSURL = protocol + '//' + window.location.host + '/ws/gps'
 export function CustomMap() {
   let [cord, setCord] = useState<BMap.Point | null>(null)
   //@ts-ignore
-  const [_sendMessage, lastMessage, _readyState] = useWebSocket(WSURL)
+  const [send, lastMessage, state, getSocket] = useWebSocket(WSURL)
+
   useEffect(() => {
     if (lastMessage !== null) {
       console.log(lastMessage.data)
@@ -18,6 +19,7 @@ export function CustomMap() {
       cord.lng += Math.random() * 0.05
       setCord(cord)
     }
+    return getSocket().close
   }, [lastMessage])
   return (
     <>
@@ -34,9 +36,7 @@ export function CustomMap() {
             onMouseOver={() => {
               setCord({ lng: 120.2027911, lat: 49.14078494 })
             }}
-            onMouseOut={() => {
-              setCord(null)
-            }}
+            onMouseOut={() => setCord(null)}
           />
         )}
         <Polygon

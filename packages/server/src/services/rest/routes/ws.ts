@@ -10,6 +10,7 @@ router.all('/ws/gps', (ctx: any) => {
 
   ctx.websocket.send('Hello World');
   MQClient.consume({ queue: QUEUE.GPS_LIVE }, (data) => {
+
     logger('Sending location data through websocket')
     ctx.websocket.send(JSON.stringify({
       imei: data.IMSI,
