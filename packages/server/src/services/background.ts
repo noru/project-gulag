@@ -1,4 +1,4 @@
-import MQClient, { QUEUE } from '../clients/mq'
+import { client } from '../clients/mq'
 import { LocationMeta } from '../models/location'
 import { dateStr, getLogger } from '../utils'
 import fs from 'fs'
@@ -26,7 +26,7 @@ class LocationLogGenerator {
           logger(`Generating Location File for ${this.LocationRecords.length} records...`)
           let date = dateStr()
           let fileName = `${'单位编码'}_SSSJ_${date.replace(/:/g, '_')}.txt`
-          let fileBody = `${date};${this.LocationRecords.length}~` + await this.getLines() + '~||'
+          let fileBody = `${date};${this.LocationRecords.length}~` + (await this.getLines()) + '~||'
           this.LocationRecords = []
 
           fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
@@ -45,8 +45,7 @@ class LocationLogGenerator {
   }
 
   async getLines() {
-
-    let lines = new Array
+    let lines = new Array()
 
     for (let i = 0; i < this.LocationRecords.length; i++) {
       let loc = this.LocationRecords[i]
@@ -54,18 +53,20 @@ class LocationLogGenerator {
 
       if (!user) continue
 
-      lines.push(LocationLineFormatter(
-        loc.IMSI,
-        loc.Longitude,
-        loc.Latitude,
-        loc.Altitude,
-        dateStr(loc.UTC, 8),
-        '采区一',
-        user.vehicleTerminalId,
-        user.vehicleId,
-        '1',
-        '1',
-      ))
+      lines.push(
+        LocationLineFormatter(
+          loc.IMSI,
+          loc.Longitude,
+          loc.Latitude,
+          loc.Altitude,
+          dateStr(loc.UTC, 8),
+          '采区一',
+          user.vehicleTerminalId,
+          user.vehicleId,
+          '1',
+          '1',
+        ),
+      )
     }
 
     return lines.join('~')
@@ -74,7 +75,7 @@ class LocationLogGenerator {
 
 const locationLogGenerator = new LocationLogGenerator()
 
-MQClient.consume({ queue: QUEUE.GPS_UPLOAD }, (data) => {
+client.ftpConsume((data) => {
   logger('Incomming location record')
   locationLogGenerator.push(data)
   return Promise.resolve()

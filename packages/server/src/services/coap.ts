@@ -1,5 +1,5 @@
 import * as coap from 'coap'
-import MQClient, { QUEUE } from '../clients/mq'
+import { client } from '../clients/mq'
 import { Location } from '../models/location'
 import { getLogger } from '../utils'
 
@@ -39,8 +39,7 @@ function handleGPSUpload(payload, res) {
   let location = new Location(payload)
   if (location.isValid) {
     let json = location.toJson()
-    MQClient.publish({ queue: QUEUE.GPS_UPLOAD }, json)
-    MQClient.publish({ queue: QUEUE.GPS_LIVE }, json)
+    client.publishGPS(json)
     res.end(UPLOAD_GPS_OK)
   } else {
     logger.error('invalid gps payload: ', payload)

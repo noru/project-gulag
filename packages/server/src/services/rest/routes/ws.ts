@@ -1,14 +1,13 @@
 import Router from 'koa-router'
 import { getLogger } from '#/utils'
-import MQClient, { QUEUE } from '#/clients/mq'
+import { client } from '#/clients/mq'
 
 const router = new Router()
 const logger = getLogger('WS')
-router.all('/ws/gps', (ctx: any) => {
+router.all('/ws/gps', async (ctx: any) => {
   // let batch = new Array
-
-  ctx.websocket.send('Hello World')
-  MQClient.consume({ queue: QUEUE.GPS_LIVE }, (data) => {
+  ctx.websocket.send('Connected. GPS data ready for streaming.')
+  let stopConsume = await client.webConsume(ctx.hostname, (data) => {
     logger('Sending location data through websocket')
     ctx.websocket.send(
       JSON.stringify({
@@ -22,6 +21,7 @@ router.all('/ws/gps', (ctx: any) => {
 
   ctx.websocket.on('close', () => {
     logger('ws close')
+    stopConsume()
   })
 
   ctx.websocket.on('open', () => {

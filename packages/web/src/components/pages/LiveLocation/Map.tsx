@@ -38,6 +38,7 @@ class Map extends React.Component<Required<WithMapProps>> {
 
   onMessage = ({ data }) => {
     let mark = attempt(() => JSON.parse(data))
+    console.log(data)
     if (mark) {
       this.markers[mark.imei] = mark
     }

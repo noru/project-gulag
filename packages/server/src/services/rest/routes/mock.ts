@@ -1,4 +1,4 @@
-import MQClient, { QUEUE } from '#/clients/mq'
+import { client } from '#/clients/mq'
 import { getLogger } from '#/utils'
 import Router from 'koa-router'
 import { random } from '@drewxiu/utils/cjs'
@@ -50,7 +50,7 @@ async function startMockGPS(seed: string) {
       Longitude: init.lng += random(-1, 1) * 0.0008,
       UTC: new Date(),
     }
-    MQClient.publish({ queue: QUEUE.GPS_LIVE }, json)
+    client.publishGPS(json)
     await new Promise((resolve) => {
       setTimeout(resolve, MOCK_INTERVAL / initials.length)
     })
