@@ -1,11 +1,11 @@
 import React from 'react'
 import { withMap } from '@uiw/react-baidu-map'
 import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
-import { attempt } from '@drewxiu/utils/lib'
+import { attempt, randomInt } from '@drewxiu/utils/lib'
 
+const token = randomInt(1000000000) + '' // mark uniqueness of the client, backend use it to create a dedicated queue for streaming data
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-const wsUrl = protocol + '//' + window.location.host + '/ws/gps'
-
+const wsUrl = `${protocol}//${window.location.host}/ws/gps/${token}`
 class Map extends React.Component<Required<WithMapProps>> {
   static paintInterval = 5000
 
@@ -38,7 +38,7 @@ class Map extends React.Component<Required<WithMapProps>> {
 
   onMessage = ({ data }) => {
     let mark = attempt(() => JSON.parse(data))
-    console.log(data)
+    console.log('Incomming', data)
     if (mark) {
       this.markers[mark.imei] = mark
     }
