@@ -46,8 +46,8 @@ async function startMockGPS(seed: string) {
     let init = initials[i]
     let json = {
       IMSI: init.imei,
-      Latitude: init.lat += random(-1, 1) * 0.05,
-      Longitude: init.lng += random(-1, 1) * 0.08,
+      Latitude: init.lat += random(-1, 1) * 0.0005,
+      Longitude: init.lng += random(-1, 1) * 0.0008,
       UTC: new Date(),
     }
     MQClient.publish({ queue: QUEUE.GPS_LIVE }, json)
@@ -55,7 +55,7 @@ async function startMockGPS(seed: string) {
       setTimeout(resolve, MOCK_INTERVAL / initials.length)
     })
   }
-  setTimeout(startMockGPS, MOCK_INTERVAL, seed)
+  setTimeout(startMockGPS, 0, seed)
 }
 
 function PosGenerator(seed: string, i: number) {
