@@ -63,7 +63,7 @@ class MQClient {
       let ch = await this.channel
       let assertQueue = await ch.assertQueue(queue.name + token, queue.options)
       ch.bindQueue(assertQueue.queue, MQClient.Exchange, '')
-      let consumer = await ch.consume(queue.name, (data) => {
+      let consumer = await ch.consume(queue.name + token, (data) => {
         try {
           let message = JSON.parse(data!.content.toString())
           return handler(message).then(() => {
