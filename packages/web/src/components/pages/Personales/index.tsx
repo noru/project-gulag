@@ -18,18 +18,18 @@ const Columns: any[] = [
     title: 'ID',
     dataIndex: 'id',
     fixed: true,
-    width: 80,
-  },
-  {
-    title: '姓名',
-    dataIndex: 'name',
-    width: 80,
+    width: 250,
     render: (text, record) => {
       let history = useHistory()
       return (
         <a onClick={() => history.push(`/personales/${record.id}`)}>{text}</a>
       )
     },
+  },
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    width: 80,
     fixed: true,
   },
   {
