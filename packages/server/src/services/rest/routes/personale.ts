@@ -11,7 +11,17 @@ router.get('/api/personales', async (ctx) => {
 })
 
 router.get('/api/personales/:id', async (ctx) => {
-  let resp = await model.findOne({ id: ctx.params.id })
+  let { type = 'id' } = ctx.request.query
+  let { id } = ctx.params
+  let resp
+  switch (type) {
+    case 'imei':
+      resp = await model.findByIMEI(id)
+      break
+    default:
+      resp = await model.findOne({ id })
+  }
+  
   resp ? ok(ctx, resp) : error(ctx, ErrorCode.NotFound)
 })
 

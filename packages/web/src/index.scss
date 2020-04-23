@@ -21,3 +21,28 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+
+
+
+
+.infowindow { 
+  &.personale-marker{
+    font-size: 14px;
+    .infowindow-row {
+      display: flex;
+      justify-content: space-between;
+      width: 350px;
+      padding: 6px 12px;
+
+      > span:first-of-type {
+        font-weight: bold;
+        color: #333;
+      }
+
+      > span:last-of-type {
+        color: #666;
+      }
+    }
+
+  }
+}

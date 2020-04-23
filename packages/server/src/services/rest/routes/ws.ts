@@ -5,6 +5,19 @@ import { LocationMessage } from '#/models/location'
 
 const router = new Router()
 const logger = getLogger('WS')
+
+export interface GPSMessage {
+  imei: string
+  lat: number
+  lng: number
+  alt: number
+  s: number,
+  d: number,
+  t: number,
+  v: number,
+}
+
+
 router.all('/ws/gps/:clientId', async (ctx: any) => {
   // let batch = new Array
   let { clientId } = ctx.params

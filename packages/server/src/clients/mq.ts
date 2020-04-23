@@ -35,7 +35,6 @@ class MQClient {
     logger('Publishing GPS data...', data)
     let channelWrapper = this.getChannelWrapper((ch) => {
       return ch.assertExchange(MQClient.Exchange, 'topic', { durable: true })
-      ch.publish
     })
 
     const startPublishing = () => {

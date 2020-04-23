@@ -5,6 +5,12 @@ class AdminService {
       .get('/api/personales/' + id)
       .then((resp) => resp.data.detail)
   }
+
+  async getPersonaleByImei(imei) {
+    return await client
+      .get(`/api/personales/${imei}?type=imei`)
+      .then((resp) => resp.data.detail)
+  }
   async getAllPersonales() {
     return await client.get('/api/personales').then((resp) => resp.data)
   }
