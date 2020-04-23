@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@drewxiu/utils": "^1.0.17",
+    "amqp-connection-manager": "^3.2.0",
     "amqplib": "^0.5.5",
     "basic-ftp": "^4.5.4",
     "coap": "^0.23.1",
