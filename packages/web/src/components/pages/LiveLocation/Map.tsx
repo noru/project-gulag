@@ -35,7 +35,7 @@ const infoWindowTemplate = (
   </div>
 </div>
 `
-const infoWindowOffset = { width: 0, height: -20 }
+const infoWindowOffset = { width: 10, height: -10 }
 interface Markers {
   [imei: string]: GPSMessage
 }
@@ -70,6 +70,8 @@ class Map extends React.Component<Required<WithMapProps>> {
     let client = new WebSocket(wsUrl)!
     client.onmessage = this.onMessage
     client.onerror = this.onError
+    client.onclose = this.onClose
+    this.client = client
   }
 
   onMessage = ({ data }) => {
@@ -82,6 +84,10 @@ class Map extends React.Component<Required<WithMapProps>> {
 
   onError = () => {
     this.initWS()
+  }
+
+  onClose = () => {
+    console.debug('WS closed')
   }
 
   paintMarkers() {
@@ -110,7 +116,6 @@ class Map extends React.Component<Required<WithMapProps>> {
   }
 
   showInfoWindow(mark: GPSMessage, marker: BMap.Marker) {
-    console.log(mark)
     this.infoWindow.setContent(infoWindowTemplate(mark.imei))
     PersonaleStore.getPersonaleByImei(mark.imei).then((personale) =>
       this.infoWindow.setContent(

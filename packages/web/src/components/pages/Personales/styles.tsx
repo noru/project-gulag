@@ -8,7 +8,8 @@ export const IMEI = styled.div`
     padding-right: 2em;
     align-items: center;
     > strong {
-      color: #999;
+      color: darkorange;
+      font-weight: 200;
     }
   }
 `

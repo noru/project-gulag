@@ -38,6 +38,7 @@ export const mock = router.routes()
 
 const MOCK_INTERVAL = 10000
 const CENTER = { lng: 120.2027911, lat: 49.14078494 }
+
 async function startMockGPS(seed: string) {
   let initials = mocks.get(seed)
 
@@ -67,7 +68,8 @@ function PosGenerator(seed: string, i: number) {
   let imei = '000000000000000' + seed + i
   imei = imei.substring(imei.length - 15)
   return {
-    ...CENTER,
+    lat: CENTER.lat + random(-1, 1) * 0.03,
+    lng: CENTER.lng + random(-1, 1) * 0.045,
     imei,
   }
 }
