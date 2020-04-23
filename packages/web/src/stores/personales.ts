@@ -13,7 +13,7 @@ export const PersonaleStore = observable({
   personalesByImei: {} as PersonaleCache,
 
   async getPersonale(id: string) {
-    let result: PersonaleCache =
+    let result: IPersonale =
       this.personalesById[id] ||
       this.personales.find((p) => p.id === id) ||
       (await adminService.getPersonaleById(id))

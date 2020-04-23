@@ -2,7 +2,7 @@ import React from 'react'
 import { withMap } from '@uiw/react-baidu-map'
 import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
 import { attempt, randomInt } from '@drewxiu/utils/lib'
-import { GPSMessage } from '@/services/rest/routes/ws'
+import { GPSMessage } from '@/types/shared'
 import { PersonaleStore } from '#/stores'
 
 const token = randomInt(1000000000) + '' // mark uniqueness of the client, backend use it to create a dedicated queue for streaming data
