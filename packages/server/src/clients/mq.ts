@@ -95,10 +95,11 @@ const QUEUE = {
   GPS_LIVE: {
     name: 'GPS_LIVE',
     options: {
-      durable: true,
+      durable: false,
       arguments: {
         'x-message-ttl': 10000, // 10sec,
         'x-max-length': 1000,
+        'x-expires"': 180000, // 3min
       },
     },
   },
