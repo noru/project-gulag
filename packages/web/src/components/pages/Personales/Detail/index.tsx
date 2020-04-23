@@ -52,24 +52,28 @@ export function PersonaleDetail() {
       }
     })()
   })
-  let onFinish = (values) => {
-    PersonaleStore.createPersonale(values)
-      .then(() => {
-        Modal.success({
-          title: '创建成功',
-          content: '人员创建成功。',
-          onOk() {
-            history.push('/personales')
-          },
-        })
+  let onFinish = async (values) => {
+    let isNew = local.isNew
+    let actionName = isNew ? '创建' : '编辑'
+    let action = isNew
+      ? PersonaleStore.createPersonale
+      : PersonaleStore.updatePersonale
+    try {
+      await action(values)
+      Modal.success({
+        title: `${actionName}成功`,
+        content: `人员${actionName}成功。`,
+        onOk() {
+          history.push('/personales')
+        },
       })
-      .catch((e) => {
-        console.error(e)
-        Modal.error({
-          title: '创建失败',
-          content: '未知错误, 请稍后重试',
-        })
+    } catch (e) {
+      console.error(e)
+      Modal.error({
+        title: `${actionName}失败`,
+        content: `未知错误, 请稍后重试\n${e.message}`,
       })
+    }
   }
   return useObserver(() => (
     <Wrapper>
@@ -156,7 +160,6 @@ export function PersonaleDetail() {
         <F.Item name="isExternal" label="是否为外部人员">
           <Switch disabled={!local.isEditing} />
         </F.Item>
-
         <F.Item {...tailFormItemLayout}>
           <ButtonGroup>
             <Button
