@@ -1,21 +1,24 @@
 import { identity } from '@drewxiu/utils/cjs'
 
-export interface LocationMeta {
-  TransitCode: string
-  FuncCode: string
+export interface LocationMessage {
   IMSI: string
-  DataLength: number
-  UTC: Date
+  UTC: number
   Latitude: number
   Longitude: number
+  Altitude: number
   Speed: number
   Direction: number
-  Altitude: number
+  Volts: number
+}
+
+export interface LocationMeta extends LocationMessage {
+  TransitCode: string
+  FuncCode: string
+  DataLength: number
   PDOP: number
   HDOP: number
   HACC: number
   Steps: number
-  Volts: number
   CRC: string
 }
 
@@ -29,7 +32,7 @@ const StringDeserializer = (hex: string) => {
 const HexDeserializer = Hex2Int
 
 const DateDeserializer = (hex: string) => {
-  return new Date(Hex2Int(hex) * 1000)
+  return Hex2Int(hex) * 1000
 }
 
 const DegreeDeserializer = (hex: string) => {
@@ -67,7 +70,7 @@ export class Location implements LocationMeta {
   FuncCode!: string
   IMSI!: string
   DataLength!: number
-  UTC!: Date
+  UTC!: number
   Latitude!: number
   Longitude!: number
   Speed!: number
@@ -107,11 +110,16 @@ export class Location implements LocationMeta {
     }
   }
 
-  toJson(): LocationMeta {
-    return Location.FRAME_FORMAT.reduce((obj, nextField) => {
-      let { name } = nextField
-      obj[name] = this[name]
-      return obj
-    }, {}) as LocationMeta
+  toJson(): LocationMessage {
+    return {
+      IMSI: this.IMSI,
+      Longitude: this.Longitude,
+      Latitude: this.Latitude,
+      Altitude: this.Altitude,
+      Speed: this.Speed,
+      Direction: this.Direction,
+      UTC: this.UTC,
+      Volts: this.Volts,
+    }
   }
 }
