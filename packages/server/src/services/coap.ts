@@ -3,6 +3,7 @@ import { client } from '../clients/mq'
 import { Location } from '../models/location'
 import { getLogger } from '../utils'
 
+const PORT = process.env.NODE_ENV === 'development' ? 15683 : 5683
 const Server = coap.createServer()
 const logger = getLogger('COAP SERVER')
 
@@ -31,8 +32,8 @@ Server.on('request', function (req, res) {
   }
 })
 
-Server.listen(function () {
-  logger('COAP Server Started.')
+Server.listen(PORT, function () {
+  logger('COAP Server Started on port ' + PORT)
 })
 
 function handleGPSUpload(payload, res) {
