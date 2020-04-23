@@ -39,7 +39,7 @@ class MQClient {
     })
 
     const startPublishing = () => {
-      return channelWrapper.publish(MQClient.Exchange, '', data)
+      return channelWrapper.publish(MQClient.Exchange, '', Buffer.from(JSON.stringify(data)))
     }
 
     return startPublishing()
