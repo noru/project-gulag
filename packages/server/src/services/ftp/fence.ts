@@ -17,7 +17,7 @@ const fence: Fence = {
 }
 
 class FenceDataGenerator {
-  static Interval = 1000// 60000 * 60 * 24 // 1 day
+  static Interval = 60000 * 60 * 24 // 1 day
 
   constructor() {
     this.generate()
@@ -37,7 +37,7 @@ class FenceDataGenerator {
           if (e) {
             logger.error(e)
           } else {
-            logger(`Personale File Generated: ${fileName}`)
+            logger(`Fence File Generated: ${fileName}`)
           }
         })
       } catch (e) {
