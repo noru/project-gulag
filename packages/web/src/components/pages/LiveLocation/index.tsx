@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react'
 import { APILoader } from '@uiw/react-baidu-map'
-import { Wrapper, ActionWrapper, MapWrapper } from './styles'
+import { Wrapper, ActionWrapper, MapWrapper, ExtraWrapper } from './styles'
 import { CustomMap, MapControll } from './Map'
 import { useObserver, useLocalStore } from 'mobx-react'
-import { PageHeader, Button, Descriptions, Select } from 'antd'
+import { PageHeader, Button, Descriptions, Select, Switch } from 'antd'
 import { SyncOutlined, AimOutlined } from '@ant-design/icons'
 import { dateStr } from '#/utils'
 import { throttle } from 'lodash'
@@ -43,6 +43,16 @@ export function LiveLocation() {
           title={<span>扎尼河露天矿</span>}
           subTitle="人员位置实时数据"
           extra={[
+            <ExtraWrapper key="0">
+              <span style={{ paddingRight: 6 }}>测区图</span>
+              <Switch
+                key="4"
+                checkedChildren="显示"
+                unCheckedChildren="隐藏"
+                defaultChecked
+                onClick={() => local.mapRef.toggleGroundOverlay()}
+              />
+            </ExtraWrapper>,
             <Select
               key="0"
               defaultValue={MapControll.paintInterval}
@@ -72,7 +82,7 @@ export function LiveLocation() {
               {local.start ? '暂停接收' : '接收数据'}
             </Button>,
             <Button
-              key="-1"
+              key="2"
               type="primary"
               ghost
               icon={<AimOutlined />}

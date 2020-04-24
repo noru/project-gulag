@@ -14,3 +14,12 @@ export const MapWrapper = styled.div`
   width: 100%;
   height: calc(100vh - 160px);
 `
+
+export const ExtraWrapper = styled.div`
+  display: inline-block;
+  padding-right: 24px;
+
+  > button {
+    margin-bottom: 3px;
+  }
+`

@@ -7,6 +7,7 @@ import { PersonaleStore } from '#/stores'
 import { dateStr } from '#/utils'
 import { Markers, wsUrl, infoWindowTemplate, MarkerType } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
+import groundOverlayUrl from '#/assets/img/ground_overlay.png'
 
 interface Props {
   onReceive?: (data: any, marks: any) => void
@@ -26,6 +27,7 @@ export class MapControll extends React.Component<
     warn: BMap.Icon
     outdated: BMap.Icon
   }
+  groundOverlay!: BMap.GroundOverlay
 
   client?: WebSocket
 
@@ -55,8 +57,20 @@ export class MapControll extends React.Component<
       { lng: 120.1884636, lat: 49.10852722 },
       { lng: 120.2938367, lat: 49.14605369 },
     ])
-    restrictArea.setFillOpacity(0.8)
+    restrictArea.setFillOpacity(0.4)
     map.addOverlay(restrictArea)
+
+    this.groundOverlay = new BMap.GroundOverlay(
+      new BMap.Bounds(
+        { lng: 120.1744636, lat: 49.10052722 },
+        { lng: 120.2850001, lat: 49.17000658 }
+      ),
+      {
+        imageURL: groundOverlayUrl,
+        opacity: 0.3,
+      }
+    )
+    map.addOverlay(this.groundOverlay)
   }
 
   initMap() {
@@ -106,6 +120,16 @@ export class MapControll extends React.Component<
 
   onClose = () => {
     console.debug('[WS]Closed')
+  }
+
+  toggleGroundOverlay() {
+    let opacity = this.groundOverlay.getOpacity()
+    if (opacity > 0) {
+      opacity = 0
+    } else {
+      opacity = 0.3
+    }
+    this.groundOverlay.setOpacity(opacity)
   }
 
   addMarkers(data: GPSMessage) {
