@@ -8,10 +8,17 @@ import { dateStr } from '#/utils'
 import { Markers, wsUrl, infoWindowTemplate, MarkerType } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 
-class Map extends React.Component<Required<WithMapProps>> {
-  static paintInterval = 3000
+interface Props {
+  start: boolean
+  rate: number
+  onReceive?: (data: any, marks: any) => void
+  mapRef?: (ref: Map) => void
+}
 
-  intervalId: any = 0
+class Map extends React.Component<Required<WithMapProps> & Props> {
+  static paintInterval = 3
+
+  timeoutId: any = 0
   markers: Markers = {}
   infoWindow!: BMap.InfoWindow
   icons!: {
@@ -20,10 +27,10 @@ class Map extends React.Component<Required<WithMapProps>> {
     outdated: BMap.Icon
   }
 
-  client!: WebSocket
+  client?: WebSocket
 
   initOverlays() {
-    const { BMap } = this.props
+    const { BMap, map } = this.props
     this.icons = {
       normal: new BMap.Icon(spritesheet, new BMap.Size(20, 29), {
         imageOffset: new BMap.Size(-20, 0),
@@ -41,11 +48,6 @@ class Map extends React.Component<Required<WithMapProps>> {
       }),
     }
     this.infoWindow = new BMap.InfoWindow('')
-  }
-
-  initMap() {
-    const { BMap, map } = this.props
-    map.enableScrollWheelZoom()
     map.addControl(new BMap.NavigationControl())
     let restrictArea = new BMap.Polygon([
       { lng: 120.2781947, lat: 49.18461658 },
@@ -55,54 +57,49 @@ class Map extends React.Component<Required<WithMapProps>> {
     ])
     restrictArea.setFillOpacity(0.8)
     map.addOverlay(restrictArea)
+  }
 
-    // todo: delte this
-    // let point = new BMap.Point(120.2027911, 49.14078494)
-    // let marker = new BMap.Marker(new BMap.Point(120.2027911, 49.14078494))
-    // marker['type'] = 'test.marker'
-    // marker.setIcon(this.icons.outdated)
-    // marker.addEventListener('click', () => {
-    //   let newPoint = new BMap.Point((point.lng += 0.004), 49.14078494)
-    //   marker.setPosition(newPoint)
-    // })
-    // marker.addEventListener('mouseover', () =>
-    //   this.showInfoWindow(
-    //     {
-    //       lng: 120.2027911,
-    //       lat: 49.14078494,
-    //       imei: '123123123123',
-    //       alt: 123,
-    //       t: Date.now(),
-    //       s: 123,
-    //       d: 123,
-    //       v: 123,
-    //     },
-    //     marker
-    //   )
-    // )
-    // marker.addEventListener('mouseout', () => this.closeInfoWindow(marker))
-    // map.addOverlay(marker)
+  initMap() {
+    const { map } = this.props
+    map.enableScrollWheelZoom()
+    this.initMapCenter()
+  }
 
-    setTimeout(() => {
-      // FIXME: auto located to current position
-      map.centerAndZoom(new BMap.Point(120.2027911, 49.14078494), 12)
-    }, 1000)
+  initMapCenter() {
+    let { map } = this.props
+    map.centerAndZoom(new BMap.Point(120.2027911, 49.14078494), 13)
+    console.log('init center')
   }
 
   initWS() {
+    if (this.client) {
+      return
+    }
     let client = new WebSocket(wsUrl)!
     client.onmessage = this.onMessage
     client.onerror = this.onError
     client.onclose = this.onClose
+    client.onopen = this.onOpen
     this.client = client
+  }
+
+  closeWS() {
+    this.client && this.client.close()
+    this.client = undefined
   }
 
   onMessage = ({ data }) => {
     let mark = attempt(() => JSON.parse(data))
-    console.debug('Incomming', data)
+    console.debug('[WS]Incomming', data)
     if (mark) {
       this.addMarkers(mark)
     }
+    let { onReceive } = this.props
+    onReceive && onReceive(data, this.markers)
+  }
+
+  onOpen = () => {
+    console.debug('[WS]Opened')
   }
 
   onError = () => {
@@ -110,7 +107,7 @@ class Map extends React.Component<Required<WithMapProps>> {
   }
 
   onClose = () => {
-    console.debug('WS closed')
+    console.debug('[WS]Closed')
   }
 
   addMarkers(data: GPSMessage) {
@@ -201,18 +198,43 @@ class Map extends React.Component<Required<WithMapProps>> {
     marker.closeInfoWindow()
   }
 
+  startPaint() {
+    this.timeoutId = setTimeout(() => {
+      this.paintMarkers()
+      this.startPaint()
+    }, Map.paintInterval * 1000)
+    this.initWS()
+  }
+
+  stopPaint() {
+    clearTimeout(this.timeoutId)
+    this.closeWS()
+  }
+
   componentDidMount() {
     this.initOverlays()
     this.initMap()
-    this.initWS()
-    this.intervalId = setInterval(() => {
-      this.paintMarkers()
-    }, Map.paintInterval)
+    let { mapRef } = this.props
+    mapRef && mapRef(this)
+    setTimeout(() => {
+      // FIXME: auto located to current position
+      this.initMapCenter()
+    }, 1000)
   }
 
   componentWillUnmount() {
-    clearInterval(this.intervalId)
-    this.client && this.client.close()
+    this.stopPaint()
+  }
+
+  UNSAFE_componentWillReceiveProps(props) {
+    let { start, rate } = props
+    Map.paintInterval = rate
+    if (start) {
+      this.startPaint()
+    } else {
+      this.stopPaint()
+    }
+    return {}
   }
 
   render() {
@@ -220,4 +242,4 @@ class Map extends React.Component<Required<WithMapProps>> {
   }
 }
 
-export const CustomMap = withMap(Map as any)
+export const CustomMap: any = withMap(Map as any)
