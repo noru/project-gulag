@@ -1,22 +1,20 @@
 import React, { useCallback } from 'react'
 import { APILoader } from '@uiw/react-baidu-map'
 import { Wrapper, ActionWrapper, MapWrapper } from './styles'
-import { CustomMap } from './Map'
+import { CustomMap, MapControll } from './Map'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { PageHeader, Button, Descriptions, Select } from 'antd'
 import { SyncOutlined, AimOutlined } from '@ant-design/icons'
 import { dateStr } from '#/utils'
-// import { AuthStore } from '#/stores/auth'
+import { throttle } from 'lodash'
 
 const Option = Select.Option
 
 export function LiveLocation() {
-  // let store = useObserver(() => AuthStore)
   let local = useLocalStore(() => {
     return {
-      start: false,
-      refreshRate: CustomMap.paintInterval,
       lastUpdate: ' - ',
+      start: false,
       total: 0,
       mapRef: null as any,
       get startTime() {
@@ -25,10 +23,13 @@ export function LiveLocation() {
     }
   })
 
-  let onReceive = useCallback((current, all) => {
-    local.lastUpdate = dateStr(current.t)
-    local.total = Object.keys(all).length
-  }, [])
+  let onReceive = useCallback(
+    throttle((current, all) => {
+      local.lastUpdate = dateStr(current.t)
+      local.total = Object.keys(all).length
+    }, 3000),
+    []
+  )
 
   let onRecenter = useCallback(() => {
     local.mapRef && local.mapRef!.initMapCenter()
@@ -44,9 +45,9 @@ export function LiveLocation() {
           extra={[
             <Select
               key="0"
-              defaultValue={3}
+              defaultValue={MapControll.paintInterval}
               style={{ width: 100 }}
-              onChange={(val) => (local.refreshRate = val)}
+              onChange={(val) => (MapControll.paintInterval = val)}
             >
               <Option value={3}>3秒/次</Option>
               <Option value={5}>5秒/次</Option>
@@ -58,7 +59,14 @@ export function LiveLocation() {
               key="1"
               type="primary"
               danger={local.start}
-              onClick={() => (local.start = !local.start)}
+              onClick={() => {
+                local.start = !local.start
+                if (local.start) {
+                  local.mapRef.startPaint()
+                } else {
+                  local.mapRef.stopPaint()
+                }
+              }}
               icon={<SyncOutlined spin={local.start} />}
             >
               {local.start ? '暂停接收' : '接收数据'}
@@ -90,8 +98,6 @@ export function LiveLocation() {
       <MapWrapper>
         <APILoader akay="qZpPLwPWLRaSrICDaXAzDYUml0YOx9st">
           <CustomMap
-            start={local.start}
-            rate={local.refreshRate}
             onReceive={onReceive}
             mapRef={(ref) => (local.mapRef = ref)}
           />

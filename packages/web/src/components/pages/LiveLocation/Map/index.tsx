@@ -9,13 +9,13 @@ import { Markers, wsUrl, infoWindowTemplate, MarkerType } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 
 interface Props {
-  start: boolean
-  rate: number
   onReceive?: (data: any, marks: any) => void
-  mapRef?: (ref: Map) => void
+  mapRef?: (ref: MapControll) => void
 }
 
-class Map extends React.Component<Required<WithMapProps> & Props> {
+export class MapControll extends React.Component<
+  Required<WithMapProps> & Props
+> {
   static paintInterval = 3
 
   timeoutId: any = 0
@@ -60,15 +60,12 @@ class Map extends React.Component<Required<WithMapProps> & Props> {
   }
 
   initMap() {
-    const { map } = this.props
-    map.enableScrollWheelZoom()
     this.initMapCenter()
   }
 
   initMapCenter() {
     let { map } = this.props
     map.centerAndZoom(new BMap.Point(120.2027911, 49.14078494), 13)
-    console.log('init center')
   }
 
   initWS() {
@@ -103,6 +100,7 @@ class Map extends React.Component<Required<WithMapProps> & Props> {
   }
 
   onError = () => {
+    console.debug('[WS]Error')
     this.initWS()
   }
 
@@ -199,11 +197,11 @@ class Map extends React.Component<Required<WithMapProps> & Props> {
   }
 
   startPaint() {
-    this.timeoutId = setTimeout(() => {
-      this.paintMarkers()
-      this.startPaint()
-    }, Map.paintInterval * 1000)
+    this.paintMarkers()
     this.initWS()
+    this.timeoutId = setTimeout(() => {
+      this.startPaint()
+    }, Math.max(MapControll.paintInterval * 1000, 3000))
   }
 
   stopPaint() {
@@ -226,20 +224,9 @@ class Map extends React.Component<Required<WithMapProps> & Props> {
     this.stopPaint()
   }
 
-  UNSAFE_componentWillReceiveProps(props) {
-    let { start, rate } = props
-    Map.paintInterval = rate
-    if (start) {
-      this.startPaint()
-    } else {
-      this.stopPaint()
-    }
-    return {}
-  }
-
   render() {
     return null
   }
 }
 
-export const CustomMap: any = withMap(Map as any)
+export const CustomMap: any = withMap(MapControll as any)

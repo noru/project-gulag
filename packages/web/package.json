@@ -8,6 +8,7 @@
     "clean": "cross-env rimraf dist",
     "dev": "cross-env webpack-dev-server --config ./config/webpack.dev.js",
     "dev:docker": "cross-env API_PORT=8081 npm run dev",
+    "dev:remote": "cross-env API_PORT=8081 API_HOST=116.117.252.90 npm run dev",
     "prebuild": "npm run clean",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.js --progress"
   },

@@ -3,6 +3,9 @@ const webpack = require('webpack')
 const config = require('./webpack.base')
 const path = require('path')
 
+const API_HOST = process.env.API_HOST || 'localhost'
+const API_PORT = process.env.API_PORT || '80'
+
 const GLOBALS = {
   'process.env': {
     NODE_ENV: JSON.stringify('development'),
@@ -42,9 +45,9 @@ module.exports = merge(config, {
     port: process.env.PORT || 8888,
     disableHostCheck: true,
     proxy: {
-      '/api': `http://localhost:${process.env.API_PORT || 80}`,
+      '/api': `http://${API_HOST}:${API_PORT}`,
       '/ws': {
-        target: `ws://localhost:${process.env.API_PORT || 80}`,
+        target: `ws://${API_HOST}:${API_PORT}`,
         ws: true,
       },
     },
