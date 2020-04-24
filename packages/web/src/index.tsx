@@ -8,6 +8,7 @@ import 'mobx-react-lite/batchingForReactDom'
 
 const rootElement = document.getElementById('app')
 
+authService.reauth()
 setInterval(authService.reauth, 25 * 60 * 1000)
 
 const App = (
