@@ -5,11 +5,11 @@ import { attempt } from '@drewxiu/utils/lib'
 import { GPSMessage } from '@/types/shared'
 import { PersonaleStore } from '#/stores'
 import { dateStr } from '#/utils'
-import { Markers, wsUrl, infoWindowTemplate } from './helpers'
+import { Markers, wsUrl, infoWindowTemplate, MarkerType } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 
 class Map extends React.Component<Required<WithMapProps>> {
-  static paintInterval = 5000
+  static paintInterval = 1000
 
   intervalId: any = 0
   markers: Markers = {}
@@ -57,12 +57,14 @@ class Map extends React.Component<Required<WithMapProps>> {
     map.addOverlay(restrictArea)
 
     // todo: delte this
-    // let marker2 = new BMap.Marker(new BMap.Point(120.2027911, 49.14078494))
-    // marker2['type'] = 'test.marker'
-    // map.addOverlay(marker2)
+    // let point = new BMap.Point(120.2027911, 49.14078494)
     // let marker = new BMap.Marker(new BMap.Point(120.2027911, 49.14078494))
     // marker['type'] = 'test.marker'
     // marker.setIcon(this.icons.outdated)
+    // marker.addEventListener('click', () => {
+    //   let newPoint = new BMap.Point((point.lng += 0.004), 49.14078494)
+    //   marker.setPosition(newPoint)
+    // })
     // marker.addEventListener('mouseover', () =>
     //   this.showInfoWindow(
     //     {
@@ -99,7 +101,7 @@ class Map extends React.Component<Required<WithMapProps>> {
     let mark = attempt(() => JSON.parse(data))
     console.debug('Incomming', data)
     if (mark) {
-      this.markers[mark.imei] = mark
+      this.addMarkers(mark)
     }
   }
 
@@ -111,33 +113,61 @@ class Map extends React.Component<Required<WithMapProps>> {
     console.debug('WS closed')
   }
 
+  addMarkers(data: GPSMessage) {
+    const { BMap } = this.props
+    let { lng, lat } = data
+    let cached = this.markers[data.imei]
+    if (!cached) {
+      let marker = new BMap.Marker({ lng, lat })
+      marker.addEventListener('mouseover', () => {
+        marker.setPosition({ lng: lng + 0.04, lat })
+
+        this.showInfoWindow(cached.data, marker)
+      })
+      marker.addEventListener('mouseout', () => this.closeInfoWindow(marker))
+      cached = this.markers[data.imei] = {
+        data,
+        marker,
+        type: MarkerType.Personale,
+      }
+    }
+    cached.data = data
+    let marker = cached.marker
+    marker['type'] = 'marker'
+
+    if ('not outside') {
+      marker.setIcon(this.icons.normal)
+    } else {
+      marker.setIcon(this.icons.warn)
+    }
+  }
+
+  removeMarker(imei: string) {
+    const { map } = this.props
+    let cached = this.markers[imei]
+    if (!cached) return
+    map.removeOverlay(cached.marker)
+    delete this.markers[imei]
+  }
+
   paintMarkers() {
-    const { BMap, map } = this.props
+    const { map } = this.props
     let now = Date.now()
-    this.clearMarkers()
-    Object.entries(this.markers).forEach(([imei, mark]) => {
-      let { lng, lat, t } = mark
+
+    Object.entries(this.markers).forEach(([imei, cache]) => {
+      let { data, marker } = cache
+      let { lng, lat, t } = data
       let age = now - t
       if (age > 10 * 60000) {
-        delete this.markers[imei]
+        this.removeMarker(imei)
         return
       }
-      let marker = new BMap.Marker({ lat, lng })
-      marker['type'] = 'marker'
       if (age > 60000) {
         // 1min
         marker.setIcon(this.icons.outdated)
       }
-      if ('not outside') {
-        marker.setIcon(this.icons.normal)
-      } else {
-        marker.setIcon(this.icons.warn)
-      }
-      marker.addEventListener('mouseover', () =>
-        this.showInfoWindow(mark, marker)
-      )
-      marker.addEventListener('mouseout', () => this.closeInfoWindow(marker))
       map.addOverlay(marker)
+      marker.setPosition(new BMap.Point(lng, lat))
     })
   }
 

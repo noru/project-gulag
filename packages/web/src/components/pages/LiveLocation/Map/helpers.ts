@@ -37,6 +37,15 @@ export const infoWindowTemplate = (
   </div>
 </div>
 `
+
+export enum MarkerType {
+  Personale,
+}
+
 export interface Markers {
-  [imei: string]: GPSMessage
+  [imei: string]: {
+    data: GPSMessage
+    marker: BMap.Marker
+    type: MarkerType
+  }
 }
