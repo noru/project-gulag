@@ -1,11 +1,11 @@
-import { client } from '../clients/mq'
-import { LocationMeta } from '../models/location'
-import { dateStr, getLogger } from '../utils'
+import { client } from '../../clients/mq'
+import { LocationMeta } from '../../models/location'
+import { dateStr, getLogger } from '../../utils'
 import fs from 'fs'
-import personaleModule from '../modules/personale'
+import personaleModule from '../../modules/personale'
 
-const logger = getLogger('Worker')
-const TENENT = '140102B0011010199002'
+const logger = getLogger('Location Worker')
+export const TENENT = '140102B0011010199002'
 
 class LocationLogGenerator {
   static Interval = 60000 // 60 sec
@@ -34,7 +34,7 @@ class LocationLogGenerator {
             if (e) {
               logger.error(e)
             } else {
-              logger(`File Generated: ${fileName}`)
+              logger(`Location File Generated: ${fileName}`)
             }
           })
         }

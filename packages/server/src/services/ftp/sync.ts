@@ -1,6 +1,6 @@
 import * as ftp from 'basic-ftp'
 import rimraf from 'rimraf'
-import { getLogger } from '../utils'
+import { getLogger } from '../../utils'
 
 const logger = getLogger('FTP')
 

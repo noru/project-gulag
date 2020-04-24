@@ -9,3 +9,17 @@ export interface GPSMessage {
   t: number,
   v: number,
 }
+
+export interface Fence {
+  id: string
+  name: string
+  vertices: FenceVertex[]
+}
+
+export interface FenceVertex {
+  id: string
+  index: number
+  lng: number
+  lat: number
+  alt: number
+}
