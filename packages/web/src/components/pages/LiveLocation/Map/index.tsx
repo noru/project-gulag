@@ -115,11 +115,16 @@ class Map extends React.Component<Required<WithMapProps>> {
     const { BMap, map } = this.props
     let now = Date.now()
     this.clearMarkers()
-    Object.entries(this.markers).forEach(([_, mark]) => {
-      let { lng, lat } = mark
+    Object.entries(this.markers).forEach(([imei, mark]) => {
+      let { lng, lat, t } = mark
+      let age = now - t
+      if (age > 10 * 60000) {
+        delete this.markers[imei]
+        return
+      }
       let marker = new BMap.Marker({ lat, lng })
       marker['type'] = 'marker'
-      if (now - mark.t > 60000) {
+      if (age > 60000) {
         // 1min
         marker.setIcon(this.icons.outdated)
       }
