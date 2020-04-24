@@ -9,7 +9,7 @@ import { Markers, wsUrl, infoWindowTemplate, MarkerType } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 
 class Map extends React.Component<Required<WithMapProps>> {
-  static paintInterval = 1000
+  static paintInterval = 3000
 
   intervalId: any = 0
   markers: Markers = {}

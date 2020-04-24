@@ -6,9 +6,11 @@ import { omitSensitive } from '#/clients/mongo/models/user'
 
 const { metadata, user } = mongoClient
 const { KOA_JWT_SECRET, KOA_SUPER_PASS } = process.env
+const TOKEN_VALIDITY_PERIOD = 7200000 // 2h
+
 const router = new Router()
 
-const genJWT = (payload) => jwt.sign({ payload }, KOA_JWT_SECRET, { expiresIn: '0.5h' })
+const genJWT = (payload) => jwt.sign({ payload }, KOA_JWT_SECRET, { expiresIn: '2h' })
 
 router.post('/api/authenticate', async (ctx) => {
   let { username, password } = ctx.request.body
@@ -18,7 +20,7 @@ router.post('/api/authenticate', async (ctx) => {
     let serverTime = Date.now()
     ctx.body = {
       token,
-      expiresIn: serverTime + 1800000,
+      expiresIn: serverTime + TOKEN_VALIDITY_PERIOD,
       serverTime,
     }
   }
@@ -46,22 +48,9 @@ router.post('/api/reauth', async (ctx) => {
   let serverTime = Date.now()
   ctx.body = {
     token,
-    expiresIn: serverTime + 1800000,
+    expiresIn: serverTime + TOKEN_VALIDITY_PERIOD,
     serverTime,
   }
-})
-
-router.post('/api/authInit', async (ctx) => {
-  await metadata.update(
-    { name: 'super_user_disabled' },
-    {
-      name: 'super_user_disabled',
-      description: "Allow super user login or not. Useful at the beginning where no user's been created",
-      data: false,
-    },
-    { upsert: true, setDefaultsOnInsert: true },
-  )
-  ctx.body = 'OK'
 })
 
 router.get('/api/users', async (ctx) => {
@@ -91,6 +80,20 @@ router.delete('/api/users/:username', async (ctx) => {
   } else {
     ok(ctx, resp)
   }
+})
+
+// temp
+router.post('/api/authInit', async (ctx) => {
+  await metadata.update(
+    { name: 'super_user_disabled' },
+    {
+      name: 'super_user_disabled',
+      description: "Allow super user login or not. Useful at the beginning where no user's been created",
+      data: false,
+    },
+    { upsert: true, setDefaultsOnInsert: true },
+  )
+  ctx.body = 'OK'
 })
 
 export const auth = router.routes()
