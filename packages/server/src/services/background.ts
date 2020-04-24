@@ -5,6 +5,7 @@ import fs from 'fs'
 import personaleModule from '../modules/personale'
 
 const logger = getLogger('Worker')
+const TENENT = '140102B0011010199002'
 
 class LocationLogGenerator {
   static Interval = 60000 // 60 sec
@@ -25,7 +26,7 @@ class LocationLogGenerator {
         if (this.LocationRecords.length > 0) {
           logger(`Generating Location File for ${this.LocationRecords.length} records...`)
           let date = dateStr()
-          let fileName = `${'单位编码'}_SSSJ_${date.replace(/:/g, '_')}.txt`
+          let fileName = `${TENENT}_SSSJ_${date.replace(/:/g, '_')}.txt`
           let fileBody = `${date};${this.LocationRecords.length}~` + (await this.getLines()) + '~||'
           this.LocationRecords = []
 
