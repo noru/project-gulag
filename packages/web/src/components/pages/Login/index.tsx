@@ -2,7 +2,6 @@ import React from 'react'
 import { Wrapper, LoginWrapper } from './styles'
 import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import { authService } from '#/services'
 import { useHistory } from 'react-router-dom'
 import { AuthStore } from '#/stores/auth'
 
@@ -10,7 +9,7 @@ export function Login() {
   let history = useHistory()
   let onFinish = async ({ username, password }: any) => {
     try {
-      let user = await authService.login(username, password)
+      let user = await AuthStore.login(username, password)
       AuthStore.user = user
       history.push('/')
     } catch (e) {

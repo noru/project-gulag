@@ -43,7 +43,7 @@ export function LiveLocation() {
           title={<span>扎尼河露天矿</span>}
           subTitle="人员位置实时数据"
           extra={[
-            <ExtraWrapper key="0">
+            <ExtraWrapper key="groud-overlay">
               <span style={{ paddingRight: 6 }}>测区图</span>
               <Switch
                 key="4"
@@ -54,7 +54,7 @@ export function LiveLocation() {
               />
             </ExtraWrapper>,
             <Select
-              key="0"
+              key="refresh-rate"
               defaultValue={MapControll.paintInterval}
               style={{ width: 100 }}
               onChange={(val) => (MapControll.paintInterval = val)}
@@ -66,7 +66,7 @@ export function LiveLocation() {
               <Option value={60}>1分钟/次</Option>
             </Select>,
             <Button
-              key="1"
+              key="receive"
               type="primary"
               danger={local.start}
               onClick={() => {
@@ -82,7 +82,7 @@ export function LiveLocation() {
               {local.start ? '暂停接收' : '接收数据'}
             </Button>,
             <Button
-              key="2"
+              key="recenter"
               type="primary"
               ghost
               icon={<AimOutlined />}

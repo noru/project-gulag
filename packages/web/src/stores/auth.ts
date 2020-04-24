@@ -36,11 +36,7 @@ export const AuthStore = observable({
 
   async login(username: string, password: string) {
     this.user = await authService.login(username, password)
-    function reauth() {
-      authService.reauth()
-      reauthTimer = setTimeout(reauth, 60 * 1000 * 25)
-    }
-    reauth()
+    return this.user
   },
 
   logout() {

@@ -17,6 +17,11 @@ module.exports = merge(config, {
   mode: 'development',
   cache: true,
   devtool: 'cheap-module-eval-source-map',
+  resolve: {
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
+  },
   entry: {
     app: [
       'react-hot-loader/patch',
