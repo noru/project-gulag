@@ -19,21 +19,34 @@ CONNECTION.on('disconnect', (params) => {
   logger.error('RabbitMQ server is disconnected', params.err)
 })
 
+enum ChannelKey {
+  PublishGPS = 'publish_gps',
+  FTPConsume = 'ftp_consume',
+  WebConsume = 'web_consume',
+}
+
 class MQClient {
   static Exchange = 'gps_live'
 
-  getChannelWrapper(setup: (channel: Channel) => Promise<any>) {
-    return CONNECTION.createChannel({
-      async setup(ch) {
-        await ch.assertExchange(MQClient.Exchange, 'topic', { durable: true })
-        return setup(ch)
-      },
-    })
+  wrappers = []
+
+
+  getChannelWrapper(key: ChannelKey, setup?: (channel: Channel) => Promise<any>) {
+    let wrapper = this.wrappers[key]
+    if (!wrapper) {
+      wrapper = this.wrappers[key] = CONNECTION.createChannel({
+        async setup(ch) {
+          await ch.assertExchange(MQClient.Exchange, 'topic', { durable: true })
+          return setup && setup(ch)
+        },
+      })
+    }
+    return wrapper
   }
 
   async publishGPS(data) {
     logger('Publishing GPS data...', data)
-    let channelWrapper = this.getChannelWrapper((ch) => {
+    let channelWrapper = this.getChannelWrapper(ChannelKey.PublishGPS, (ch) => {
       return ch.assertExchange(MQClient.Exchange, 'topic', { durable: true })
     })
 
@@ -46,7 +59,7 @@ class MQClient {
 
   ftpConsume(handler) {
     let queue = QUEUE.GPS_UPLOAD
-    let wrapper = this.getChannelWrapper(async (ch: Channel) => {
+    let wrapper = this.getChannelWrapper(ChannelKey.FTPConsume, async (ch: Channel) => {
       let assertQueue = await ch.assertQueue(queue.name, queue.options)
       await ch.bindQueue(assertQueue.queue, MQClient.Exchange, '')
       return await ch.consume(queue.name, (data) => {
@@ -74,7 +87,8 @@ class MQClient {
     let nameWithToken = queue.name + '-' + token
 
     return new Promise<() => void>((resolve) => {
-      let wrapper = this.getChannelWrapper(async (ch: Channel) => {
+      let wrapper = this.getChannelWrapper(ChannelKey.WebConsume)
+      wrapper.addSetup(async (ch) => {
         let assertQueue = await ch.assertQueue(nameWithToken, queue.options)
         await ch.bindQueue(assertQueue.queue, MQClient.Exchange, '')
         let consume = await ch.consume(nameWithToken, (data) => {
