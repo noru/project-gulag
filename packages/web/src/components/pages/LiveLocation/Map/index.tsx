@@ -9,7 +9,9 @@ import spritesheet from '#/assets/img/marker.png'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
 
 interface Props {
+  onOpen?: () => void
   onReceive?: (data: any, marks: any, rate?: number) => void
+  onClose?: () => void
   mapRef?: (ref: MapControll) => void
 }
 
@@ -105,6 +107,8 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
 
   onOpen = () => {
     console.debug('[WS]Opened')
+    let { onOpen } = this.props
+    onOpen && onOpen()
   }
 
   onError = () => {
@@ -114,6 +118,8 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
 
   onClose = () => {
     console.debug('[WS]Closed')
+    let { onClose } = this.props
+    onClose && onClose()
   }
 
   toggleGroundOverlay() {
