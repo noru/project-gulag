@@ -9,16 +9,16 @@ import { dateStr } from '#/utils'
 import { throttle } from 'lodash'
 
 const Option = Select.Option
-
+const PLACEHOLDER = ' - '
 export function LiveLocation() {
   let local = useLocalStore(() => {
     return {
-      lastUpdate: ' - ',
+      lastUpdate: PLACEHOLDER,
       start: false,
       total: 0,
       mapRef: null as any,
       get startTime() {
-        return this.start ? dateStr() : ' - '
+        return this.start ? dateStr() : PLACEHOLDER
       },
     }
   })
@@ -46,7 +46,6 @@ export function LiveLocation() {
             <ExtraWrapper key="groud-overlay">
               <span style={{ paddingRight: 6 }}>测区图</span>
               <Switch
-                key="4"
                 checkedChildren="显示"
                 unCheckedChildren="隐藏"
                 defaultChecked
@@ -75,19 +74,15 @@ export function LiveLocation() {
                   local.mapRef.startPaint()
                 } else {
                   local.mapRef.stopPaint()
+                  local.total = 0
+                  local.lastUpdate = PLACEHOLDER
                 }
               }}
               icon={<SyncOutlined spin={local.start} />}
             >
               {local.start ? '暂停接收' : '接收数据'}
             </Button>,
-            <Button
-              key="recenter"
-              type="primary"
-              ghost
-              icon={<AimOutlined />}
-              onClick={onRecenter}
-            >
+            <Button key="recenter" type="primary" ghost icon={<AimOutlined />} onClick={onRecenter}>
               重置中心
             </Button>,
           ]}
@@ -96,21 +91,14 @@ export function LiveLocation() {
             <Descriptions.Item label="在线数量">
               <a>{local.total}</a>
             </Descriptions.Item>
-            <Descriptions.Item label="开始时间">
-              {local.startTime}
-            </Descriptions.Item>
-            <Descriptions.Item label="上次更新">
-              {local.lastUpdate}
-            </Descriptions.Item>
+            <Descriptions.Item label="开始时间">{local.startTime}</Descriptions.Item>
+            <Descriptions.Item label="上次更新">{local.lastUpdate}</Descriptions.Item>
           </Descriptions>
         </PageHeader>
       </ActionWrapper>
       <MapWrapper>
         <APILoader akay="qZpPLwPWLRaSrICDaXAzDYUml0YOx9st">
-          <CustomMap
-            onReceive={onReceive}
-            mapRef={(ref) => (local.mapRef = ref)}
-          />
+          <CustomMap onReceive={onReceive} mapRef={(ref) => (local.mapRef = ref)} />
         </APILoader>
       </MapWrapper>
     </Wrapper>
