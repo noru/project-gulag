@@ -23,21 +23,14 @@ module.exports = merge(config, {
     },
   },
   entry: {
-    app: [
-      'react-hot-loader/patch',
-      'webpack/hot/only-dev-server',
-      path.join(__dirname, '../src/index'),
-    ],
+    app: ['react-hot-loader/patch', 'webpack/hot/only-dev-server', path.join(__dirname, '../src/index')],
     vendor: ['react', 'react-dom', 'react-router', 'react-router-dom'],
   },
   output: {
     filename: 'statics/js/[name].js',
     chunkFilename: 'statics/js/[name].js',
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin(GLOBALS),
-  ],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.DefinePlugin(GLOBALS)],
   devServer: {
     overlay: true,
     hot: true,

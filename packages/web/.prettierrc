@@ -4,5 +4,5 @@
   "semi": false,
   "singleQuote": true,
   "endOfLine": "auto",
-  "maxLength": 120
+  "printWidth": 120
 }

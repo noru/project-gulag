@@ -4,7 +4,6 @@ import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
 import { attempt } from '@drewxiu/utils/lib'
 import { GPSMessage } from '@/types/shared'
 import { PersonaleStore } from '#/stores'
-import { dateStr } from '#/utils'
 import { Markers, wsUrl, infoWindowTemplate, MarkerType } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
@@ -14,9 +13,7 @@ interface Props {
   mapRef?: (ref: MapControll) => void
 }
 
-export class MapControll extends React.Component<
-  Required<WithMapProps> & Props
-> {
+export class MapControll extends React.Component<Required<WithMapProps> & Props> {
   static paintInterval = 3
 
   timeoutId: any = 0
@@ -61,10 +58,7 @@ export class MapControll extends React.Component<
     map.addOverlay(restrictArea)
 
     this.groundOverlay = new BMap.GroundOverlay(
-      new BMap.Bounds(
-        { lng: 120.1744636, lat: 49.10052722 },
-        { lng: 120.2850001, lat: 49.17000658 }
-      ),
+      new BMap.Bounds({ lng: 120.1744636, lat: 49.10052722 }, { lng: 120.2850001, lat: 49.17000658 }),
       {
         imageURL: groundOverlayUrl,
         opacity: 0.3,
@@ -184,6 +178,8 @@ export class MapControll extends React.Component<
       if (age > 60000) {
         // 1min
         marker.setIcon(this.icons.outdated)
+      } else {
+        marker.setIcon(this.icons.normal)
       }
       map.addOverlay(marker)
       marker.setPosition(new BMap.Point(lng, lat))
@@ -201,18 +197,9 @@ export class MapControll extends React.Component<
   }
 
   showInfoWindow(mark: GPSMessage, marker: BMap.Marker) {
-    let date = dateStr(mark.t)
-    this.infoWindow.setContent(infoWindowTemplate(mark.imei, date))
+    this.infoWindow.setContent(infoWindowTemplate(mark))
     PersonaleStore.getPersonaleByImei(mark.imei).then((personale) =>
-      this.infoWindow.setContent(
-        infoWindowTemplate(
-          mark.imei,
-          date,
-          personale.name,
-          personale.id,
-          personale.jobTitle
-        )
-      )
+      this.infoWindow.setContent(infoWindowTemplate(mark, personale))
     )
     marker.openInfoWindow(this.infoWindow)
   }

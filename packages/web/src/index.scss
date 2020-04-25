@@ -22,9 +22,6 @@ a {
   cursor: pointer;
 }
 
-
-
-
 .infowindow { 
   &.personale-marker{
     font-size: 14px;
@@ -41,6 +38,39 @@ a {
 
       > span:last-of-type {
         color: #666;
+      }
+
+     .battery {
+        display: inline-block;
+        border: 1px solid #999;
+        height: 1em;
+        width: 36px;
+        text-align: right;
+        position: relative;
+        top: 5px;
+        > i {
+          display: inline-block;
+          width: 6px;
+          height: .7em;
+          background: limegreen;
+          margin-right: 2px;
+          vertical-align: super;
+          margin-top: 1px;
+        }
+
+        &.bar-0 {
+          border-color: red;
+        }
+        &.bar-1 {
+          > i {
+            background-color: red;
+          }
+        }
+        &.bar-2 {
+          > i {
+            background-color: orange;
+          }
+        }
       }
     }
 
