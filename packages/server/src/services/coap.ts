@@ -15,20 +15,23 @@ Server.on('request', function (req, res) {
   let { payload } = req
   let raw: string = payload.toString()
 
-  logger('Payload', raw)
-
   let funcCode = raw.substr(0, 2)
 
   switch (funcCode) {
     case '00':
+      logger('Handshake', raw)
       res.end(CONNECTIVITY_OK)
       break
     case '01':
+      logger('GPS', raw)
       handleGPSUpload(raw, res)
       break
     case '03':
       res.end(ALARM_OK)
       break
+    default:
+      logger.error('Unknown', raw)
+      res.end()
   }
 })
 
