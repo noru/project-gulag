@@ -70,7 +70,7 @@ async function startMockGPS(seed: string, opts: Partial<MockOptions> = {}) {
       setTimeout(resolve, interval / initials.length)
     })
   }
-  setTimeout(startMockGPS, 0, seed)
+  setTimeout(startMockGPS, 0, seed, opts)
 }
 
 function PosGenerator(seed: string, i: number) {
