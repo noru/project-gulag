@@ -8,10 +8,10 @@ export const wsUrl = `${protocol}//${window.location.host}/ws/gps/${token}`
 export const LoadingText = '加载中...'
 export const infoWindowTemplate = (
   imei,
+  time,
   name = LoadingText,
   id = LoadingText,
-  jobTitle = LoadingText,
-  time = LoadingText
+  jobTitle = LoadingText
 ) => `
 <div class="infowindow personale-marker">
   <div class="infowindow-row">

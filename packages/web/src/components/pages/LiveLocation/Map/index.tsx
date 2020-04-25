@@ -201,15 +201,16 @@ export class MapControll extends React.Component<
   }
 
   showInfoWindow(mark: GPSMessage, marker: BMap.Marker) {
-    this.infoWindow.setContent(infoWindowTemplate(mark.imei))
+    let date = dateStr(mark.t)
+    this.infoWindow.setContent(infoWindowTemplate(mark.imei, date))
     PersonaleStore.getPersonaleByImei(mark.imei).then((personale) =>
       this.infoWindow.setContent(
         infoWindowTemplate(
           mark.imei,
+          date,
           personale.name,
           personale.id,
-          personale.jobTitle,
-          dateStr(mark.t)
+          personale.jobTitle
         )
       )
     )
