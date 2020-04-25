@@ -60,3 +60,13 @@ export interface Markers {
     type: MarkerType
   }
 }
+
+let mark
+export function calculateRate() {
+  let l = mark
+  mark = Date.now()
+  if (!l) {
+    return 0
+  }
+  return 1000 / (mark - l)
+}

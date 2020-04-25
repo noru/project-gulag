@@ -16,6 +16,7 @@ export function LiveLocation() {
       lastUpdate: PLACEHOLDER,
       start: false,
       total: 0,
+      rate: 0,
       mapRef: null as any,
       get startTime() {
         return this.start ? dateStr() : PLACEHOLDER
@@ -24,9 +25,10 @@ export function LiveLocation() {
   })
 
   let onReceive = useCallback(
-    throttle((current, all) => {
+    throttle((current, all, rate) => {
       local.lastUpdate = dateStr(current.t)
       local.total = Object.keys(all).length
+      local.rate = rate
     }, 3000),
     []
   )
@@ -87,12 +89,13 @@ export function LiveLocation() {
             </Button>,
           ]}
         >
-          <Descriptions size="small" column={3}>
+          <Descriptions size="small" column={4}>
             <Descriptions.Item label="在线数量">
               <a>{local.total}</a>
             </Descriptions.Item>
             <Descriptions.Item label="开始时间">{local.startTime}</Descriptions.Item>
             <Descriptions.Item label="上次更新">{local.lastUpdate}</Descriptions.Item>
+            <Descriptions.Item label="数据频率">{local.rate.toFixed(2)}/s</Descriptions.Item>
           </Descriptions>
         </PageHeader>
       </ActionWrapper>

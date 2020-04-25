@@ -4,12 +4,12 @@ import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
 import { attempt } from '@drewxiu/utils/lib'
 import { GPSMessage } from '@/types/shared'
 import { PersonaleStore } from '#/stores'
-import { Markers, wsUrl, infoWindowTemplate, MarkerType } from './helpers'
+import { Markers, wsUrl, infoWindowTemplate, MarkerType, calculateRate } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
 
 interface Props {
-  onReceive?: (data: any, marks: any) => void
+  onReceive?: (data: any, marks: any, rate?: number) => void
   mapRef?: (ref: MapControll) => void
 }
 
@@ -100,7 +100,7 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
       this.addMarkers(mark)
     }
     let { onReceive } = this.props
-    onReceive && onReceive(data, this.markers)
+    onReceive && onReceive(data, this.markers, calculateRate())
   }
 
   onOpen = () => {
