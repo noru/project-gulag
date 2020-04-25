@@ -98,6 +98,7 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
   onMessage = ({ data }) => {
     let mark = attempt(() => JSON.parse(data))
     console.debug('[WS]Incomming', data)
+    mark.receiveAt = Date.now()
     if (mark) {
       this.addMarkers(mark)
     }
@@ -139,21 +140,22 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
     if (!cached) {
       let marker = new BMap.Marker({ lng, lat })
       marker.addEventListener('mouseover', () => {
-        marker.setPosition({ lng: lng + 0.04, lat })
-
+        marker.setPosition({ lng, lat })
         this.showInfoWindow(cached.data, marker)
       })
       marker.addEventListener('mouseout', () => this.closeInfoWindow(marker))
       cached = this.markers[data.imei] = {
-        data,
         marker,
         type: MarkerType.Personale,
+        data,
+        receivedAt: Date.now(),
       }
+    } else {
+      cached.data = data
+      cached.receivedAt = Date.now()
     }
-    cached.data = data
     let marker = cached.marker
     marker['type'] = 'marker'
-
     if ('not outside') {
       marker.setIcon(this.icons.normal)
     } else {

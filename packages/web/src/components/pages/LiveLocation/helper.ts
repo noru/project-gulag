@@ -33,7 +33,14 @@ export const DebugTableColumns = [
     },
   },
   {
-    title: 'volt',
+    title: 'Volt',
     dataIndex: 'v',
+  },
+  {
+    title: 'Received At',
+    dataIndex: 'receivedAt',
+    render(v) {
+      return dateStr(v)
+    },
   },
 ]

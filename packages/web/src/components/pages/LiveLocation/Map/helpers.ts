@@ -55,9 +55,10 @@ export enum MarkerType {
 
 export interface Markers {
   [imei: string]: {
-    data: GPSMessage
-    marker: BMap.Marker
     type: MarkerType
+    marker: BMap.Marker
+    data: GPSMessage
+    receivedAt: number
   }
 }
 

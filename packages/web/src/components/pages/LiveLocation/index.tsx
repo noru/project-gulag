@@ -136,12 +136,12 @@ export function LiveLocation() {
         <Drawer
           title="Marks"
           placement="right"
-          width="800"
+          width="900"
           onClose={() => (local.openDebugInfo = false)}
           visible={local.openDebugInfo}
         >
           <Table
-            dataSource={Object.values(local.markers).map((m: any) => m.data)}
+            dataSource={Object.values(local.markers).map((m: any) => ({ ...m.data, receiveAt: m.receiveAt }))}
             columns={DebugTableColumns}
             rowKey="imei"
           />
