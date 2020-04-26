@@ -12,9 +12,7 @@ export const infoWindowTemplate = (mark: GPSMessage, person?: IPersonale) => {
   let { imei, t, v } = mark
   let { name = LoadingText, id = LoadingText, jobTitle = LoadingText } = person || {}
   let date = dateStr(t)
-  if (v > 80) v = 100
-  if (v < 15) v = 0
-  let batteryBar = (v / 25) | 0
+  let batteryBar = (v / 22) | 0
   return `
   <div class="infowindow personale-marker">
     <div class="infowindow-row">

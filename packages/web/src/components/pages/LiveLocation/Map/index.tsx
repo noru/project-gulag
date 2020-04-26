@@ -70,12 +70,16 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
   }
 
   initMap() {
+    let { map } = this.props
+    map.enableScrollWheelZoom()
+    map.enableKeyboard()
+
     this.initMapCenter()
   }
 
   initMapCenter() {
     let { map } = this.props
-    map.centerAndZoom(new BMap.Point(120.2027911, 49.14078494), 13)
+    map.centerAndZoom(new BMap.Point(120.2027911, 49.14078494), 14)
   }
 
   initWS() {
@@ -97,6 +101,7 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
 
   onMessage = ({ data }) => {
     let mark = attempt(() => JSON.parse(data))
+    if (!mark) return
     console.debug('[WS]Incomming', data)
     mark.receiveAt = Date.now()
     if (mark) {
