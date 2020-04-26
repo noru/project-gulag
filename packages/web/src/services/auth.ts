@@ -11,7 +11,7 @@ class AuthService {
     return this.decodeAndCache(token)
   }
 
-  async reauth() {
+  reauth = async () => {
     const {
       data: { token },
     } = await client.post('/api/reauth')

@@ -8,10 +8,7 @@ let reauthTimer
 
 export const AuthStore = observable({
   users: [],
-  user: attempt(
-    () => jwtDecode(localStorage.getItem(TOKEN_KEY)!).payload,
-    null
-  ),
+  user: attempt(() => jwtDecode(localStorage.getItem(TOKEN_KEY)!).payload, null),
 
   get isAuthenticated() {
     return !!this.user
@@ -25,10 +22,7 @@ export const AuthStore = observable({
     this.getUsers()
   },
   async getUser(username: string) {
-    return (
-      this.users.find((u) => u.username === username) ||
-      (await authService.getUser(username))
-    )
+    return this.users.find((u) => u.username === username) || (await authService.getUser(username))
   },
   async getUsers() {
     this.users = await authService.getUsers()
