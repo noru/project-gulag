@@ -55,9 +55,7 @@ export function PersonaleDetail() {
   let onFinish = async (values) => {
     let isNew = local.isNew
     let actionName = isNew ? '创建' : '编辑'
-    let action = isNew
-      ? PersonaleStore.createPersonale
-      : PersonaleStore.updatePersonale
+    let action = isNew ? PersonaleStore.createPersonale : PersonaleStore.updatePersonale
     try {
       await action(values)
       Modal.success({
@@ -160,13 +158,12 @@ export function PersonaleDetail() {
         <F.Item name="isExternal" label="是否为外部人员">
           <Switch disabled={!local.isEditing} />
         </F.Item>
+        <F.Item name="certs" label="是否为外部人员">
+          <Switch disabled={!local.isEditing} />
+        </F.Item>
         <F.Item {...tailFormItemLayout}>
           <ButtonGroup>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={!local.isEditing}
-            >
+            <Button type="primary" htmlType="submit" disabled={!local.isEditing}>
               {local.isNew ? '创建人员' : '保存'}
             </Button>
             {!local.isNew && local.isEditing && (

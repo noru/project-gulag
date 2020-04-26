@@ -32,6 +32,8 @@
     "lodash": "^4.17.15",
     "mongoose": "^5.9.9",
     "node-cache": "^5.1.0",
+    "pino": "^6.2.1",
+    "pino-elasticsearch": "^4.4.0",
     "prettyjson": "^1.2.1",
     "rimraf": "^3.0.2",
     "sha2": "^1.0.2"

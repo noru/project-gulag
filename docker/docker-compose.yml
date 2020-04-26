@@ -3,8 +3,24 @@ version: '3.1'
 volumes:
   db:
   ftp:
+  es:
 
 services:
+  elasticsearch:
+    image: elasticsearch:7.6.2
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      discovery.type: single-node
+    volumes:
+      - es:/usr/share/elasticsearch/data
+  kibana:
+    image: kibana:7.6.2
+    ports:
+      - 8082:5601
+    depends_on:
+      - elasticsearch
   rabbitmq:
     image: rabbitmq:management-alpine
     restart: always
