@@ -209,7 +209,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       let { lng, lat, t } = data
       let age = now - t
       if (age > 30 * 24 * 60 * 60000) {
-        // remove stale marker after 30day
+        // remove stale marker (30 day+)
         this.removeMarker(imei)
         return
       }
