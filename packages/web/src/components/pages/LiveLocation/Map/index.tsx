@@ -199,8 +199,8 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
       let { data, marker } = cache
       let { lng, lat, t } = data
       let age = now - t
-      if (age > 20 * 60000) {
-        // remove stale marker after 20min
+      if (age > 30 * 24 * 60 * 60000) {
+        // remove stale marker after 30day
         this.removeMarker(imei)
         return
       }
