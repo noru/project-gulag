@@ -8,6 +8,8 @@ volumes:
 services:
   elasticsearch:
     image: nshou/elasticsearch-kibana:latest
+    container_name: elasticsearch
+    restart: always
     ports:
       - 8082:9200
       - 8083:5601
