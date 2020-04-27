@@ -6,7 +6,7 @@ volumes:
   es:
 
 services:
-  ek:
+  elasticsearch:
     image: nshou/elasticsearch-kibana:latest
     ports:
       - 9200:9200
