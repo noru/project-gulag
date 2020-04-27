@@ -5,7 +5,7 @@ import { getLogger } from '../utils'
 
 const PORT = process.env.NODE_ENV === 'development' ? 15683 : 5683
 const Server = coap.createServer()
-const logger = getLogger('COAP SERVER')
+const logger = getLogger('COAP')
 
 const CONNECTIVITY_OK = Uint8Array.from([0xaa, 0xaa, 0, 0])
 const UPLOAD_GPS_OK = Uint8Array.from([0xcc, 0xcc, 0, 0])

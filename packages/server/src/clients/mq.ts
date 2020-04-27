@@ -4,7 +4,7 @@ import { getLogger } from '#/utils'
 import { connection } from 'mongoose'
 const { MQ_HOST, MQ_USER, MQ_PASS } = process.env
 
-const logger = getLogger('MQ Client')
+const logger = getLogger('MQ')
 const URL = `amqp://${MQ_USER}:${MQ_PASS}@${MQ_HOST}`
 const CONNECTION = amqp.connect([URL], {
   json: true,
@@ -29,7 +29,6 @@ class MQClient {
   static Exchange = 'gps_live'
 
   wrappers = []
-
 
   getChannelWrapper(key: ChannelKey, setup?: (channel: Channel) => Promise<any>) {
     let wrapper = this.wrappers[key]

@@ -11,7 +11,8 @@ const streamToElastic = pinoElastic({
   node: `http://${ES_HOST}:9200`,
   'es-version': 7,
   'bulk-size': 200,
-  ecs: true
+  ecs: true,
+  base: null,
 })
 
 const PinoLogger = pino({ level: 'info' }, streamToElastic)
@@ -27,16 +28,15 @@ interface Logger {
   warn: LogFunc
   error: LogFunc
 }
-export function getLogger(name: string): LogFunc & Logger {
-  let TAG = `[${name}]`
-  let log = (...args) => PinoLogger.info([TAG, ...args].join(';'))
-  let warn = (...args) => PinoLogger.warn([TAG, ...args].join(';'))
-  let error = (...args) => PinoLogger.error([TAG, ...args].join(';'))
-
+export function getLogger(tag: string): LogFunc & Logger {
+  let builder = (logFunc) => {
+    return (...args) => logFunc({ tag, msg: args[0], rest: args.slice(1) })
+  }
+  let log = builder(PinoLogger.info.bind(PinoLogger))
   let logger: LogFunc & Logger = log as any
   logger.log = log
   logger.info = log
-  logger.warn = warn
-  logger.error = error
+  logger.warn = builder(PinoLogger.warn.bind(PinoLogger))
+  logger.error = builder(PinoLogger.error.bind(PinoLogger))
   return logger
 }

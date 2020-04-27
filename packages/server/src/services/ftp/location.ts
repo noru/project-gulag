@@ -4,7 +4,7 @@ import { dateStr, getLogger } from '../../utils'
 import fs from 'fs'
 import personaleModule from '../../modules/personale'
 
-const logger = getLogger('Location Worker')
+const logger = getLogger('FTP')
 export const TENENT = '140102B0011010199002'
 
 class LocationLogGenerator {
@@ -77,7 +77,7 @@ class LocationLogGenerator {
 const locationLogGenerator = new LocationLogGenerator()
 
 client.ftpConsume((data) => {
-  logger('Incomming location record')
+  logger('Incomming location record', data)
   locationLogGenerator.push(data)
   return Promise.resolve()
 })
