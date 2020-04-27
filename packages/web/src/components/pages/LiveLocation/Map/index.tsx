@@ -24,7 +24,9 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
   icons!: {
     normal: BMap.Icon
     warn: BMap.Icon
+    danger: BMap.Icon
     outdated: BMap.Icon
+    dead: BMap.Icon
   }
   groundOverlay!: BMap.GroundOverlay
 
@@ -42,8 +44,18 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
         anchor: new BMap.Size(10, 26),
         infoWindowAnchor: new BMap.Size(10, 0),
       }),
+      danger: new BMap.Icon(spritesheet, new BMap.Size(20, 29), {
+        imageOffset: new BMap.Size(-80, 0),
+        anchor: new BMap.Size(10, 26),
+        infoWindowAnchor: new BMap.Size(10, 0),
+      }),
       outdated: new BMap.Icon(spritesheet, new BMap.Size(20, 29), {
         imageOffset: new BMap.Size(-40, 0),
+        anchor: new BMap.Size(10, 26),
+        infoWindowAnchor: new BMap.Size(10, 0),
+      }),
+      dead: new BMap.Icon(spritesheet, new BMap.Size(20, 29), {
+        imageOffset: new BMap.Size(-60, 0),
         anchor: new BMap.Size(10, 26),
         infoWindowAnchor: new BMap.Size(10, 0),
       }),
@@ -79,7 +91,7 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
 
   initMapCenter() {
     let { map } = this.props
-    map.centerAndZoom(new BMap.Point(120.2027911, 49.14078494), 14)
+    map.centerAndZoom(new BMap.Point(120.227, 49.15078494), 14)
   }
 
   initWS() {
@@ -142,7 +154,13 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
     const { BMap } = this.props
     let { lng, lat } = data
     let cached = this.markers[data.imei]
-    if (!cached) {
+    if (cached) {
+      if (data.t < cached.data.t) {
+        return // neglect outdated data from terminal
+      }
+      cached.data = data
+      cached.receivedAt = Date.now()
+    } else {
       let marker = new BMap.Marker({ lng, lat })
       marker.addEventListener('mouseover', () => {
         marker.setPosition({ lng, lat })
@@ -155,16 +173,13 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
         data,
         receivedAt: Date.now(),
       }
-    } else {
-      cached.data = data
-      cached.receivedAt = Date.now()
     }
     let marker = cached.marker
     marker['type'] = 'marker'
     if ('not outside') {
       marker.setIcon(this.icons.normal)
     } else {
-      marker.setIcon(this.icons.warn)
+      marker.setIcon(this.icons.danger)
     }
   }
 
@@ -189,11 +204,14 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
         this.removeMarker(imei)
         return
       }
-      if (age > 5 * 60000) {
+      if (age < 5 * 60000) {
         // 5min
+        marker.setIcon(this.icons.normal)
+        // 30min
+      } else if (age < 30 * 60000) {
         marker.setIcon(this.icons.outdated)
       } else {
-        marker.setIcon(this.icons.normal)
+        marker.setIcon(this.icons.dead)
       }
       map.addOverlay(marker)
       marker.setPosition(new BMap.Point(lng, lat))
