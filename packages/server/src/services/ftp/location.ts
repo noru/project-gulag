@@ -5,7 +5,7 @@ import fs from 'fs'
 import personaleModule from '../../modules/personale'
 
 const logger = getLogger('FTP')
-export const TENENT = '140102B0011010199002'
+export const TENANT = '140102B0011010199002'
 
 class LocationLogGenerator {
   static Interval = 60000 // 60 sec
@@ -26,7 +26,7 @@ class LocationLogGenerator {
         if (this.LocationRecords.length > 0) {
           logger(`Generating Location File for ${this.LocationRecords.length} records...`)
           let date = dateStr()
-          let fileName = `${TENENT}_SSSJ_${date.replace(/:/g, '_')}.txt`
+          let fileName = `${TENANT}_SSSJ_${date.replace(/:/g, '_')}.txt`
           let fileBody = `${date};${this.LocationRecords.length}~` + (await this.getLines()) + '~||'
           this.LocationRecords = []
 
@@ -77,7 +77,7 @@ class LocationLogGenerator {
 const locationLogGenerator = new LocationLogGenerator()
 
 client.ftpConsume((data) => {
-  logger('Incomming location record', data)
+  logger('Incoming location record', data)
   locationLogGenerator.push(data)
   return Promise.resolve()
 })
