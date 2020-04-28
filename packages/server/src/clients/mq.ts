@@ -48,12 +48,7 @@ class MQClient {
     let channelWrapper = this.getChannelWrapper(ChannelKey.PublishGPS, (ch) => {
       return ch.assertExchange(MQClient.Exchange, 'topic', { durable: true })
     })
-
-    const startPublishing = () => {
-      return channelWrapper.publish(MQClient.Exchange, '', Buffer.from(JSON.stringify(data)))
-    }
-
-    return startPublishing()
+    return channelWrapper.publish(MQClient.Exchange, '', Buffer.from(JSON.stringify(data)))
   }
 
   ftpConsume(handler) {
