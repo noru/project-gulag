@@ -1,4 +1,4 @@
-import { dateStr, getLogger } from '../../utils'
+import { getLogger, dataStrOnlyNum } from '../../utils'
 import fs from 'fs'
 import { TENANT } from './location'
 import { Fence } from '#/types/shared'
@@ -27,10 +27,8 @@ class FenceDataGenerator {
     setTimeout(async () => {
       try {
         logger(`Generating Personales File ...`)
-        let date = dateStr()
-
-        let fileName = `${TENANT}_DZWL_${date.replace(/:/g, '_')}.txt`
-
+        let date = dataStrOnlyNum()
+        let fileName = `${TENANT}_DZWL_${date}.txt`
         let headLine = `${date};${fence.vertices.length}~`
         let fileBody = headLine + this.getLines(fence) + '~||'
         fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {

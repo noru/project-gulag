@@ -1,6 +1,6 @@
 import { client } from '../../clients/mq'
 import { LocationMeta } from '../../models/location'
-import { dateStr, getLogger } from '../../utils'
+import { dateStr, getLogger, dateStrOnlyNum } from '../../utils'
 import fs from 'fs'
 import personaleModule from '../../modules/personale'
 
@@ -25,8 +25,8 @@ class LocationLogGenerator {
       try {
         if (this.LocationRecords.length > 0) {
           logger(`Generating Location File for ${this.LocationRecords.length} records...`)
-          let date = dateStr()
-          let fileName = `${TENANT}_SSSJ_${date.replace(/:/g, '_')}.txt`
+          let date = dateStrOnlyNum()
+          let fileName = `${TENANT}_SSSJ_${date}.txt`
           let fileBody = `${date};${this.LocationRecords.length}~` + (await this.getLines()) + '~||'
           this.LocationRecords = []
 

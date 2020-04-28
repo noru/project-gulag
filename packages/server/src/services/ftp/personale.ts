@@ -1,5 +1,5 @@
 import client from '../../clients/mongo'
-import { dateStr, getLogger } from '../../utils'
+import { dateStrOnlyNum, getLogger } from '../../utils'
 import fs from 'fs'
 import { TENANT } from './location'
 import { IPersonaleDoc, Certificate } from '#/clients/mongo/models/personale'
@@ -18,7 +18,7 @@ class PersonaleDataGenerator {
     setTimeout(async () => {
       try {
         logger(`Generating Personales File ...`)
-        let date = dateStr()
+        let date = dateStrOnlyNum()
 
         let fileName = `${TENANT}_RYCS_${date.replace(/:/g, '_')}.txt`
 

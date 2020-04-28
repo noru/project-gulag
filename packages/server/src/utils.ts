@@ -21,6 +21,10 @@ export function dateStr(input?: any, offset = 0) {
   return dayjs(input).add(offset, 'h').format('YYYY-MM-DD HH:mm:ss')
 }
 
+export function dateStrOnlyNum(input?: any, offset = 0) {
+  return dateStr(input, offset).replace(/(:|\s|-)/g, '')
+}
+
 type LogFunc = (message?: any, ...optionalParams: any[]) => void
 interface Logger {
   log: LogFunc
