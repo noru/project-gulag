@@ -7,15 +7,29 @@ import { PersonaleStore } from '#/stores'
 import { Markers, wsUrl, infoWindowTemplate, MarkerType, calculateRate } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
+import { isPointInPolygon, LineSegment } from '#/utils/geo'
 
 interface Props {
   onOpen?: () => void
   onReceive?: (data: any, marks: any, rate?: number) => void
   onClose?: () => void
-  mapRef?: (ref: MapControll) => void
+  mapRef?: (ref: MapControl) => void
 }
 
-export class MapControll extends React.Component<Required<WithMapProps> & Props> {
+const RestrictArea = [
+  { lng: 120.2781947, lat: 49.18461658 },
+  { lng: 120.0943625, lat: 49.14332039 },
+  { lng: 120.1884636, lat: 49.10852722 },
+  { lng: 120.2938367, lat: 49.14605369 },
+]
+
+const RestrictAreaPoint = RestrictArea.map(({ lng, lat }) => ({ x: lng, y: lat })).reduce((prev, next, i, arr) => {
+  let p2 = arr[i + 1] || arr[0]
+  prev.push({ p1: next, p2 })
+  return prev
+}, [] as LineSegment[])
+
+export class MapControl extends React.Component<Required<WithMapProps> & Props> {
   static paintInterval = 3
 
   timeoutId: any = 0
@@ -62,12 +76,7 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
     }
     this.infoWindow = new BMap.InfoWindow('')
     map.addControl(new BMap.NavigationControl())
-    let restrictArea = new BMap.Polygon([
-      { lng: 120.2781947, lat: 49.18461658 },
-      { lng: 120.0943625, lat: 49.14332039 },
-      { lng: 120.1884636, lat: 49.10852722 },
-      { lng: 120.2938367, lat: 49.14605369 },
-    ])
+    let restrictArea = new BMap.Polygon(RestrictArea)
     restrictArea.setFillOpacity(0.4)
     map.addOverlay(restrictArea)
 
@@ -114,7 +123,7 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
   onMessage = ({ data }) => {
     let mark = attempt(() => JSON.parse(data))
     if (!mark) return
-    console.debug('[WS]Incomming', data)
+    console.debug('[WS]Incoming', data)
     mark.receiveAt = Date.now()
     if (mark) {
       this.addMarkers(mark)
@@ -206,9 +215,9 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
       }
       if (age < 5 * 60000) {
         // 5min
-        marker.setIcon(this.icons.normal)
-        // 30min
+        marker.setIcon(isPointInPolygon({ x: lng, y: lat }, RestrictAreaPoint) ? this.icons.normal : this.icons.danger)
       } else if (age < 30 * 60000) {
+        // 30min
         marker.setIcon(this.icons.outdated)
       } else {
         marker.setIcon(this.icons.dead)
@@ -245,7 +254,7 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
     this.initWS()
     this.timeoutId = setTimeout(() => {
       this.startPaint()
-    }, Math.max(MapControll.paintInterval * 1000, 3000))
+    }, Math.max(MapControl.paintInterval * 1000, 3000))
   }
 
   stopPaint() {
@@ -273,4 +282,4 @@ export class MapControll extends React.Component<Required<WithMapProps> & Props>
   }
 }
 
-export const CustomMap: any = withMap(MapControll as any)
+export const CustomMap: any = withMap(MapControl as any)

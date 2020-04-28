@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { APILoader } from '@uiw/react-baidu-map'
 import { Wrapper, ActionWrapper, MapWrapper, ExtraWrapper } from './styles'
-import { CustomMap, MapControll } from './Map'
+import { CustomMap, MapControl } from './Map'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { PageHeader, Button, Descriptions, Select, Switch, message, Drawer, Table } from 'antd'
 import { SyncOutlined, AimOutlined, BugOutlined } from '@ant-design/icons'
@@ -87,9 +87,9 @@ export function LiveLocation() {
             </ExtraWrapper>,
             <Select
               key="refresh-rate"
-              defaultValue={MapControll.paintInterval}
+              defaultValue={MapControl.paintInterval}
               style={{ width: 100 }}
-              onChange={(val) => (MapControll.paintInterval = val)}
+              onChange={(val) => (MapControl.paintInterval = val)}
             >
               <Option value={3}>3秒/次</Option>
               <Option value={5}>5秒/次</Option>
