@@ -77,7 +77,10 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
     this.infoWindow = new BMap.InfoWindow('')
     map.addControl(new BMap.NavigationControl())
     let restrictArea = new BMap.Polygon(RestrictArea)
-    restrictArea.setFillOpacity(0.4)
+    restrictArea.setStrokeWeight(1)
+    restrictArea.setStrokeStyle('dashed')
+    restrictArea.setFillOpacity(0.05)
+    restrictArea.setFillColor('limegreen')
     map.addOverlay(restrictArea)
 
     this.groundOverlay = new BMap.GroundOverlay(
