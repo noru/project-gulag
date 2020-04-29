@@ -13,7 +13,8 @@ export interface GPSMessage {
 export interface Fence {
   id: string
   name: string
-  vertices: FenceVertex[]
+  outer: FenceVertex[]
+  inner: FenceVertex[][]
 }
 
 export interface FenceVertex {
