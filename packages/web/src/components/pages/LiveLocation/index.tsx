@@ -98,6 +98,7 @@ export function LiveLocation() {
             <Button
               key="receive"
               type="primary"
+              disabled={!local.mapRef}
               danger={local.start}
               onClick={() => {
                 local.start = !local.start

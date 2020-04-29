@@ -210,23 +210,26 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
     Object.entries(this.markers).forEach(([imei, cache]) => {
       let { data, marker } = cache
       let { lng, lat, t } = data
+      let { normal, danger, outdated, dead } = this.icons
       let age = now - t
       if (age > 30 * 24 * 60 * 60000) {
         // remove stale marker (30 day+)
         this.removeMarker(imei)
         return
       }
+      let icon = dead
       if (age < 5 * 60000) {
         // 5min
-        marker.setIcon(isPointInPolygon({ x: lng, y: lat }, RestrictAreaPoint) ? this.icons.normal : this.icons.danger)
+        icon = isPointInPolygon({ x: lng, y: lat }, RestrictAreaPoint) ? normal : danger
       } else if (age < 30 * 60000) {
         // 30min
-        marker.setIcon(this.icons.outdated)
-      } else {
-        marker.setIcon(this.icons.dead)
+        icon = outdated
       }
-      map.addOverlay(marker)
+      marker.setIcon(icon)
       marker.setPosition(new BMap.Point(lng, lat))
+      if (!marker.getMap()) {
+        map.addOverlay(marker)
+      }
     })
   }
 
