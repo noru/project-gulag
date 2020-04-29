@@ -20,7 +20,7 @@ class PersonaleDataGenerator {
         logger(`Generating Personales File ...`)
         let date = dateStrOnlyNum()
 
-        let fileName = `${TENANT}_RYCS_${date.replace(/:/g, '_')}.txt`
+        let fileName = `${TENANT}_RYCS_${date}.txt`
 
         let personales = await client.personale.find({})
 
