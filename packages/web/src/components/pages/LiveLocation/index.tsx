@@ -7,7 +7,7 @@ import { PageHeader, Button, Descriptions, Select, Switch, message, Drawer, Tabl
 import { SyncOutlined, AimOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { dateStr } from '#/utils'
 import { throttle } from 'lodash'
-import { DebugTableColumns } from './helper'
+import { InfoTableColumns } from './helper'
 
 const Option = Select.Option
 const PLACEHOLDER = ' - '
@@ -133,9 +133,9 @@ export function LiveLocation() {
         </APILoader>
       </MapWrapper>
       <Drawer
-        title="Marks"
+        title="人员位置信息"
         placement="right"
-        width="900"
+        width="1100"
         onClose={() => (local.openInfoDrawer = false)}
         visible={local.openInfoDrawer}
       >
@@ -145,7 +145,7 @@ export function LiveLocation() {
             receiveAt: m.receiveAt,
             alert: m.alert,
           }))}
-          columns={DebugTableColumns}
+          columns={InfoTableColumns}
           rowKey="imei"
         />
       </Drawer>
