@@ -4,10 +4,20 @@ import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
 import { attempt } from '@drewxiu/utils/lib'
 import { GPSMessage } from '@/types/shared'
 import { PersonaleStore } from '#/stores'
-import { Markers, wsUrl, infoWindowTemplate, MarkerType, calculateRate } from './helpers'
+import {
+  Markers,
+  wsUrl,
+  infoWindowTemplate,
+  MarkerType,
+  calculateRate,
+  normalizeLL,
+  RestrictArea,
+  Center,
+  RestrictAreaPoint,
+} from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
-import { isPointInPolygon, LineSegment } from '#/utils/geo'
+import { isPointInPolygon } from '#/utils/geo'
 
 interface Props {
   onOpen?: () => void
@@ -15,19 +25,6 @@ interface Props {
   onClose?: () => void
   mapRef?: (ref: MapControl) => void
 }
-
-const RestrictArea = [
-  { lng: 120.2781947, lat: 49.18461658 },
-  { lng: 120.0943625, lat: 49.14332039 },
-  { lng: 120.1884636, lat: 49.10852722 },
-  { lng: 120.2938367, lat: 49.14605369 },
-]
-
-const RestrictAreaPoint = RestrictArea.map(({ lng, lat }) => ({ x: lng, y: lat })).reduce((prev, next, i, arr) => {
-  let p2 = arr[i + 1] || arr[0]
-  prev.push({ p1: next, p2 })
-  return prev
-}, [] as LineSegment[])
 
 export class MapControl extends React.Component<Required<WithMapProps> & Props> {
   static paintInterval = 3
@@ -103,7 +100,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
 
   initMapCenter() {
     let { map } = this.props
-    map.centerAndZoom(new BMap.Point(120.227, 49.15078494), 14)
+    map.centerAndZoom(new BMap.Point(Center.lng, Center.lat), 14)
   }
 
   initWS() {
@@ -220,7 +217,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       let icon = dead
       if (age < 5 * 60000) {
         // 5min
-        icon = isPointInPolygon({ x: lng, y: lat }, RestrictAreaPoint) ? normal : danger
+        icon = isPointInPolygon(normalizeLL(data), RestrictAreaPoint) ? normal : danger
       } else if (age < 30 * 60000) {
         // 30min
         icon = outdated
