@@ -203,8 +203,8 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       let { lng, lat, t } = data
       let { normal, danger, outdated, dead } = this.icons
       let age = now - t
-      if (age > 30 * 24 * 60 * 60000) {
-        // remove stale marker (30 day+)
+      if (age > 15 * 60000) {
+        // remove stale marker (15min)
         this.removeMarker(imei)
         return
       }
@@ -214,8 +214,8 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
         let alert = !isPointInPolygon(normalizeLL(data), RestrictAreaPoint)
         cache.alert = alert
         icon = alert ? danger : normal
-      } else if (age < 30 * 60000) {
-        // 30min
+      } else if (age < 10 * 60000) {
+        // 10min
         icon = outdated
       }
       marker.setIcon(icon)
