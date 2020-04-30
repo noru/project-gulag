@@ -58,6 +58,7 @@ export interface Markers {
     marker: BMap.Marker
     data: GPSMessage
     receivedAt: number
+    alert: boolean
   }
 }
 

@@ -4,7 +4,7 @@ import { Wrapper, ActionWrapper, MapWrapper, ExtraWrapper } from './styles'
 import { CustomMap, MapControl } from './Map'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { PageHeader, Button, Descriptions, Select, Switch, message, Drawer, Table } from 'antd'
-import { SyncOutlined, AimOutlined, BugOutlined } from '@ant-design/icons'
+import { SyncOutlined, AimOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { dateStr } from '#/utils'
 import { throttle } from 'lodash'
 import { DebugTableColumns } from './helper'
@@ -15,7 +15,7 @@ export function LiveLocation() {
   let local = useLocalStore(() => {
     return {
       debug: window.location.search.indexOf('debug=true') > -1,
-      openDebugInfo: false,
+      openInfoDrawer: false,
       lastUpdate: PLACEHOLDER,
       start: false,
       rate: 0,
@@ -66,17 +66,7 @@ export function LiveLocation() {
           title={<span>扎尼河露天矿</span>}
           subTitle="人员位置实时数据"
           extra={[
-            <ExtraWrapper key="groud-overlay">
-              {local.debug && (
-                <Button
-                  type="primary"
-                  icon={<BugOutlined />}
-                  shape="circle"
-                  danger
-                  onClick={() => (local.openDebugInfo = true)}
-                  style={{ marginRight: 12, paddingTop: 2 }}
-                ></Button>
-              )}
+            <ExtraWrapper key="ground-overlay">
               <span style={{ paddingRight: 6 }}>测区图</span>
               <Switch
                 checkedChildren="显示"
@@ -116,6 +106,15 @@ export function LiveLocation() {
             <Button key="recenter" type="primary" ghost icon={<AimOutlined />} onClick={onRecenter}>
               重置中心
             </Button>,
+            <Button
+              key="drawer"
+              ghost
+              type="primary"
+              icon={<InfoCircleOutlined />}
+              onClick={() => (local.openInfoDrawer = true)}
+            >
+              信息列表
+            </Button>,
           ]}
         >
           <Descriptions size="small" column={4}>
@@ -133,21 +132,23 @@ export function LiveLocation() {
           <CustomMap onOpen={onOpen} onClose={onClose} onReceive={onReceive} mapRef={(ref) => (local.mapRef = ref)} />
         </APILoader>
       </MapWrapper>
-      {local.debug && (
-        <Drawer
-          title="Marks"
-          placement="right"
-          width="900"
-          onClose={() => (local.openDebugInfo = false)}
-          visible={local.openDebugInfo}
-        >
-          <Table
-            dataSource={Object.values(local.markers).map((m: any) => ({ ...m.data, receiveAt: m.receiveAt }))}
-            columns={DebugTableColumns}
-            rowKey="imei"
-          />
-        </Drawer>
-      )}
+      <Drawer
+        title="Marks"
+        placement="right"
+        width="900"
+        onClose={() => (local.openInfoDrawer = false)}
+        visible={local.openInfoDrawer}
+      >
+        <Table
+          dataSource={Object.values(local.markers).map((m: any) => ({
+            ...m.data,
+            receiveAt: m.receiveAt,
+            alert: m.alert,
+          }))}
+          columns={DebugTableColumns}
+          rowKey="imei"
+        />
+      </Drawer>
     </Wrapper>
   ))
 }

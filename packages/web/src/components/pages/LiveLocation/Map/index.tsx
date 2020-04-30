@@ -181,14 +181,8 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
         type: MarkerType.Personale,
         data,
         receivedAt: Date.now(),
+        alert: false,
       }
-    }
-    let marker = cached.marker
-    marker['type'] = 'marker'
-    if ('not outside') {
-      marker.setIcon(this.icons.normal)
-    } else {
-      marker.setIcon(this.icons.danger)
     }
   }
 
@@ -217,7 +211,9 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       let icon = dead
       if (age < 5 * 60000) {
         // 5min
-        icon = isPointInPolygon(normalizeLL(data), RestrictAreaPoint) ? normal : danger
+        let alert = !isPointInPolygon(normalizeLL(data), RestrictAreaPoint)
+        cache.alert = alert
+        icon = alert ? danger : normal
       } else if (age < 30 * 60000) {
         // 30min
         icon = outdated
@@ -226,16 +222,6 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       marker.setPosition(new BMap.Point(lng, lat))
       if (!marker.getMap()) {
         map.addOverlay(marker)
-      }
-    })
-  }
-
-  clearMarkers() {
-    const { map } = this.props
-    let all = map.getOverlays()
-    all.forEach((i) => {
-      if (i['type'] === 'marker') {
-        map.removeOverlay(i)
       }
     })
   }
