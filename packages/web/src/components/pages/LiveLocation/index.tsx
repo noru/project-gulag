@@ -8,6 +8,7 @@ import { SyncOutlined, AimOutlined, InfoCircleOutlined } from '@ant-design/icons
 import { dateStr } from '#/utils'
 import { throttle } from 'lodash'
 import { InfoTableColumns } from './helper'
+import { Markers } from './Map/helpers'
 
 const Option = Select.Option
 const PLACEHOLDER = ' - '
@@ -20,9 +21,12 @@ export function LiveLocation() {
       start: false,
       rate: 0,
       mapRef: null as any,
-      markers: {},
+      markers: {} as Markers,
       get total() {
         return Object.keys(this.markers).length
+      },
+      get alert() {
+        return Object.values(this.markers as Markers).filter((marker) => marker.alert)
       },
       get startTime() {
         return this.start ? dateStr() : PLACEHOLDER
@@ -117,13 +121,14 @@ export function LiveLocation() {
             </Button>,
           ]}
         >
-          <Descriptions size="small" column={4}>
+          <Descriptions size="small" column={5}>
             <Descriptions.Item label="在线数量">
               <a>{local.total}</a>
             </Descriptions.Item>
             <Descriptions.Item label="开始时间">{local.startTime}</Descriptions.Item>
             <Descriptions.Item label="上次更新">{local.lastUpdate}</Descriptions.Item>
             <Descriptions.Item label="数据频率">{local.rate.toFixed(2)}/s</Descriptions.Item>
+            <Descriptions.Item label="越界人员">{local.alert.length}</Descriptions.Item>
           </Descriptions>
         </PageHeader>
       </ActionWrapper>
