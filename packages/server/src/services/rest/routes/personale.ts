@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import mongoClient from '../../../clients/mongo'
+import mongoClient from '#/clients/mongo'
 import { responseHelper as error, ErrorCode, ok } from './utils/response'
 
 const model = mongoClient.personale
@@ -21,7 +21,7 @@ router.get('/api/personales/:id', async (ctx) => {
     default:
       resp = await model.findOne({ id })
   }
-  
+
   resp ? ok(ctx, resp) : error(ctx, ErrorCode.NotFound)
 })
 
