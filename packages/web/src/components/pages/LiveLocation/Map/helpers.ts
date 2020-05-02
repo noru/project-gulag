@@ -72,6 +72,18 @@ export function calculateRate() {
   return 1000 / (mark - l)
 }
 
+export const BaiduOffset = {
+  lng: 0.019619,
+  lat: 0.007544,
+}
+
+export function applyOffset(p: BMap.Point): BMap.Point {
+  return {
+    lng: p.lng + BaiduOffset.lng,
+    lat: p.lat + BaiduOffset.lat,
+  }
+}
+
 export const Center = { lng: 120.227, lat: 49.15078494 }
 
 export const RestrictArea = [
@@ -79,7 +91,7 @@ export const RestrictArea = [
   { lng: 120.0943625, lat: 49.14332039 },
   { lng: 120.1884636, lat: 49.10852722 },
   { lng: 120.2938367, lat: 49.14605369 },
-]
+].map(applyOffset)
 
 export function normalizeLL({ lng, lat }) {
   let x = (lng - Center.lng) * 100

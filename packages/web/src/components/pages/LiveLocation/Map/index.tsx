@@ -14,6 +14,7 @@ import {
   RestrictArea,
   Center,
   RestrictAreaPoint,
+  applyOffset,
 } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
@@ -94,7 +95,6 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
     let { map } = this.props
     map.enableScrollWheelZoom()
     map.enableKeyboard()
-
     this.initMapCenter()
   }
 
@@ -118,6 +118,26 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
   closeWS() {
     this.client && this.client.close()
     this.client = undefined
+  }
+
+  debugTestFence() {
+    let { map, BMap } = this.props
+
+    let marker = new BMap.Marker(Center)
+    map.addOverlay(marker)
+    map.addEventListener('mousemove', ({ point }) => {
+      console.info(point)
+      marker.setPosition(point)
+      if (isPointInPolygon(normalizeLL(point), RestrictAreaPoint)) {
+        marker.setIcon(this.icons.normal)
+      } else {
+        marker.setIcon(this.icons.danger)
+      }
+    })
+
+    let samepoint = { lng: 120.251381, lat: 49.15466 }
+    map.addOverlay(new BMap.Marker(samepoint))
+    map.addOverlay(new BMap.Marker(applyOffset(samepoint)))
   }
 
   onMessage = ({ data }) => {
@@ -170,9 +190,8 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       cached.data = data
       cached.receivedAt = Date.now()
     } else {
-      let marker = new BMap.Marker({ lng, lat })
+      let marker = new BMap.Marker(applyOffset({ lng, lat }))
       marker.addEventListener('mouseover', () => {
-        marker.setPosition({ lng, lat })
         this.showInfoWindow(cached.data, marker)
       })
       marker.addEventListener('mouseout', () => this.closeInfoWindow(marker))
@@ -200,7 +219,8 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
 
     Object.entries(this.markers).forEach(([imei, cache]) => {
       let { data, marker } = cache
-      let { lng, lat, t } = data
+      let { t } = data
+      let offsetPoint = applyOffset(data)
       let { normal, danger, outdated, dead } = this.icons
       let age = now - t
       if (age > 15 * 60000) {
@@ -211,7 +231,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       let icon = dead
       if (age < 5 * 60000) {
         // 5min
-        let alert = !isPointInPolygon(normalizeLL(data), RestrictAreaPoint)
+        let alert = !isPointInPolygon(normalizeLL(offsetPoint), RestrictAreaPoint)
         cache.alert = alert
         icon = alert ? danger : normal
       } else if (age < 10 * 60000) {
@@ -219,7 +239,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
         icon = outdated
       }
       marker.setIcon(icon)
-      marker.setPosition(new BMap.Point(lng, lat))
+      marker.setPosition(new BMap.Point(offsetPoint.lng, offsetPoint.lat))
       if (!marker.getMap()) {
         map.addOverlay(marker)
       }
@@ -260,6 +280,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
       // FIXME: auto located to current position
       this.initMapCenter()
     }, 1000)
+    // this.debugTestFence()
   }
 
   componentWillUnmount() {
