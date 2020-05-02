@@ -2,9 +2,9 @@ import dayjs from 'dayjs'
 import pino from 'pino'
 import pinoElastic from 'pino-elasticsearch'
 
-const { ES_HOST } = process.env
+const { ES_HOST, NODE_ENV } = process.env
 
-const streamToElastic = pinoElastic({
+const streamToElastic = NODE_ENV === 'production' ? pinoElastic({
   index: 'gulag-server-log',
   type: 'log',
   consistency: 'one',
@@ -13,7 +13,7 @@ const streamToElastic = pinoElastic({
   'bulk-size': 200,
   ecs: true,
   base: null,
-})
+}) : undefined
 
 const PinoLogger = pino({ level: 'info' }, streamToElastic)
 

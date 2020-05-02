@@ -23,6 +23,7 @@ enum ChannelKey {
   PublishGPS = 'publish_gps',
   FTPConsume = 'ftp_consume',
   WebConsume = 'web_consume',
+  GpsLogConsume = 'gps_log_consume'
 }
 
 class MQClient {
@@ -49,6 +50,31 @@ class MQClient {
       return ch.assertExchange(MQClient.Exchange, 'topic', { durable: true })
     })
     return channelWrapper.publish(MQClient.Exchange, '', Buffer.from(JSON.stringify(data)))
+  }
+
+  gpsLogConsume(handler) {
+    let queue = QUEUE.GPS_LOG
+    let wrapper = this.getChannelWrapper(ChannelKey.GpsLogConsume, async (ch: Channel) => {
+      let assertQueue = await ch.assertQueue(queue.name, queue.options)
+      await ch.bindQueue(assertQueue.queue, MQClient.Exchange, '')
+      return await ch.consume(queue.name, (data) => {
+        try {
+          let message = JSON.parse(data!.content.toString())
+          return handler(message).then(() => {
+            ch.ack(data!)
+            return Promise.resolve(data)
+          })
+        } catch (error) {
+          logger.error(`Malformed message from queue ${queue.name}`, error, data)
+        }
+      })
+    })
+    wrapper
+      .waitForConnect()
+      .then(() => {
+        logger(`Consumption from ${queue.name} started!`)
+      })
+      .catch((e) => logger.error('Consumption error', e))
   }
 
   ftpConsume(handler) {
@@ -131,6 +157,12 @@ const QUEUE = {
       },
     },
   },
+  GPS_LOG: {
+    name: 'GPS_LOG',
+    options: {
+      durable: true,
+    },
+  }
 }
 
 export const client = new MQClient()

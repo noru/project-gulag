@@ -3,6 +3,7 @@ import { getLogger } from '../../utils'
 import personale from './models/personale'
 import user from './models/user'
 import metadata from './models/meta'
+import gps from './models/gps'
 
 const logger = getLogger('DB')
 
@@ -33,6 +34,7 @@ class MongoClient {
   metadata = metadata
   user = user
   personale = personale
+  gps = gps
 }
 
 export default new MongoClient()

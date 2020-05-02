@@ -27,6 +27,11 @@ router.post('/api/mock/gps', (ctx) => {
   ctx.body = seed
 })
 
+router.delete('/api/mock/gps', ctx => {
+  mocks.clear()
+  ctx.status = 200
+})
+
 router.delete('/api/mock/gps/:seed', (ctx) => {
   let { seed } = ctx.params
   if (mocks.has(seed)) {
