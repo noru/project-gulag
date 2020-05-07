@@ -6,7 +6,7 @@ import { Fence, FenceVertex } from '#/types/shared'
 const logger = getLogger('Location Worker')
 
 const fence: Fence = {
-  id: '140102B001101019900200001',
+  id: '150724B001200051005400001',
   name: '采区一',
   outer: [
     { id: '0001', index: 1, lng: 120.2781947, lat: 49.18461658, alt: 659.000 },
