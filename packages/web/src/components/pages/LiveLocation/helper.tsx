@@ -7,6 +7,13 @@ export const InfoTableColumns = [
   {
     title: 'IMEI',
     dataIndex: 'imei',
+    render(v) {
+      return (
+        <a href={`/tracks/${v}`} target="__blank">
+          {v}
+        </a>
+      )
+    },
   },
   {
     title: '人员',

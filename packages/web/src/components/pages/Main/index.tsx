@@ -16,6 +16,7 @@ import { UserList } from '../Users'
 import { PersonaleList } from '../Personales'
 import { PersonaleDetail } from '../Personales/Detail'
 import { UserDetail } from '../Users/Detail'
+import { Tracks } from '../tracks'
 
 export function Main() {
   let history = useHistory()
@@ -65,6 +66,7 @@ export function Main() {
         <Route path="/users/:id" component={UserDetail} />
         <Route path="/personales" exact component={PersonaleList} />
         <Route path="/personales/:id" component={PersonaleDetail} />
+        <Route path="/tracks/:imei" component={Tracks} />
       </Content>
     </Layout>
   )

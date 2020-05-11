@@ -14,9 +14,7 @@ export const PersonaleStore = observable({
 
   async getPersonale(id: string) {
     let result: IPersonale =
-      this.personalesById[id] ||
-      this.personales.find((p) => p.id === id) ||
-      (await adminService.getPersonaleById(id))
+      this.personalesById[id] || this.personales.find((p) => p.id === id) || (await adminService.getPersonaleById(id))
 
     this.personalesById[id] = result
     return result

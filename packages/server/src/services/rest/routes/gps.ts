@@ -11,8 +11,8 @@ router.get('/api/gps/logs/:imei', async (ctx) => {
   let { from, to } = ctx.request.query
   let { imei } = ctx.params
 
-  from = dayjs(from) || dayjs().subtract(1, 'day')
-  to = dayjs(to) || dayjs()
+  from = +(dayjs(from) || dayjs().subtract(1, 'day'))
+  to = +(dayjs(to) || dayjs())
 
   if (from > to) {
     error(ctx, ErrorCode.InvalidParams, new Error('Invalid time range'))

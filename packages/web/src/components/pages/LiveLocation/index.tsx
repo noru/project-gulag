@@ -134,7 +134,12 @@ export function LiveLocation() {
       </ActionWrapper>
       <MapWrapper>
         <APILoader akay="qZpPLwPWLRaSrICDaXAzDYUml0YOx9st">
-          <CustomMap onOpen={onOpen} onClose={onClose} onReceive={onReceive} mapRef={(ref) => (local.mapRef = ref)} />
+          <CustomMap
+            onOpen={onOpen}
+            onClose={onClose}
+            onReceive={onReceive}
+            mapRef={(ref) => (local.mapRef = ref)}
+          />
         </APILoader>
       </MapWrapper>
       <Drawer
@@ -151,6 +156,8 @@ export function LiveLocation() {
             alert: m.alert,
           }))}
           columns={InfoTableColumns}
+          size="small"
+          pagination={{ size: 'small', pageSize: 25 }}
           rowKey="imei"
         />
       </Drawer>
