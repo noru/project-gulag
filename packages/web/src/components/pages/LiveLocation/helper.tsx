@@ -1,11 +1,19 @@
 import React from 'react'
 import { dateStr } from '#/utils'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Personale } from './Personale'
 
 export const InfoTableColumns = [
   {
     title: 'IMEI',
     dataIndex: 'imei',
+  },
+  {
+    title: '人员',
+    dataIndex: 'imei',
+    render(v) {
+      return <Personale imei={v} />
+    },
   },
   {
     title: '经度',
