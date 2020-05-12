@@ -20,7 +20,6 @@ export const infoWindowTemplate = (mark: GPSMessage, person?: IPersonale) => {
       <span>IMEI：</span>
       <span>${imei}</span>
     </div>
-    <div>
     <div class="infowindow-row">
       <span>时间：</span>
       <span>${date}</span>
@@ -75,6 +74,10 @@ export function calculateRate() {
 export const BaiduOffset = {
   lng: 0.019619,
   lat: 0.007544,
+}
+
+export function applyOffset2(lng, lat) {
+  return [lng + BaiduOffset.lng, lat + BaiduOffset.lat]
 }
 
 export function applyOffset(p: BMap.Point): BMap.Point {

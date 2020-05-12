@@ -1,42 +1,42 @@
 import { GPSMessage } from '@/types/shared'
 import { dateStr } from '#/utils'
-import { IPersonale } from '@/clients/mongo/models/personale'
 
-export const infoWindowTemplate = (mark: GPSMessage, person?: IPersonale) => {
-  let { imei, t, v } = mark
-  let { name, id, jobTitle } = person || {}
-  let date = dateStr(t)
-  let batteryBar = (v / 22) | 0
+export interface TrackPoint {
+  Altitude: number
+  Direction: number
+  IMSI: string
+  Latitude: number
+  Longitude: number
+  Speed: number
+  UTC: number
+  Volts: number
+}
+
+export const infoWindowTemplate = (data: TrackPoint) => {
+  let { Latitude, Longitude, Direction, Speed, UTC } = data
+  let date = dateStr(UTC)
   return `
   <div class="infowindow personale-marker">
-    <div class="infowindow-row">
-      <span>IMEI：</span>
-      <span>${imei}</span>
-    </div>
-    <div>
     <div class="infowindow-row">
       <span>时间：</span>
       <span>${date}</span>
     </div>
     <div class="infowindow-row">
-      <span>电量：</span>
-      <span>${v}%
-        <span class="battery bar-${batteryBar}">${'<i></i>'.repeat(batteryBar)}</span>
-      </span>
+      <span>经度：</span>
+      <span>${Longitude}</span>
     </div>
     <div class="infowindow-row">
-      <span>姓名：</span>
-      <span>${name}</span>
+      <span>纬度：</span>
+      <span>${Latitude}</span>
     </div>
     <div class="infowindow-row">
-      <span>人员卡编码：</span>
-      <span>${id}</span>
+      <span>方向：</span>
+      <span>${Direction}</span>
     </div>
     <div class="infowindow-row">
-      <span>工种：</span>
-      <span>${jobTitle}</span>
+      <span>速度：</span>
+      <span>${Speed}</span>
     </div>
-    
   </div>
   `
 }

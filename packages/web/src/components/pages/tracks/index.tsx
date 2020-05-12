@@ -4,7 +4,7 @@ import { Wrapper, ActionWrapper, MapWrapper } from './styles'
 import { CustomMap } from './Map'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { PageHeader, Button, Descriptions, DatePicker } from 'antd'
-import { AimOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { AimOutlined, InfoCircleOutlined, FundOutlined } from '@ant-design/icons'
 import { IPersonale } from '@/clients/mongo/models/personale'
 import { useRouteMatch, useHistory } from 'react-router-dom'
 import { useEffectOnce } from 'react-use'
@@ -16,8 +16,10 @@ const { RangePicker } = DatePicker
 
 interface LocalState {
   mapRef: any
+  loading: boolean
   personale: IPersonale | null
   trackData: any[]
+  range: [any, any]
 }
 
 export function Tracks() {
@@ -36,21 +38,31 @@ export function Tracks() {
   let local = useLocalStore(() => {
     return {
       mapRef: null,
+      loading: false,
       get personale() {
         return PersonaleStore.personalesByImei[imei]
       },
       trackData: [],
+      range: [moment().subtract(1, 'h'), moment()],
     } as LocalState
   })
   let onRecenter = useCallback(() => {
     local.mapRef && local.mapRef!.initMapCenter()
   }, [])
-  let onOk = useCallback(([from, to]) => {
+  let onRangeChange = useCallback((range) => {
+    local.range = range
+  }, [])
+  let onPaint = useCallback(() => {
+    let [from, to] = local.range
+    local.loading = true
     if (from && to) {
-      adminService.getTrack(imei, from.valueOf(), to.valueOf()).then(({ detail }) => {
-        local.trackData = detail
-        console.log(local.trackData)
-      })
+      adminService
+        .getTrack(imei, from.valueOf(), to.valueOf())
+        .then(({ detail }) => {
+          local.trackData = detail
+          local.mapRef.paint()
+        })
+        .finally(() => (local.loading = false))
     }
   }, [])
   return useObserver(() => (
@@ -65,9 +77,18 @@ export function Tracks() {
               key="date-range"
               showTime={{ format: 'HH:mm' }}
               format="YYYY-MM-DD HH:mm"
-              defaultValue={[moment().subtract(1, 'h'), moment()]}
-              onOk={onOk}
+              defaultValue={local.range}
+              onChange={onRangeChange}
             />,
+            <Button
+              key="paint"
+              type="primary"
+              icon={<FundOutlined />}
+              onClick={onPaint}
+              loading={local.loading}
+            >
+              查看轨迹
+            </Button>,
             <Button key="recenter" type="primary" ghost icon={<AimOutlined />} onClick={onRecenter}>
               重置中心
             </Button>,
@@ -76,17 +97,19 @@ export function Tracks() {
               type="primary"
               ghost
               icon={<InfoCircleOutlined />}
-              onClick={onRecenter}
+              onClick={() => local.mapRef.claer()}
             >
               清除轨迹
             </Button>,
           ]}
         >
-          <Descriptions size="small" column={4}>
+          <Descriptions size="small" column={3}>
             <Descriptions.Item label="姓名">{local.personale?.name}</Descriptions.Item>
             <Descriptions.Item label="人员卡编码">{local.personale?.id}</Descriptions.Item>
             <Descriptions.Item label="IMEI">{local.personale?.imei}</Descriptions.Item>
+            <Descriptions.Item label="部门">{local.personale?.department}</Descriptions.Item>
             <Descriptions.Item label="工种">{local.personale?.jobTitle}</Descriptions.Item>
+            <Descriptions.Item label="位置点">{local.trackData.length}</Descriptions.Item>
           </Descriptions>
         </PageHeader>
       </ActionWrapper>

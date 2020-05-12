@@ -5,7 +5,13 @@ import { useObserver, useLocalStore } from 'mobx-react'
 import { PersonaleStore } from '#/stores'
 import { useHistory } from 'react-router-dom'
 import { IPersonale } from '@/clients/mongo/models/personale'
-import { PlusCircleOutlined, EditOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
+import {
+  PlusCircleOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  FormOutlined,
+  FundOutlined,
+} from '@ant-design/icons'
 import { IMEI } from './styles'
 
 const Columns: any[] = [
@@ -107,6 +113,10 @@ export function PersonaleList() {
       key: 'action',
       render: (_, record) => (
         <TableActions>
+          <FundOutlined
+            style={{ color: 'green' }}
+            onClick={() => history.push(`/tracks/${record.imei}`)}
+          />
           <FormOutlined onClick={() => history.push(`/personales/${record.id}?edit=true`)} />
           <DeleteOutlined
             style={{ color: 'palevioletred' }}
@@ -156,7 +166,10 @@ export function PersonaleList() {
           confirmLoading={store.loading}
           onCancel={() => (store.editPersonale = null)}
         >
-          <Input value={store.editPersonale.imei} onChange={(e) => (store.editPersonale!.imei = e.target.value)} />
+          <Input
+            value={store.editPersonale.imei}
+            onChange={(e) => (store.editPersonale!.imei = e.target.value)}
+          />
         </Modal>
       )}
     </Wrapper>

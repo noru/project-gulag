@@ -1,33 +1,34 @@
 import React from 'react'
 import { withMap } from '@uiw/react-baidu-map'
 import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
-import { Markers } from './helpers'
+import { Markers, infoWindowTemplate, TrackPoint } from './helpers'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
-import { RestrictArea, Center } from '../../LiveLocation/Map/helpers'
+import { RestrictArea, Center, applyOffset2 } from '../../LiveLocation/Map/helpers'
 
 interface Props {
   onOpen?: () => void
   onReceive?: (data: any, marks: any, rate?: number) => void
   onClose?: () => void
   mapRef?: (ref: MapControl) => void
+  trackData: TrackPoint[]
 }
 
-export class MapControl extends React.Component<Required<WithMapProps> & Props> {
-  static paintInterval = 3
+interface State {
+  dataCollection: TrackPoint[]
+}
 
-  timeoutId: any = 0
+export class MapControl extends React.Component<Required<WithMapProps> & Props, State> {
+  static getDerivedStateFromProps({ trackData }) {
+    return {
+      dataCollection: trackData.map((d) => d.data),
+    }
+  }
+  state: State = {
+    dataCollection: [],
+  }
   markers: Markers = {}
   infoWindow!: BMap.InfoWindow
-  icons!: {
-    normal: BMap.Icon
-    warn: BMap.Icon
-    danger: BMap.Icon
-    outdated: BMap.Icon
-    dead: BMap.Icon
-  }
   groundOverlay!: BMap.GroundOverlay
-
-  client?: WebSocket
 
   initOverlays() {
     const { BMap, map } = this.props
@@ -75,29 +76,43 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
     this.groundOverlay.setOpacity(opacity)
   }
 
-  paintMarkers() {
-    // todo
-  }
-
-  paintTrack() {
-    // todo
-  }
-
   clear() {
-    // todo
+    let { map } = this.props
+    map.clearOverlays()
+    this.initOverlays()
   }
 
-  // showInfoWindow(mark: GPSMessage, marker: BMap.Marker) {
-  //   this.infoWindow.setContent(infoWindowTemplate(mark))
-  //   PersonaleStore.getPersonaleByImei(mark.imei).then((personale) =>
-  //     this.infoWindow.setContent(infoWindowTemplate(mark, personale))
-  //   )
-  //   marker.openInfoWindow(this.infoWindow)
-  // }
+  paint() {
+    let { map, BMap } = this.props
+    let { dataCollection } = this.state
+    let options = {
+      size: BMAP_POINT_SIZE_NORMAL,
+      shape: BMAP_POINT_SHAPE_STAR,
+      color: '#d340c3',
+    }
+    let points: BMap.Point[] = []
+    for (let i = 0; i < dataCollection.length; i++) {
+      let data = dataCollection[i]
+      let [lng, lat] = applyOffset2(data.Longitude, data.Latitude)
+      let point = new BMap.Point(lng, lat)
+      point['$data'] = data
+      points.push(point)
+    }
+    let pointCollection = new BMap.PointCollection(points, options)
+    pointCollection.addEventListener('mouseover', (e) => {
+      this.showInfoWindow(e.point)
+    })
+    map.addOverlay(pointCollection)
+  }
 
-  // closeInfoWindow = (marker: BMap.Marker) => {
-  //   marker.closeInfoWindow()
-  // }
+  showInfoWindow(point: BMap.Point) {
+    this.infoWindow.setContent(infoWindowTemplate(point['$data']))
+    this.props.map.openInfoWindow(this.infoWindow, point)
+  }
+
+  closeInfoWindow = (marker: BMap.Marker) => {
+    marker.closeInfoWindow()
+  }
 
   componentDidMount() {
     this.initOverlays()

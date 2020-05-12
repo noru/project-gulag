@@ -82,7 +82,10 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
     map.addOverlay(restrictArea)
 
     this.groundOverlay = new BMap.GroundOverlay(
-      new BMap.Bounds({ lng: 120.1744636, lat: 49.10052722 }, { lng: 120.2850001, lat: 49.17000658 }),
+      new BMap.Bounds(
+        { lng: 120.1744636, lat: 49.10052722 },
+        { lng: 120.2850001, lat: 49.17000658 }
+      ),
       {
         imageURL: groundOverlayUrl,
         opacity: 0.3,
