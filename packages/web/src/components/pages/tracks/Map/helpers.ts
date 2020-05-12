@@ -1,4 +1,3 @@
-import { GPSMessage } from '@/types/shared'
 import { dateStr } from '#/utils'
 
 export interface TrackPoint {
@@ -39,18 +38,4 @@ export const infoWindowTemplate = (data: TrackPoint) => {
     </div>
   </div>
   `
-}
-
-export enum MarkerType {
-  Personale,
-}
-
-export interface Markers {
-  [imei: string]: {
-    type: MarkerType
-    marker: BMap.Marker
-    data: GPSMessage
-    receivedAt: number
-    alert: boolean
-  }
 }
