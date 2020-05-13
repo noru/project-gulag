@@ -97,7 +97,10 @@ export function Tracks() {
               type="primary"
               ghost
               icon={<InfoCircleOutlined />}
-              onClick={() => local.mapRef.clear()}
+              onClick={() => {
+                local.mapRef.clear()
+                local.trackData = []
+              }}
             >
               清除轨迹
             </Button>,

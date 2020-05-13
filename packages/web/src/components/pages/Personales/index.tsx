@@ -11,8 +11,10 @@ import {
   DeleteOutlined,
   FormOutlined,
   FundOutlined,
+  SearchOutlined,
 } from '@ant-design/icons'
 import { IMEI } from './styles'
+import { ColumnFilter } from '#/components/common/ColumnFilter'
 
 const Columns: any[] = [
   {
@@ -20,6 +22,10 @@ const Columns: any[] = [
     dataIndex: 'id',
     fixed: true,
     width: 250,
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) => record.id.toString().toLowerCase().includes(value.toLowerCase()),
     render: (text, record) => {
       let history = useHistory()
       return <a onClick={() => history.push(`/personales/${record.id}`)}>{text}</a>
@@ -30,12 +36,18 @@ const Columns: any[] = [
     dataIndex: 'name',
     width: 80,
     fixed: true,
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
   },
   {
     title: 'IMEI',
     dataIndex: 'imei',
     fixed: true,
     width: 250,
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
   },
   {
     title: '职务/工位',
@@ -71,6 +83,8 @@ const Columns: any[] = [
 interface LocalStore {
   editPersonale: null | IPersonale
   loading: boolean
+  filters: { [dataIndex: string]: string }
+  personales: IPersonale[]
 }
 
 export function PersonaleList() {
@@ -81,11 +95,28 @@ export function PersonaleList() {
   let store = useLocalStore<LocalStore>(() => ({
     editPersonale: null,
     loading: false,
+    filters: {},
+    get personales() {
+      return PersonaleStore.personales
+    },
+    get filteredPersonales() {
+      return this.personales.filter((p) => {
+        return !Object.entries(store.filters).some(([id, query]) => {
+          return !p[id].includes(query)
+        })
+      })
+    },
   }))
   let columns = useMemo(() => {
     // rewrite Col IMEI render
     let cols = [...Columns]
-    cols[2].render = (text, record) => {
+    let [col0, col1, col2] = cols
+    ;[col0, col1, col2].forEach((col) => {
+      col.filterDropdown = () => (
+        <ColumnFilter onChange={(val) => (store.filters[col.dataIndex] = val)} />
+      )
+    })
+    col2.render = (text, record) => {
       return (
         <IMEI>
           <a
@@ -152,7 +183,7 @@ export function PersonaleList() {
         </Button>
       </ActionBar>
       <Table
-        dataSource={PersonaleStore.personales}
+        dataSource={store.filteredPersonales}
         columns={columns as any}
         size="small"
         pagination={{ pageSize: 30 }}
