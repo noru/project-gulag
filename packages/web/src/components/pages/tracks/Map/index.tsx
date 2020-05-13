@@ -1,7 +1,7 @@
 import React from 'react'
 import { withMap } from '@uiw/react-baidu-map'
 import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
-import { Markers, infoWindowTemplate, TrackPoint } from './helpers'
+import { infoWindowTemplate, TrackPoint } from './helpers'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
 import { RestrictArea, Center, applyOffset2 } from '../../LiveLocation/Map/helpers'
 
@@ -26,7 +26,6 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props, 
   state: State = {
     dataCollection: [],
   }
-  markers: Markers = {}
   infoWindow!: BMap.InfoWindow
   groundOverlay!: BMap.GroundOverlay
 
