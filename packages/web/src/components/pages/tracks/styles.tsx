@@ -12,7 +12,7 @@ export const ActionWrapper = styled.div`
 export const MapWrapper = styled.div`
   padding: 0 18px;
   width: 100%;
-  height: calc(100vh - 160px);
+  height: calc(100vh - 200px);
 `
 
 export const ExtraWrapper = styled.div`

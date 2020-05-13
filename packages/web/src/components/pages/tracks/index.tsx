@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { APILoader } from '@uiw/react-baidu-map'
 import { Wrapper, ActionWrapper, MapWrapper } from './styles'
 import { CustomMap } from './Map'
@@ -6,11 +6,10 @@ import { useObserver, useLocalStore } from 'mobx-react'
 import { PageHeader, Button, Descriptions, DatePicker, Select } from 'antd'
 import { AimOutlined, InfoCircleOutlined, FundOutlined } from '@ant-design/icons'
 import { IPersonale } from '@/clients/mongo/models/personale'
-import { useRouteMatch, useHistory } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 import { PersonaleStore } from '#/stores'
-import { adminService } from '#/services'
 import moment from 'moment'
-import { debounce } from 'lodash'
+import { useCallbacks } from './hooks'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -27,7 +26,6 @@ interface LocalState {
 }
 
 export function Tracks() {
-  let history = useHistory()
   let {
     params: { imei },
   } = useRouteMatch()
@@ -37,17 +35,14 @@ export function Tracks() {
       mapRef: null,
       loading: false,
       query: '',
+      personale: null,
       get personaleOptions() {
         if (!this.query) {
           return []
         }
         return PersonaleStore.personales.filter((p) => {
-          let val = this.query
-          return p.id.includes(val) || p.name.includes(val) || p.imei.includes(val)
+          return [p.id, p.name, p.imei].some((str) => str.includes(this.query))
         })
-      },
-      get personale() {
-        return PersonaleStore.personalesByImei[this.imei]
       },
       trackData: [],
       range: [moment().subtract(1, 'h'), moment()],
@@ -55,41 +50,10 @@ export function Tracks() {
   })
   useEffect(() => {
     if (imei) {
-      PersonaleStore.getPersonaleByImei(imei)
-      local.imei = imei
+      PersonaleStore.getPersonaleByImei(imei).then((res) => (local.personale = res))
     }
   }, [imei])
-  let onSearch = useCallback(
-    debounce(async (query) => {
-      local.query = query
-      if (PersonaleStore.personales.length === 0) {
-        await PersonaleStore.getAllPersonales()
-      }
-    }, 500),
-    []
-  )
-  let onQueryChange = useCallback(async (imei) => {
-    history.push('/tracks/' + imei)
-  }, [])
-  let onRecenter = useCallback(() => {
-    local.mapRef && local.mapRef!.initMapCenter()
-  }, [])
-  let onRangeChange = useCallback((range) => {
-    local.range = range
-  }, [])
-  let onPaint = useCallback(() => {
-    let [from, to] = local.range
-    local.loading = true
-    if (from && to) {
-      adminService
-        .getTrack(imei, from.valueOf(), to.valueOf())
-        .then(({ detail }) => {
-          local.trackData = detail
-          local.mapRef.paint()
-        })
-        .finally(() => (local.loading = false))
-    }
-  }, [])
+  let [onSearch, onQueryChange, onRecenter, onRangeChange, onPaint] = useCallbacks(local)
   return useObserver(() => (
     <Wrapper>
       <ActionWrapper>
@@ -104,12 +68,13 @@ export function Tracks() {
               placeholder="选择人员"
               onSearch={onSearch}
               onChange={onQueryChange}
-              notFoundContent={null}
               filterOption={false}
               style={{ width: 250, marginRight: 18 }}
             >
               {local.personaleOptions.map((p) => (
-                <Option key={p.imei} value={p.imei}>{`${p.name}(${p.imei})`}</Option>
+                <Option key={p.imei} value={p.imei}>{`${p.id.substr(-5)} ${p.name} ${
+                  p.imei
+                }`}</Option>
               ))}
             </Select>,
             <RangePicker

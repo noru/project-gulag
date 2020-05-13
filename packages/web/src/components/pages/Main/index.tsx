@@ -71,7 +71,7 @@ export function Main() {
         <Route path="/users/:id" component={UserDetail} />
         <Route path="/personales" exact component={PersonaleList} />
         <Route path="/personales/:id" component={PersonaleDetail} />
-        <Route path="/tracks" component={Tracks} />
+        <Route path="/tracks" exact component={Tracks} />
         <Route path="/tracks/:imei" component={Tracks} />
       </Content>
     </Layout>
