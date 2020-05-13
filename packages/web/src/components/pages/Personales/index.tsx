@@ -85,6 +85,7 @@ interface LocalStore {
   loading: boolean
   filters: { [dataIndex: string]: string }
   personales: IPersonale[]
+  filteredPersonales: IPersonale[]
 }
 
 export function PersonaleList() {

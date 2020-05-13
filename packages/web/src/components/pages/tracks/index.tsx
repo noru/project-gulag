@@ -1,23 +1,27 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { APILoader } from '@uiw/react-baidu-map'
 import { Wrapper, ActionWrapper, MapWrapper } from './styles'
 import { CustomMap } from './Map'
 import { useObserver, useLocalStore } from 'mobx-react'
-import { PageHeader, Button, Descriptions, DatePicker } from 'antd'
+import { PageHeader, Button, Descriptions, DatePicker, Select } from 'antd'
 import { AimOutlined, InfoCircleOutlined, FundOutlined } from '@ant-design/icons'
 import { IPersonale } from '@/clients/mongo/models/personale'
 import { useRouteMatch, useHistory } from 'react-router-dom'
-import { useEffectOnce } from 'react-use'
 import { PersonaleStore } from '#/stores'
 import { adminService } from '#/services'
 import moment from 'moment'
+import { debounce } from 'lodash'
 
+const { Option } = Select
 const { RangePicker } = DatePicker
 
 interface LocalState {
+  imei: string
   mapRef: any
   loading: boolean
+  query: string
   personale: IPersonale | null
+  personaleOptions: IPersonale[]
   trackData: any[]
   range: [any, any]
 }
@@ -27,25 +31,46 @@ export function Tracks() {
   let {
     params: { imei },
   } = useRouteMatch()
-  useEffectOnce(() => {
-    if (!imei) {
-      history.push('/')
-      return
-    }
-    PersonaleStore.getPersonaleByImei(imei)
-  })
-
   let local = useLocalStore(() => {
     return {
+      imei: imei || null,
       mapRef: null,
       loading: false,
+      query: '',
+      get personaleOptions() {
+        if (!this.query) {
+          return []
+        }
+        return PersonaleStore.personales.filter((p) => {
+          let val = this.query
+          return p.id.includes(val) || p.name.includes(val) || p.imei.includes(val)
+        })
+      },
       get personale() {
-        return PersonaleStore.personalesByImei[imei]
+        return PersonaleStore.personalesByImei[this.imei]
       },
       trackData: [],
       range: [moment().subtract(1, 'h'), moment()],
     } as LocalState
   })
+  useEffect(() => {
+    if (imei) {
+      PersonaleStore.getPersonaleByImei(imei)
+      local.imei = imei
+    }
+  }, [imei])
+  let onSearch = useCallback(
+    debounce(async (query) => {
+      local.query = query
+      if (PersonaleStore.personales.length === 0) {
+        await PersonaleStore.getAllPersonales()
+      }
+    }, 500),
+    []
+  )
+  let onQueryChange = useCallback(async (imei) => {
+    history.push('/tracks/' + imei)
+  }, [])
   let onRecenter = useCallback(() => {
     local.mapRef && local.mapRef!.initMapCenter()
   }, [])
@@ -73,6 +98,20 @@ export function Tracks() {
           title={<span>扎尼河露天矿</span>}
           subTitle="人员位置轨迹"
           extra={[
+            <Select
+              key="search"
+              showSearch
+              placeholder="选择人员"
+              onSearch={onSearch}
+              onChange={onQueryChange}
+              notFoundContent={null}
+              filterOption={false}
+              style={{ width: 250, marginRight: 18 }}
+            >
+              {local.personaleOptions.map((p) => (
+                <Option key={p.imei} value={p.imei}>{`${p.name}(${p.imei})`}</Option>
+              ))}
+            </Select>,
             <RangePicker
               key="date-range"
               showTime={{ format: 'HH:mm' }}

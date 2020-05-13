@@ -9,6 +9,7 @@ import {
   EnvironmentOutlined,
   SettingOutlined,
   ExclamationCircleOutlined,
+  FundOutlined,
 } from '@ant-design/icons'
 import { Route, useHistory } from 'react-router'
 import { LiveLocation } from '../LiveLocation'
@@ -46,6 +47,10 @@ export function Main() {
             <TeamOutlined />
             <span>人员管理</span>
           </Menu.Item>
+          <Menu.Item key="/tracks" onClick={() => history.push('/tracks')}>
+            <FundOutlined />
+            <span>轨迹查询</span>
+          </Menu.Item>
         </Menu>
         <MenuSpace />
         <Menu theme="dark" mode="inline" selectedKeys={[history.location.pathname]}>
@@ -66,6 +71,7 @@ export function Main() {
         <Route path="/users/:id" component={UserDetail} />
         <Route path="/personales" exact component={PersonaleList} />
         <Route path="/personales/:id" component={PersonaleDetail} />
+        <Route path="/tracks" component={Tracks} />
         <Route path="/tracks/:imei" component={Tracks} />
       </Content>
     </Layout>
