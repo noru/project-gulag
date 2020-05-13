@@ -17,7 +17,7 @@ import { UserList } from '../Users'
 import { PersonaleList } from '../Personales'
 import { PersonaleDetail } from '../Personales/Detail'
 import { UserDetail } from '../Users/Detail'
-import { Tracks } from '../Tracks'
+import { Tracks } from '../abc'
 
 export function Main() {
   let history = useHistory()
