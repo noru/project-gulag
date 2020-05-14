@@ -3,6 +3,7 @@ import { LocationMessage } from '#/models/location'
 import { getLogger } from '#/utils'
 import mongoClient from '#/clients/mongo'
 import dayjs from 'dayjs'
+import http from 'http'
 
 const model = mongoClient.gps
 
@@ -40,4 +41,30 @@ setInterval(() => {
       logger.info(`Data older than ${oneMonthAgo.toISOString()} cleaned`)
     }
   })
+  deleteFromES(oneMonthAgo)
 }, 8.64e7 /* one day */)
+
+function deleteFromES(timestamp: dayjs.Dayjs) {
+  const data = JSON.stringify({
+    "query": {
+      "range": {
+        "@timestamp": {
+          "lte": timestamp.toISOString() //example "2020-05-10T10:11:49.659Z"
+        }
+      }
+    }
+  })
+  const options = {
+    hostname: 'whatever.com',
+    path: '/gulag-server-log/_delete_by_query?conflicts=proceed&refresh=false',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': data.length
+    }
+  }
+  const req = http.request(options)
+  req.write(data)
+  req.end()
+}
+
