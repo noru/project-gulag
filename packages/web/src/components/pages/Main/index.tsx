@@ -10,6 +10,7 @@ import {
   SettingOutlined,
   ExclamationCircleOutlined,
   FundOutlined,
+  ScheduleOutlined,
 } from '@ant-design/icons'
 import { Route, useHistory } from 'react-router'
 import { LiveLocation } from '../LiveLocation'
@@ -18,6 +19,7 @@ import { PersonaleList } from '../Personales'
 import { PersonaleDetail } from '../Personales/Detail'
 import { UserDetail } from '../Users/Detail'
 import { Tracks } from '../Tracks'
+import { Attendance } from '../Attendance'
 
 export function Main() {
   let history = useHistory()
@@ -51,6 +53,10 @@ export function Main() {
             <FundOutlined />
             <span>轨迹查询</span>
           </Menu.Item>
+          <Menu.Item key="/attendance" onClick={() => history.push('/attendance')}>
+            <ScheduleOutlined />
+            <span>考勤记录</span>
+          </Menu.Item>
         </Menu>
         <MenuSpace />
         <Menu theme="dark" mode="inline" selectedKeys={[history.location.pathname]}>
@@ -73,6 +79,8 @@ export function Main() {
         <Route path="/personales/:id" component={PersonaleDetail} />
         <Route path="/tracks" exact component={Tracks} />
         <Route path="/tracks/:imei" component={Tracks} />
+        <Route path="/attendance" exact component={Attendance} />
+        <Route path="/attendance/:imei" component={Attendance} />
       </Content>
     </Layout>
   )

@@ -1,4 +1,6 @@
 import { client } from './axios'
+import { Moment } from 'moment'
+
 class AdminService {
   async getPersonaleById(id) {
     return await client.get('/api/personales/' + id).then((resp) => resp.data.detail)
@@ -25,6 +27,12 @@ class AdminService {
 
   async getTrack(imei, from = Date.now() - 86400000, to = Date.now()) {
     return await client.get(`/api/gps/logs/${imei}?from=${from}&to=${to}`).then((resp) => resp.data)
+  }
+
+  async isAttendant(imei, date: Moment) {
+    let from = date.startOf('day').valueOf()
+    let to = date.endOf('day').valueOf()
+    return await client.head(`/api/gps/logs/${imei}?from=${from}&to=${to}`)
   }
 }
 
