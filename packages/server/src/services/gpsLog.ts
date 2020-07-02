@@ -4,6 +4,7 @@ import { getLogger } from '#/utils'
 import mongoClient from '#/clients/mongo'
 import dayjs from 'dayjs'
 import http from 'http'
+const { ES_HOST } = process.env
 
 const model = mongoClient.gps
 
@@ -55,7 +56,8 @@ function deleteFromES(timestamp: dayjs.Dayjs) {
     }
   })
   const options = {
-    hostname: 'whatever.com',
+    hostname: ES_HOST,
+    port: 8082,
     path: '/gulag-server-log/_delete_by_query?conflicts=proceed&refresh=false',
     method: 'POST',
     headers: {

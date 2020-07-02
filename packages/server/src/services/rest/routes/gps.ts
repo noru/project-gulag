@@ -24,4 +24,23 @@ router.get('/api/gps/logs/:imei', async (ctx) => {
   ok(ctx, result || [])
 })
 
+router.head('/api/gps/logs/:imei', async (ctx) => {
+
+  let { from = Date.now() - 86400000, to = Date.now() } = ctx.request.query
+  let { imei } = ctx.params
+
+  if (isNaN(from) || isNaN(to)) {
+    error(ctx, ErrorCode.InvalidParams, new Error('Invalid params, not number'))
+    return
+  }
+  if (from > to) {
+    error(ctx, ErrorCode.InvalidParams, new Error('Invalid time range'))
+    return
+  }
+
+  let doc = await model.findOne({ imei, timestamp: { $gt: +from, $lt: +to } })
+
+  doc ? ok(ctx) : error(ctx, ErrorCode.NotFound)
+})
+
 export const gps = router.routes()
