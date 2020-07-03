@@ -21,7 +21,6 @@ export function useCallbacks(localStore) {
   }, [])
 
   let dateCellRender = useCallback((date, imei) => {
-    console.error(date)
     return <Cell date={date} imei={imei} />
   }, [])
 

@@ -15,7 +15,7 @@
 
 ### `/docker`
 
-contains docker swarn config `docker-compose.yml` and the project `Dockerfile` for image build. Read these 2 files for detailed information.
+contains docker swarm config `docker-compose.yml` and the project `Dockerfile` for image build. Read these 2 files for detailed information.
 
 #### Usage
 

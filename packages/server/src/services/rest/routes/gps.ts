@@ -26,7 +26,7 @@ router.get('/api/gps/logs/:imei', async (ctx) => {
 
 router.head('/api/gps/logs/:imei', async (ctx) => {
 
-  let { from = Date.now() - 86400000, to = Date.now() } = ctx.request.query
+  let { from, to } = ctx.request.query
   let { imei } = ctx.params
 
   if (isNaN(from) || isNaN(to)) {
