@@ -16,7 +16,7 @@ RUN cnpm install --silent
 WORKDIR /app
 
 # skip cache for following steps
-ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+ADD "http://worldtimeapi.org/api/ip" skipcache
 RUN git clone https://github.com/noru/project-gulag.git
 RUN cp -r /app/project-gulag/* /app/
 
