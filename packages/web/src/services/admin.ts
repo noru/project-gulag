@@ -32,7 +32,7 @@ class AdminService {
   async isAttendant(imei, date: Moment) {
     let from = date.startOf('day').valueOf()
     let to = date.endOf('day').valueOf()
-    return await client.head(`/api/gps/logs/${imei}?from=${from}&to=${to}`)
+    return await client.head(`/api/gps/logs/peek/${imei}?from=${from}&to=${to}`)
   }
 }
 

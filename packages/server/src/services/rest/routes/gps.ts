@@ -24,7 +24,7 @@ router.get('/api/gps/logs/:imei', async (ctx) => {
   ok(ctx, result || [])
 })
 
-router.head('/api/gps/logs/:imei', async (ctx) => {
+router.get('/api/gps/logs/peek/:imei', async (ctx) => {
 
   let { from, to } = ctx.request.query
   let { imei } = ctx.params
