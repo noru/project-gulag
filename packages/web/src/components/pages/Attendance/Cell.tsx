@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment, { Moment } from 'moment'
 import { adminService } from '#/services'
-import { CheckCircleOutlined } from '@ant-design/icons'
-import { noop } from '@drewxiu/utils/lib'
+import { CarryOutOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 
 interface Props {
   imei: string
@@ -10,17 +9,24 @@ interface Props {
 }
 
 export function Cell({ imei, date }: Props) {
-  let [state, setState] = useState(false)
+  let [state, setState] = useState<null | boolean>(null)
 
   useEffect(() => {
     if (date.diff(moment()) > 0) {
+      setState(null)
       return
     }
     adminService
       .isAttendant(imei, date)
       .then(() => setState(true))
-      .catch(noop)
+      .catch(() => setState(false))
   }, [imei, date])
 
-  return <div>{state && <CheckCircleOutlined style={{ color: 'lime', fontSize: '2.5em' }} />}</div>
+  return (
+    <div>
+      {state === null && null}
+      {state === true && <CarryOutOutlined style={{ color: 'limegreen', fontSize: '2.5em' }} />}
+      {state === false && <QuestionCircleOutlined style={{ color: '#ccc', fontSize: '2.5em' }} />}
+    </div>
+  )
 }
