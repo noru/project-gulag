@@ -6,6 +6,7 @@ import { IPersonale } from '@/clients/mongo/models/personale'
 import { useRouteMatch } from 'react-router-dom'
 import { PersonaleStore } from '#/stores'
 import { useCallbacks } from './hooks'
+import locale from 'antd/es/date-picker/locale/zh_CN'
 
 const { Option } = Select
 
@@ -81,7 +82,7 @@ export function Attendance() {
         </PageHeader>
       </ActionWrapper>
       <CalendarWrapper>
-        <Calendar dateCellRender={(date) => dateCellRender(date, imei)} />
+        <Calendar dateCellRender={(date) => dateCellRender(date, imei)} locale={locale} />
       </CalendarWrapper>
     </Wrapper>
   ))
