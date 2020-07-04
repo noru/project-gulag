@@ -31,6 +31,7 @@ export function LiveLocation() {
       get startTime() {
         return this.start ? dateStr() : PLACEHOLDER
       },
+      selectedImei: new Set(),
       reset() {
         local.lastUpdate = PLACEHOLDER
         local.start = false
@@ -60,6 +61,10 @@ export function LiveLocation() {
 
   let onRecenter = useCallback(() => {
     local.mapRef && local.mapRef!.initMapCenter()
+  }, [])
+
+  let onRowSelectionChange = useCallback((selected) => {
+    local.selectedImei = new Set(selected)
   }, [])
 
   return useObserver(() => (
@@ -116,6 +121,7 @@ export function LiveLocation() {
               type="primary"
               icon={<InfoCircleOutlined />}
               onClick={() => (local.openInfoDrawer = true)}
+              disabled={!local.start}
             >
               信息列表
             </Button>,
@@ -139,6 +145,7 @@ export function LiveLocation() {
             onClose={onClose}
             onReceive={onReceive}
             mapRef={(ref) => (local.mapRef = ref)}
+            selectedImei={local.selectedImei}
           />
         </APILoader>
       </MapWrapper>
@@ -159,6 +166,10 @@ export function LiveLocation() {
           size="small"
           pagination={{ size: 'small', pageSize: 25 }}
           rowKey="imei"
+          rowSelection={{
+            type: 'checkbox',
+            onChange: onRowSelectionChange,
+          }}
         />
       </Drawer>
     </Wrapper>

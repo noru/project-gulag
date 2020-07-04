@@ -25,6 +25,7 @@ interface Props {
   onReceive?: (data: any, marks: any, rate?: number) => void
   onClose?: () => void
   mapRef?: (ref: MapControl) => void
+  selectedImei: Set<string>
 }
 
 export class MapControl extends React.Component<Required<WithMapProps> & Props> {
@@ -217,11 +218,14 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
   }
 
   paintMarkers() {
-    const { map } = this.props
+    const { map, selectedImei } = this.props
     let now = Date.now()
-
     Object.entries(this.markers).forEach(([imei, cache]) => {
       let { data, marker } = cache
+      if (selectedImei.size > 0 && !selectedImei.has(imei)) {
+        map.removeOverlay(marker)
+        return
+      }
       let { t } = data
       let offsetPoint = applyOffset(data)
       let { normal, danger, outdated, dead } = this.icons
