@@ -12,6 +12,7 @@ import {
   FormOutlined,
   FundOutlined,
   SearchOutlined,
+  ScheduleOutlined,
 } from '@ant-design/icons'
 import { IMEI } from './styles'
 import { ColumnFilter } from '#/components/common/ColumnFilter'
@@ -148,6 +149,10 @@ export function PersonaleList() {
           <FundOutlined
             style={{ color: 'green' }}
             onClick={() => history.push(`/tracks/${record.imei}`)}
+          />
+          <ScheduleOutlined
+            style={{ color: 'cornflowerblue' }}
+            onClick={() => history.push(`/attendance/${record.imei}`)}
           />
           <FormOutlined onClick={() => history.push(`/personales/${record.id}?edit=true`)} />
           <DeleteOutlined
