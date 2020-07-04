@@ -26,8 +26,8 @@ export function useCallbacks(localStore) {
   }, [])
   let onPaint = useCallback(() => {
     let [from, to] = localStore.range
-    localStore.loading = true
     if (from && to) {
+      localStore.loading = true
       adminService
         .getTrack(localStore.imei, from.valueOf(), to.valueOf())
         .then(({ detail }) => {

@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react'
 import { Wrapper, ActionWrapper, CalendarWrapper } from './styles'
 import { useObserver, useLocalStore } from 'mobx-react'
-import { PageHeader, Descriptions, Select, Calendar } from 'antd'
+import { PageHeader, Descriptions, Select, Calendar, DatePicker, Button } from 'antd'
 import { IPersonale } from '@/clients/mongo/models/personale'
 import { useRouteMatch } from 'react-router-dom'
 import { PersonaleStore } from '#/stores'
 import { useCallbacks } from './hooks'
 import locale from 'antd/es/date-picker/locale/zh_CN'
+import { FundOutlined } from '@ant-design/icons'
+import moment from 'moment'
 
 const { Option } = Select
+const { RangePicker } = DatePicker
 
 interface LocalState {
   imei: string
@@ -31,6 +34,7 @@ export function Attendance() {
       loading: false,
       query: '',
       personale: null,
+      range: [moment().subtract(1, 'month'), moment()],
       get personaleOptions() {
         if (!this.query) {
           return []
@@ -46,7 +50,7 @@ export function Attendance() {
       PersonaleStore.getPersonaleByImei(imei).then((res) => (local.personale = res))
     }
   }, [imei])
-  let [onSearch, onQueryChange, dateCellRender] = useCallbacks(local)
+  let [onSearch, onQueryChange, dateCellRender, onRangeChange, exportReport] = useCallbacks(local)
   return useObserver(() => (
     <Wrapper>
       <ActionWrapper>
@@ -70,6 +74,22 @@ export function Attendance() {
                 }`}</Option>
               ))}
             </Select>,
+            <RangePicker
+              key="date-range"
+              format="YYYY-MM-DD"
+              showTime={false}
+              defaultValue={local.range}
+              onChange={onRangeChange}
+            />,
+            <Button
+              key="paint"
+              type="primary"
+              icon={<FundOutlined />}
+              onClick={exportReport}
+              loading={local.loading}
+            >
+              导出所有人员出勤报告
+            </Button>,
           ]}
         >
           <Descriptions size="small" column={3}>

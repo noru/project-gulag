@@ -12,6 +12,9 @@ export function Cell({ imei, date }: Props) {
   let [state, setState] = useState<null | boolean>(null)
 
   useEffect(() => {
+    if (!imei) {
+      return
+    }
     if (date.diff(moment()) > 0) {
       setState(null)
       return

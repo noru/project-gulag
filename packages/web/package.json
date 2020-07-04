@@ -70,6 +70,7 @@
     "@uiw/react-baidu-map": "^1.17.1",
     "antd": "^4.1.0",
     "axios": "^0.19.2",
+    "data-exporter": "^1.0.0",
     "dayjs": "^1.8.25",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
