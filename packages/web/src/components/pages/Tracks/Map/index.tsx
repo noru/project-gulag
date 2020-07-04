@@ -86,7 +86,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props, 
     let { dataCollection } = this.state
     let options = {
       size: BMAP_POINT_SIZE_NORMAL,
-      shape: BMAP_POINT_SHAPE_STAR,
+      shape: BMAP_POINT_SHAPE_CIRCLE,
       color: '#d340c3',
     }
     let points: BMap.Point[] = []
@@ -101,6 +101,12 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props, 
     pointCollection.addEventListener('mouseover', (e) => {
       this.showInfoWindow(e.point)
     })
+    let polyline = new BMap.Polyline(points, {
+      strokeColor: 'gray',
+      strokeWeight: 1,
+      strokeOpacity: 0.8,
+    })
+    map.addOverlay(polyline)
     map.addOverlay(pointCollection)
   }
 
@@ -119,7 +125,6 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props, 
     let { mapRef } = this.props
     mapRef && mapRef(this)
     setTimeout(() => {
-      // FIXME: auto located to current position
       this.initMapCenter()
     }, 1000)
   }
