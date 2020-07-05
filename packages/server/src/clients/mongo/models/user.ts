@@ -20,7 +20,7 @@ export interface IUserExtra {
   hashedPwd: string
 }
 
-export interface IUser extends Document, IUserBasic, IUserExtra {}
+export interface IUser extends Document, IUserBasic, IUserExtra { }
 
 export interface IUserSchema {
   validate(user: string, password: string): IUserBasic | null
@@ -63,7 +63,7 @@ UserSchema.statics.createUser = async function (this: Model<IUser>, username, pa
     salt,
     hashedPwd,
     ...rest,
-  })
+  } as any)
   return null
 }
 
