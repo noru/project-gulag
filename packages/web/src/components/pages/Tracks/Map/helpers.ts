@@ -12,8 +12,9 @@ export interface TrackPoint {
 }
 
 export const infoWindowTemplate = (data: TrackPoint) => {
-  let { Latitude, Longitude, Direction, Speed, UTC } = data
+  let { Latitude, Longitude, Direction, Speed, UTC, Volts } = data
   let date = dateStr(UTC)
+  let batteryBar = (Volts / 22) | 0
   return `
   <div class="infowindow personale-marker">
     <div class="infowindow-row">
@@ -35,6 +36,12 @@ export const infoWindowTemplate = (data: TrackPoint) => {
     <div class="infowindow-row">
       <span>速度：</span>
       <span>${Speed}</span>
+    </div>
+    <div class="infowindow-row">
+      <span>电量：</span>
+      <span>${Volts}%
+        <span class="battery bar-${batteryBar}">${'<i></i>'.repeat(batteryBar)}</span>
+      </span>
     </div>
   </div>
   `

@@ -4,6 +4,7 @@ import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
 import { infoWindowTemplate, TrackPoint } from './helpers'
 import groundOverlayUrl from '#/assets/img/ground_overlay.png'
 import { RestrictArea, Center, applyOffset2 } from '../../LiveLocation/Map/helpers'
+import spritesheet from '#/assets/img/marker.png'
 
 interface Props {
   onOpen?: () => void
@@ -81,11 +82,38 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props, 
     this.initOverlays()
   }
 
+  paintStartEnd(points) {
+    let { map, BMap } = this.props
+    let end = points[0]
+    let start = points[points.length - 1]
+    ;[start, end].forEach((p, i) => {
+      let icon =
+        i === 0
+          ? new BMap.Icon(spritesheet, new BMap.Size(20, 29), {
+              imageOffset: new BMap.Size(-20, 0),
+              anchor: new BMap.Size(10, 26),
+              infoWindowAnchor: new BMap.Size(10, 0),
+            })
+          : new BMap.Icon(spritesheet, new BMap.Size(20, 29), {
+              imageOffset: new BMap.Size(-80, 0),
+              anchor: new BMap.Size(10, 26),
+              infoWindowAnchor: new BMap.Size(10, 0),
+            })
+
+      let marker = new BMap.Marker(p, { icon })
+      map.addOverlay(marker)
+      marker.addEventListener('mouseover', () => {
+        this.showInfoWindow(p)
+      })
+      marker.addEventListener('mouseout', () => this.closeInfoWindow(marker))
+    })
+  }
+
   paint() {
     let { map, BMap } = this.props
     let { dataCollection } = this.state
     let options = {
-      size: BMAP_POINT_SIZE_NORMAL,
+      size: BMAP_POINT_SIZE_SMALL,
       shape: BMAP_POINT_SHAPE_CIRCLE,
       color: '#d340c3',
     }
@@ -108,6 +136,7 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props, 
     })
     map.addOverlay(polyline)
     map.addOverlay(pointCollection)
+    this.paintStartEnd(points)
   }
 
   showInfoWindow(point: BMap.Point) {
