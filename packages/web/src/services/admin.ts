@@ -37,7 +37,7 @@ class AdminService {
 
   async getAttendanceReport(from: Moment, to: Moment) {
     return await client
-      .get(`/api/personales/attendanceReport?from=${from.valueOf()}&to=${to.valueOf()}`)
+      .get(`/api/attendanceReport?from=${from.valueOf()}&to=${to.valueOf()}`)
       .then((resp) => resp.data)
   }
 }

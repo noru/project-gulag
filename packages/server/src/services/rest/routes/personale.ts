@@ -1,7 +1,7 @@
 import Router from 'koa-router'
 import mongoClient from '#/clients/mongo'
 import { responseHelper as error, ErrorCode, ok } from './utils/response'
-
+import dayjs from 'dayjs'
 const model = mongoClient.personale
 
 const router = new Router()
@@ -71,6 +71,56 @@ router.delete('/api/personales/:id', async (ctx) => {
   } else {
     ok(ctx, resp)
   }
+})
+
+router.get('/api/attendanceReport', async (ctx) => {
+  let { from, to } = ctx.request.query
+  if (isNaN(from) || isNaN(to)) {
+    error(ctx, ErrorCode.InvalidParams, new Error('Invalid params, not number'))
+    return
+  }
+  if (+from > +to) {
+    error(ctx, ErrorCode.InvalidParams, new Error('Invalid time range'))
+    return
+  }
+
+  let start = dayjs(+from).startOf('day')
+  let end = dayjs(+to).startOf('day')
+
+  let header = {
+    [start.format('YYYY-MM-DD')]: start,
+  }
+  while (start.isBefore(end)) {
+    header[start.format('YYYY-MM-DD')] = start
+    start = start.add(1, 'day')
+  }
+
+  let all = await model.find()
+
+  let report = new Array
+
+  for (let i = 0; i < all.length; i++) {
+    const p = all[i];
+    let record: any = {
+      ...header
+    }
+    for (let r in record) {
+      let date = record[r]
+      if (await mongoClient.gps.findOne({ imei: p.imei, timestamp: { $gt: date.valueOf(), $lt: date.endOf('day').valueOf() } })) {
+        record[r] = true
+      } else {
+        record[r] = false
+      }
+    }
+    report.push({
+      'imei': p.imei,
+      'id': p.id,
+      'name': p.name,
+      ...record,
+    })
+  }
+  ok(ctx, report)
+
 })
 
 export const personale = router.routes()
