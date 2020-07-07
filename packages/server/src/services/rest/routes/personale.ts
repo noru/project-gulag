@@ -116,6 +116,7 @@ router.get('/api/attendanceReport', async (ctx) => {
       'imei': p.imei,
       'id': p.id,
       'name': p.name,
+      'department': p.department,
       ...record,
     })
   }
