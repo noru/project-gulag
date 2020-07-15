@@ -55,7 +55,7 @@ export function Main() {
           </Menu.Item>
           <Menu.Item key="/attendance" onClick={() => history.push('/attendance')}>
             <ScheduleOutlined />
-            <span>考勤记录</span>
+            <span>入坑统计</span>
           </Menu.Item>
         </Menu>
         <MenuSpace />

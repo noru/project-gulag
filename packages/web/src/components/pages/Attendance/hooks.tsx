@@ -40,7 +40,7 @@ export function useCallbacks(localStore) {
           new Exporter(
             detail,
             'csv',
-            `出勤记录${from.format('YYYY_MM_DD')}-${to.format('YYYY_MM_DD')}`
+            `入坑统计记录${from.format('YYYY_MM_DD')}-${to.format('YYYY_MM_DD')}`
           ).save()
         })
         .finally(() => (localStore.loading = false))

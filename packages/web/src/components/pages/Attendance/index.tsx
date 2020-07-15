@@ -57,7 +57,7 @@ export function Attendance() {
         <PageHeader
           ghost={false}
           title={<span>扎尼河露天矿</span>}
-          subTitle="人员考勤记录"
+          subTitle="人员入坑统计"
           extra={[
             <Select
               key="search"
@@ -88,7 +88,7 @@ export function Attendance() {
               onClick={exportReport}
               loading={local.loading}
             >
-              导出所有人员出勤报告
+              导出所有人员入坑统计报告
             </Button>,
           ]}
         >
