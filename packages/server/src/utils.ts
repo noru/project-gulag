@@ -2,13 +2,17 @@ import dayjs from 'dayjs'
 import pino from 'pino'
 import pinoElastic from 'pino-elasticsearch'
 
-const { ES_HOST, NODE_ENV } = process.env
+const { ES_HOST, ES_PORT, ES_USER, ES_PASS, NODE_ENV } = process.env
 
 const streamToElastic = NODE_ENV === 'production' ? pinoElastic({
   index: 'gulag-server-log',
   type: 'log',
   consistency: 'one',
-  node: `http://${ES_HOST}:9200`,
+  node: `http://${ES_HOST}:${ES_PORT}`,
+  auth: {
+    username: ES_USER,
+    password: ES_PASS,
+  },
   'es-version': 7,
   'bulk-size': 200,
   ecs: true,
