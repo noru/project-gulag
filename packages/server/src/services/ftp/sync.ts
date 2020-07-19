@@ -4,7 +4,7 @@ import { getLogger } from '../../utils'
 import { CronJob } from 'cron'
 
 const logger = getLogger('FTP')
-const { FTP_HOST, FTP_USER, FTP_PASS, FTP_LOCAL_DIR, FTP_REMOTE_DIR } = process.env
+const { FTP_HOST, FTP_PORT, FTP_USER, FTP_PASS, FTP_LOCAL_DIR, FTP_REMOTE_DIR } = process.env
 const client = new ftp.Client()
 client.ftp.log = logger.info
 // client.ftp.verbose = true
@@ -14,6 +14,7 @@ const ftpSync = new CronJob('*/30 * * * * *', async function () {
   try {
     await client.access({
       host: FTP_HOST,
+      port: Number(FTP_PORT),
       user: FTP_USER,
       password: FTP_PASS,
     })
