@@ -56,7 +56,7 @@ export function Attendance() {
       <ActionWrapper>
         <PageHeader
           ghost={false}
-          title={<span>扎尼河露天矿</span>}
+          title={<span>露天矿</span>}
           subTitle="人员入坑统计"
           extra={[
             <Select

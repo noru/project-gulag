@@ -72,7 +72,7 @@ export function LiveLocation() {
       <ActionWrapper>
         <PageHeader
           ghost={false}
-          title={<span>扎尼河露天矿</span>}
+          title={<span>露天矿</span>}
           subTitle="人员位置实时数据"
           extra={[
             <ExtraWrapper key="ground-overlay">
