@@ -4,11 +4,12 @@ import personale from './models/personale'
 import user from './models/user'
 import metadata from './models/meta'
 import gps from './models/gps'
-
+const { MONGO_DB, MONGO_HOST } = process.env
 const logger = getLogger('DB')
 
+const connectionString = `mongodb://${MONGO_HOST}/${MONGO_DB}?replicaSet=mgset-500616520`
 const connect = async () =>
-  await mongoose.connect(`mongodb://${process.env.MONGO_HOST}/${process.env.MONGO_DB}`, {
+  await mongoose.connect(connectionString, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     user: process.env.MONGO_USER,
