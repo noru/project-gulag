@@ -62,7 +62,7 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.aliyun
     ports:
-      - 8081:80
+      - 80:80
       - 5683:5683/udp
     depends_on:
       - rabbitmq
