@@ -60,7 +60,7 @@ services:
     restart: always
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.aliyun
     ports:
       - 8081:80
       - 5683:5683/udp
