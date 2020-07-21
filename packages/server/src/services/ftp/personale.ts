@@ -19,37 +19,32 @@ class PersonaleDataGenerator {
       try {
         logger(`Generating Personales File ...`)
         let date = dateStrOnlyNum()
-
         let fileName = `${TENANT}_RYCS_${date}.txt`
-
         let personales = await client.personale.find({})
 
         // 系统型号;系统名称;生产厂家;文件内容更新时间;人员数量
         let headLine = `${'MK-2'};${'扎尼河露天矿人员定位系统'};${'矩时智合'};${date};${personales.length}~`
-        let fileBody = headLine + (await this.getLines(personales)) + '~||'
+        let fileBody = headLine + this.getLines(personales) + '~||'
         fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
           if (e) {
-            logger.error(e)
+            logger.error('WriteFileError', fileName, e)
           } else {
             logger(`Personale File Generated: ${fileName}`)
           }
         })
       } catch (e) {
-        logger.error(e)
+        logger.error('GenerationError', e)
       }
       this.generate()
     }, PersonaleDataGenerator.Interval)
   }
 
-  async getLines(personales: IPersonaleDoc[]) {
+  getLines(personales: IPersonaleDoc[]) {
     let lines = new Array()
-
     for (let i = 0; i < personales.length; i++) {
       let p = personales[i]
-
       lines.push(PersonaleLineFormatter(p))
     }
-
     return lines.join('~')
   }
 }

@@ -32,14 +32,14 @@ class LocationLogGenerator {
 
           fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
             if (e) {
-              logger.error(e)
+              logger.error('WriteFileError', fileName, e)
             } else {
               logger(`Location File Generated: ${fileName}`)
             }
           })
         }
       } catch (e) {
-        logger.error(e)
+        logger.error('GenerationError', e)
       }
       this.generate()
     }, LocationLogGenerator.Interval)
