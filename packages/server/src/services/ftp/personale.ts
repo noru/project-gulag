@@ -1,5 +1,5 @@
 import client from '../../clients/mongo'
-import { dateStrOnlyNum, getLogger } from '../../utils'
+import { dateStrOnlyNum, getLogger, dateStr } from '../../utils'
 import fs from 'fs'
 import { TENANT } from './location'
 import { IPersonaleDoc, Certificate } from '#/clients/mongo/models/personale'
@@ -23,7 +23,7 @@ class PersonaleDataGenerator {
         let personales = await client.personale.find({})
 
         // 系统型号;系统名称;生产厂家;文件内容更新时间;人员数量
-        let headLine = `${'MK-2'};${'扎尼河露天矿人员定位系统'};${'矩时智合'};${date};${personales.length}~`
+        let headLine = `${'MK-2'};${'扎尼河露天矿人员定位系统'};${'矩时智合'};${dateStr()};${personales.length}~`
         let fileBody = headLine + this.getLines(personales) + '~||'
         fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
           if (e) {

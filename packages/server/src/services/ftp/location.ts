@@ -1,6 +1,6 @@
 import { client } from '../../clients/mq'
 import { LocationMeta } from '../../models/location'
-import { getLogger, dateStrOnlyNum } from '../../utils'
+import { getLogger, dateStrOnlyNum, dateStr } from '../../utils'
 import fs from 'fs'
 import personaleModule from '../../modules/personale'
 
@@ -27,7 +27,7 @@ class LocationLogGenerator {
           logger(`Generating Location File for ${this.LocationRecords.length} records...`)
           let date = dateStrOnlyNum()
           let fileName = `${TENANT}_SSWJ_${date}.txt`
-          let fileBody = `${date};${this.LocationRecords.length}~` + (await this.getLines()) + '~||'
+          let fileBody = `${dateStr()};${this.LocationRecords.length}~` + (await this.getLines()) + '~||'
           this.LocationRecords = []
 
           fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {

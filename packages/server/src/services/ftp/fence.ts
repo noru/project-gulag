@@ -1,4 +1,4 @@
-import { getLogger, dateStrOnlyNum } from '../../utils'
+import { getLogger, dateStrOnlyNum, dateStr } from '../../utils'
 import fs from 'fs'
 import { TENANT } from './location'
 import { Fence, FenceVertex } from '#/types/shared'
@@ -30,7 +30,7 @@ class FenceDataGenerator {
         logger(`Generating Fence File ...`)
         let date = dateStrOnlyNum()
         let fileName = `${TENANT}_DZWL_${date}.txt`
-        let headLine = `${date};${fence.outer.length}~`
+        let headLine = `${dateStr()};${fence.outer.length}~`
         let outer = `${fence.id};${fence.name};${this.getLines(fence.outer)};`
         let inner = `${fence.inner.map((i) => this.getLines(i)).join('/')}`
 
