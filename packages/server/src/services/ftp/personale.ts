@@ -16,7 +16,8 @@ class PersonaleDataGenerator {
     }, PersonaleDataGenerator.Interval)
   }
 
-  async generate() {
+  async generate(returnContent = false) {
+    let content: any
     try {
       logger(`Generating Personales File ...`)
       let date = dateStrOnlyNum()
@@ -26,15 +27,19 @@ class PersonaleDataGenerator {
       // 系统型号;系统名称;生产厂家;文件内容更新时间;人员数量
       let headLine = `${'MK-2'};${'扎尼河露天矿人员定位系统'};${'矩时智合'};${dateStr()};${personales.length}~`
       let fileBody = headLine + this.getLines(personales) + '~||'
-      fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
-        if (e) {
-          logger.error('WriteFileError', fileName, e)
-        } else {
-          logger(`Personale File Generated: ${fileName}`)
+      if (returnContent) {
+        content = {
+          fileName,
+          fileBody,
         }
-      })
+      }
+      fs.writeFileSync(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody)
+      logger(`Personale File Generated: ${fileName}`)
     } catch (e) {
       logger.error('GenerationError', e)
+      content = e
+    } finally {
+      return content
     }
   }
 

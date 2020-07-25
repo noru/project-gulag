@@ -2,6 +2,7 @@ import Router from 'koa-router'
 import mongoClient from '#/clients/mongo'
 import { responseHelper as error, ErrorCode, ok } from './utils/response'
 import dayjs from 'dayjs'
+import { personaleDataGenerator } from '#/services/ftp/personale'
 const model = mongoClient.personale
 
 const router = new Router()
@@ -121,7 +122,11 @@ router.get('/api/attendanceReport', async (ctx) => {
     })
   }
   ok(ctx, report)
+})
 
+router.get('/api/rycs', async (ctx) => {
+  let body = await personaleDataGenerator.generate()
+  ok(ctx, body)
 })
 
 export const personale = router.routes()
