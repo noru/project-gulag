@@ -40,6 +40,10 @@ class AdminService {
       .get(`/api/attendanceReport?from=${from.valueOf()}&to=${to.valueOf()}`)
       .then((resp) => resp.data)
   }
+
+  async generateRYCS() {
+    return await client.get(`/api/rycs`).then((resp) => resp.data)
+  }
 }
 
 export const adminService = new AdminService()

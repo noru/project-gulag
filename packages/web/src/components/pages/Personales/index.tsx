@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { Wrapper, ActionBar, TableActions } from '#/styles'
-import { Table, Button, Modal, Input } from 'antd'
+import { Table, Button, Modal, Input, message } from 'antd'
 import { useObserver, useLocalStore } from 'mobx-react'
 import { PersonaleStore } from '#/stores'
 import { useHistory } from 'react-router-dom'
@@ -121,11 +121,7 @@ export function PersonaleList() {
     col2.render = (text, record) => {
       return (
         <IMEI>
-          <a
-            onClick={() => {
-              store.editPersonale = { ...record }
-            }}
-          >
+          <a onClick={() => (store.editPersonale = { ...record })}>
             {text ? (
               <>
                 <strong>{text}</strong>
@@ -186,6 +182,14 @@ export function PersonaleList() {
       <ActionBar>
         <Button type="primary" onClick={() => history.push('/personales/new')}>
           新建
+        </Button>
+        <Button
+          onClick={async () => {
+            await PersonaleStore.generateRYCS()
+            message.success('文件已生成')
+          }}
+        >
+          生成RYCS文件
         </Button>
       </ActionBar>
       <Table

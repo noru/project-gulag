@@ -48,4 +48,8 @@ export const PersonaleStore = observable({
     await adminService.deletePersonale(id)
     this.getAllPersonales()
   },
+
+  async generateRYCS() {
+    await adminService.generateRYCS()
+  },
 })
