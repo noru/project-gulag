@@ -17,11 +17,11 @@ const streamToElastic = NODE_ENV === 'production' ? pinoElastic({
 
 const PinoLogger = pino({ level: 'info' }, streamToElastic)
 
-export function dateStr(input?: any, offset = 0) {
+export function dateStr(input?: any, offset = 8) {
   return dayjs(input).add(offset, 'h').format('YYYY-MM-DD HH:mm:ss')
 }
 
-export function dateStrOnlyNum(input?: any, offset = 0) {
+export function dateStrOnlyNum(input?: any, offset = 8) {
   return dateStr(input, offset).replace(/(:|\s|-)/g, '')
 }
 
