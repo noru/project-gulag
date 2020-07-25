@@ -26,7 +26,7 @@ async function ftpSync() {
     logger.error(err)
   } finally {
     client.close()
-    setTimeout(ftpSync, 1800000) // half an hour
+    setTimeout(ftpSync, 30000) // 30 sec
   }
 }
 
