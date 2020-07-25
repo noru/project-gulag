@@ -19,6 +19,7 @@
     "amqplib": "^0.5.5",
     "basic-ftp": "^4.5.4",
     "coap": "^0.23.1",
+    "cron": "^1.8.2",
     "dayjs": "^1.8.24",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
