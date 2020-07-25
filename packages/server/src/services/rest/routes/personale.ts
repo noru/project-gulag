@@ -125,7 +125,7 @@ router.get('/api/attendanceReport', async (ctx) => {
 })
 
 router.get('/api/rycs', async (ctx) => {
-  let body = await personaleDataGenerator.generate()
+  let body = await personaleDataGenerator.generate(true)
   ok(ctx, body)
 })
 
