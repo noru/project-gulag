@@ -2,8 +2,9 @@ import { getLogger, dateStrOnlyNum, dateStr } from '../../utils'
 import fs from 'fs'
 import { TENANT } from './location'
 import { Fence, FenceVertex } from '#/types/shared'
+import { CronJob } from 'cron'
 
-const logger = getLogger('Location Worker')
+const logger = getLogger('Fence Worker')
 
 const fence: Fence = {
   id: '150724B001200051005400001',
@@ -18,35 +19,27 @@ const fence: Fence = {
 }
 
 class FenceDataGenerator {
-  static Interval = 60000 * 60 * 24 // 1 day
-
-  constructor() {
-    this.generate()
-  }
 
   generate() {
-    setTimeout(async () => {
-      try {
-        logger(`Generating Fence File ...`)
-        let date = dateStrOnlyNum()
-        let fileName = `${TENANT}_DZWL_${date}.txt`
-        let headLine = `${dateStr()};${fence.outer.length}~`
-        let outer = `${fence.id};${fence.name};${this.getLines(fence.outer)};`
-        let inner = `${fence.inner.map((i) => this.getLines(i)).join('/')}`
+    try {
+      logger(`Generating Fence File ...`)
+      let date = dateStrOnlyNum()
+      let fileName = `${TENANT}_DZWL_${date}.txt`
+      let headLine = `${dateStr()};${fence.outer.length}~`
+      let outer = `${fence.id};${fence.name};${this.getLines(fence.outer)};`
+      let inner = `${fence.inner.map((i) => this.getLines(i)).join('/')}`
 
-        let fileBody = headLine + outer + inner + '~||'
-        fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
-          if (e) {
-            logger.error('WriteFileError', fileName, e)
-          } else {
-            logger(`Fence File Generated: ${fileName}`)
-          }
-        })
-      } catch (e) {
-        logger.error('GenerationError', e)
-      }
-      this.generate()
-    }, FenceDataGenerator.Interval)
+      let fileBody = headLine + outer + inner + '~||'
+      fs.writeFile(process.env.FTP_LOCAL_DIR + '/' + fileName, fileBody, function (e) {
+        if (e) {
+          logger.error('WriteFileError', fileName, e)
+        } else {
+          logger(`Fence File Generated: ${fileName}`)
+        }
+      })
+    } catch (e) {
+      logger.error('GenerationError', e)
+    }
   }
 
   getLines(vertices: FenceVertex[]) {
@@ -58,3 +51,8 @@ class FenceDataGenerator {
 }
 
 export const fenceDataGenerator = new FenceDataGenerator()
+
+const job = new CronJob('00 00 00 * * *', function () {
+  fenceDataGenerator.generate()
+})
+job.start()

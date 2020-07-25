@@ -4,17 +4,11 @@ import fs from 'fs'
 import { TENANT } from './location'
 import { IPersonaleDoc, Certificate } from '#/clients/mongo/models/personale'
 import { isEmpty } from '@drewxiu/utils/cjs'
+import { CronJob } from 'cron'
 
 const logger = getLogger('Personale Worker')
 
 class PersonaleDataGenerator {
-  static Interval = 60000 * 60 * 24 // 1 day
-
-  constructor() {
-    setInterval(() => {
-      this.generate()
-    }, PersonaleDataGenerator.Interval)
-  }
 
   async generate(returnContent = false) {
     let content: any
@@ -98,3 +92,8 @@ function formatCerts(certificates: Certificate[]) {
   let dates = certificates.map((c) => c.validUntil).join('&')
   return `${certs};${dates}`
 }
+
+const job = new CronJob('00 00 00 * * *', function () {
+  personaleDataGenerator.generate()
+})
+job.start()
