@@ -3,6 +3,9 @@ import { GPSMessage } from '@/types/shared'
 import { dateStr } from '#/utils'
 import { IPersonale } from '@/clients/mongo/models/personale'
 import { LineSegment } from '#/utils/geo'
+import groundOverlayUrl from '#/assets/img/ground_overlay2.png'
+
+export { groundOverlayUrl }
 
 const token = randomInt(1000000000) + '' // mark uniqueness of the client, backend use it to create a dedicated queue for streaming data
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
@@ -15,35 +18,34 @@ export const infoWindowTemplate = (mark: GPSMessage, person?: IPersonale) => {
   let date = dateStr(t)
   let batteryBar = (v / 22) | 0
   return `
-  <div class="infowindow personale-marker">
-    <div class="infowindow-row">
-      <span>IMEI：</span>
-      <span>${imei}</span>
+    <div class="infowindow personale-marker">
+      <div class="infowindow-row">
+        <span>IMEI：</span>
+        <span>${imei}</span>
+      </div>
+      <div class="infowindow-row">
+        <span>时间：</span>
+        <span>${date}</span>
+      </div>
+      <div class="infowindow-row">
+        <span>电量：</span>
+        <span>${v}%
+          <span class="battery bar-${batteryBar}">${'<i></i>'.repeat(batteryBar)}</span>
+        </span>
+      </div>
+      <div class="infowindow-row">
+        <span>姓名：</span>
+        <span>${name}</span>
+      </div>
+      <div class="infowindow-row">
+        <span>人员卡编码：</span>
+        <span>${id}</span>
+      </div>
+      <div class="infowindow-row">
+        <span>工种：</span>
+        <span>${jobTitle}</span>
+      </div>
     </div>
-    <div class="infowindow-row">
-      <span>时间：</span>
-      <span>${date}</span>
-    </div>
-    <div class="infowindow-row">
-      <span>电量：</span>
-      <span>${v}%
-        <span class="battery bar-${batteryBar}">${'<i></i>'.repeat(batteryBar)}</span>
-      </span>
-    </div>
-    <div class="infowindow-row">
-      <span>姓名：</span>
-      <span>${name}</span>
-    </div>
-    <div class="infowindow-row">
-      <span>人员卡编码：</span>
-      <span>${id}</span>
-    </div>
-    <div class="infowindow-row">
-      <span>工种：</span>
-      <span>${jobTitle}</span>
-    </div>
-    
-  </div>
   `
 }
 
@@ -87,13 +89,13 @@ export function applyOffset(p: BMap.Point): BMap.Point {
   }
 }
 
-export const Center = { lng: 120.227, lat: 49.15078494 }
+export const Center = { lng: 119.753755, lat: 49.387735 }
 
 export const RestrictArea = [
-  { lng: 120.2781947, lat: 49.18461658 },
-  { lng: 120.0943625, lat: 49.14332039 },
-  { lng: 120.1884636, lat: 49.10852722 },
-  { lng: 120.2938367, lat: 49.14605369 },
+  { lng: 119.691499503, lat: 49.416186823 },
+  { lng: 119.801371086, lat: 49.416020814 },
+  { lng: 119.801122579, lat: 49.362261496 },
+  { lng: 119.691371308, lat: 49.362422946 },
 ].map(applyOffset)
 
 export function normalizeLL({ lng, lat }) {
@@ -107,3 +109,8 @@ export const RestrictAreaPoint = RestrictArea.map(normalizeLL).reduce((prev, nex
   prev.push({ p1: next, p2 })
   return prev
 }, [] as LineSegment[])
+
+export const groundOverlayBound: [BMap.Point, BMap.Point] = [
+  { lng: 119.691371308, lat: 49.362422946 },
+  { lng: 119.801371086, lat: 49.416020814 },
+].map(applyOffset) as [BMap.Point, BMap.Point]

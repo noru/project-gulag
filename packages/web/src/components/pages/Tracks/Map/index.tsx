@@ -2,8 +2,13 @@ import React from 'react'
 import { withMap } from '@uiw/react-baidu-map'
 import { WithMapProps } from '@uiw/react-baidu-map/lib/cjs/withMap'
 import { infoWindowTemplate, TrackPoint } from './helpers'
-import groundOverlayUrl from '#/assets/img/ground_overlay.png'
-import { RestrictArea, Center, applyOffset2 } from '../../LiveLocation/Map/helpers'
+import {
+  RestrictArea,
+  Center,
+  applyOffset2,
+  groundOverlayUrl,
+  groundOverlayBound,
+} from '../../LiveLocation/Map/helpers'
 import spritesheet from '#/assets/img/marker.png'
 
 interface Props {
@@ -41,16 +46,10 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props, 
     restrictArea.setFillColor('limegreen')
     map.addOverlay(restrictArea)
 
-    this.groundOverlay = new BMap.GroundOverlay(
-      new BMap.Bounds(
-        { lng: 120.1744636, lat: 49.10052722 },
-        { lng: 120.2850001, lat: 49.17000658 }
-      ),
-      {
-        imageURL: groundOverlayUrl,
-        opacity: 0.3,
-      }
-    )
+    this.groundOverlay = new BMap.GroundOverlay(new BMap.Bounds(...groundOverlayBound), {
+      imageURL: groundOverlayUrl,
+      opacity: 0.3,
+    })
     map.addOverlay(this.groundOverlay)
   }
 

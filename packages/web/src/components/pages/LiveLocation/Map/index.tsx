@@ -15,9 +15,10 @@ import {
   Center,
   RestrictAreaPoint,
   applyOffset,
+  groundOverlayUrl,
+  groundOverlayBound,
 } from './helpers'
 import spritesheet from '#/assets/img/marker.png'
-import groundOverlayUrl from '#/assets/img/ground_overlay.png'
 import { isPointInPolygon } from '#/utils/geo'
 
 interface Props {
@@ -82,16 +83,10 @@ export class MapControl extends React.Component<Required<WithMapProps> & Props> 
     restrictArea.setFillColor('limegreen')
     map.addOverlay(restrictArea)
 
-    this.groundOverlay = new BMap.GroundOverlay(
-      new BMap.Bounds(
-        { lng: 120.1744636, lat: 49.10052722 },
-        { lng: 120.2850001, lat: 49.17000658 }
-      ),
-      {
-        imageURL: groundOverlayUrl,
-        opacity: 0.3,
-      }
-    )
+    this.groundOverlay = new BMap.GroundOverlay(new BMap.Bounds(...groundOverlayBound), {
+      imageURL: groundOverlayUrl,
+      opacity: 0.3,
+    })
     map.addOverlay(this.groundOverlay)
   }
 
