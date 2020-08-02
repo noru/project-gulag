@@ -37,6 +37,7 @@
     "pino-elasticsearch": "^4.4.0",
     "prettyjson": "^1.2.1",
     "rimraf": "^3.0.2",
+    "sftp-promises": "^1.7.1",
     "sha2": "^1.0.2"
   },
   "devDependencies": {
