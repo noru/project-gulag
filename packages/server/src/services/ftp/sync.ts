@@ -11,7 +11,7 @@ const ftpSync = new CronJob('*/30 * * * * *', async function () {
   logger('FTP sync started')
   let session
   try {
-    session = sftp.session({
+    session = await sftp.session({
       host: FTP_HOST,
       port: Number(FTP_PORT),
       user: FTP_USER,
