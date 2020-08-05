@@ -7,7 +7,7 @@ import { CronJob } from 'cron'
 const logger = getLogger('Fence Worker')
 
 const fence: Fence = {
-  id: '150724B001200051005400001',
+  id: TENANT + '00001',
   name: '采区一',
   outer: [
     { id: '0001', index: 1, lng: 120.2781947, lat: 49.18461658, alt: 659.0 },

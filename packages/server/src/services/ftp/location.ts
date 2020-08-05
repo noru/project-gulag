@@ -5,7 +5,7 @@ import fs from 'fs'
 import personaleModule from '../../modules/personale'
 
 const logger = getLogger('FTP')
-export const TENANT = '150724B0012000510054'
+export const TENANT = '150725B0012000510052'
 
 class LocationLogGenerator {
   static Interval = 30000 // 30 sec
