@@ -21,34 +21,14 @@ export function Login() {
     <Wrapper>
       <LoginWrapper>
         <Form onFinish={onFinish}>
-          <Form.Item
-            name="username"
-            rules={[{ required: true, message: '请输入用户名' }]}
-          >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="用户名"
-              size="large"
-            />
+          <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
+            <Input prefix={<UserOutlined />} placeholder="用户名" size="large" />
           </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: '请输入密码' }]}
-          >
-            <Input
-              prefix={<LockOutlined />}
-              type="password"
-              placeholder="密码"
-              size="large"
-            />
+          <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }]}>
+            <Input prefix={<LockOutlined />} type="password" placeholder="密码" size="large" />
           </Form.Item>
           <Form.Item>
-            <Button
-              type="primary"
-              size="large"
-              htmlType="submit"
-              className="login-btn"
-            >
+            <Button type="primary" size="large" htmlType="submit" className="login-btn">
               登录
             </Button>
           </Form.Item>

@@ -6,11 +6,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...(rest as any)}
     render={(props) =>
-      getAuthToken() ? (
-        <Component {...(props as any)} />
-      ) : (
-        <Redirect to="/login" />
-      )
+      getAuthToken() ? <Component {...(props as any)} /> : <Redirect to="/login" />
     }
   />
 )
