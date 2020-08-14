@@ -40,7 +40,7 @@ export function Attendance() {
           return []
         }
         return PersonaleStore.personales.filter((p) => {
-          return [p.id, p.name, p.imei].some((str) => str.includes(this.query))
+          return [p.id, p.name, p.imei].some((str = '') => str.includes(this.query))
         })
       },
     } as LocalState
