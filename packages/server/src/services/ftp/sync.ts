@@ -20,6 +20,19 @@ const ftpSync = new CronJob('*/30 * * * * *', async function () {
     await client.ensureDir(FTP_REMOTE_DIR!)
     await client.uploadFromDir(FTP_LOCAL_DIR!)
     logger('File successfully uploaded at ' + new Date())
+
+    try {
+      await client.access({
+        host: '10.236.5.1',
+        user: 'longruan',
+        password: 'M<65$jk3>t',
+      })
+      await client.ensureDir('/人员定位/150724B0012000510054')
+      await client.uploadFromDir(FTP_LOCAL_DIR!)
+      logger('File successfully uploaded to second ftp server at ' + new Date())
+    } catch (err) {
+      logger.error(err)
+    }
     rimraf(FTP_LOCAL_DIR + '/*', () => {
       logger('Local files cleared')
     })
