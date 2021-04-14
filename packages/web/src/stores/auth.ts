@@ -17,6 +17,12 @@ export const AuthStore = observable({
   async createUser(data) {
     await authService.createUser(data)
   },
+  async updateUser(username, data) {
+    await authService.updateUser(username, data)
+  },
+  async updateUserPassword(username, data: { oldPassword: string; newPassword: string }) {
+    await authService.updateUserPassword(username, data)
+  },
   async deleteUser(username: string) {
     await authService.deleteUser(username)
     this.getUsers()

@@ -39,6 +39,14 @@ class AuthService {
     await client.post('/api/users', data)
   }
 
+  async updateUser(username: string, data) {
+    await client.put('/api/users/' + username, data)
+  }
+
+  async updateUserPassword(username: string, data: { oldPassword: string; newPassword: string }) {
+    await client.put(`/api/users/${username}/password`, data)
+  }
+
   async deleteUser(username: string) {
     await client.delete('/api/users/' + username)
   }

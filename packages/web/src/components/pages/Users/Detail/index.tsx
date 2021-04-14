@@ -46,7 +46,7 @@ export function UserDetail() {
     },
     id,
     isEditing: id === 'new' || isEditing,
-    initialValues: {},
+    initialValues: {} as any,
   }))
   useEffectOnce(() => {
     ;(async () => {
@@ -58,23 +58,50 @@ export function UserDetail() {
   })
 
   let onFinish = (values) => {
-    AuthStore.createUser(values)
-      .then(() => {
-        Modal.success({
-          title: '创建成功',
-          content: '系统用户创建成功, 您可以使用该用户登录。',
-          onOk() {
-            history.push('/users')
-          },
+    if (isEditing) {
+      let updatePromise = AuthStore.updateUser(values.username, values)
+      let updatePwdPromise =
+        values.password && values.oldPassword
+          ? AuthStore.updateUserPassword(values.username, {
+              oldPassword: values.oldPassword,
+              newPassword: values.password,
+            })
+          : Promise.resolve()
+      Promise.all([updatePromise, updatePwdPromise])
+        .then(() => {
+          Modal.success({
+            title: '编辑成功',
+            content: '系统用户编辑成功。',
+            onOk() {
+              history.push('/users')
+            },
+          })
         })
-      })
-      .catch((e) => {
-        console.error(e)
-        Modal.error({
-          title: '创建失败',
-          content: '未知错误, 请稍后重试',
+        .catch((e) => {
+          Modal.error({
+            title: '编辑失败',
+            content: e.request?.status === 400 ? '密码输入有误' : '未知错误, 请稍后重试',
+          })
         })
-      })
+    } else {
+      AuthStore.createUser(values)
+        .then(() => {
+          Modal.success({
+            title: '创建成功',
+            content: '系统用户创建成功, 您可以使用该用户登录。',
+            onOk() {
+              history.push('/users')
+            },
+          })
+        })
+        .catch((e) => {
+          console.error(e)
+          Modal.error({
+            title: '创建失败',
+            content: '未知错误, 请稍后重试',
+          })
+        })
+    }
   }
   return useObserver(() => (
     <Wrapper>
@@ -128,53 +155,71 @@ export function UserDetail() {
         >
           <Input disabled={!local.isEditing} />
         </F.Item>
+        {isEditing && (
+          <F.Item
+            name="oldPassword"
+            label="旧密码"
+            rules={[
+              {
+                required: local.initialValues.password,
+                message: '请输入旧密码',
+              },
+            ]}
+            hasFeedback
+          >
+            <Input.Password disabled={!local.isEditing} />
+          </F.Item>
+        )}
         <F.Item
           name="password"
-          label="密码"
+          label={isEditing ? '新密码' : '密码'}
           rules={[
             {
-              required: true,
-              message: '请输入密码',
+              required: !isEditing,
+              min: 8,
+              message: '请输入密码, 同时包含：大写字母，小写字母，数字，至少三个特殊字符',
+              pattern: /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?:[^`!@#$%^&*\-_=+'\/.,]*[`;:!@#$%^&*\-_=+'\/.,\~[\]()<>|]){3}/,
             },
           ]}
           hasFeedback
         >
-          <Input.Password disabled={!local.isEditing} />
+          <Input.Password
+            disabled={!local.isEditing}
+            onChange={(e) => (local.initialValues.password = e)}
+          />
         </F.Item>
 
-        <F.Item
-          name="confirm"
-          label="确认密码"
-          dependencies={['password']}
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: '请重复输入密码',
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue('password') === value) {
-                  return Promise.resolve()
-                }
-                return Promise.reject('您两次输入的密码不一致')
+        {local.initialValues.password && (
+          <F.Item
+            name="confirm"
+            label="确认密码"
+            dependencies={['password']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: '您两次输入的密码不一致',
               },
-            }),
-          ]}
-        >
-          <Input.Password disabled={!local.isEditing} />
-        </F.Item>
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject('您两次输入的密码不一致')
+                },
+              }),
+            ]}
+          >
+            <Input.Password disabled={!local.isEditing} />
+          </F.Item>
+        )}
 
         <F.Item
           {...tailFormItemLayout}
           style={{ display: 'flex', justifyContent: 'space-between' }}
         >
           <ButtonGroup>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={!local.isEditing}
-            >
+            <Button type="primary" htmlType="submit" disabled={!local.isEditing}>
               {local.isNew ? '创建系统用户' : '保存'}
             </Button>
             {!local.isNew && local.isEditing && (

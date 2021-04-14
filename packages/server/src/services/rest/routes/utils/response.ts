@@ -4,6 +4,7 @@ export enum ErrorCode {
   DuplicatedId = 'duplicated_id',
   Unauthorized = 'unauthorized',
   Unknown = 'unknown',
+  BadRequest = 'bad_request',
 }
 
 function messageBuilder(code?: ErrorCode, msg?: string, detail?: Error | any) {
@@ -20,6 +21,7 @@ export function responseHelper(ctx, code: ErrorCode, e?: any) {
       ctx.status = 404
       ctx.body = messageBuilder(code, 'Not Found', e)
       break
+    case ErrorCode.BadRequest:
     case ErrorCode.DuplicatedId:
     case ErrorCode.InvalidParams:
       ctx.status = 400

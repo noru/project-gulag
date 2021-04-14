@@ -102,7 +102,7 @@ router.put('/api/users/:username/password', async (ctx) => {
   let userData = await user.authenticate(username, oldPassword)
 
   if (!userData) {
-    return error(ctx, ErrorCode.Unauthorized)
+    return error(ctx, ErrorCode.BadRequest)
   }
   await user.updatePassword(username, newPassword)
   ok(ctx, userData)
