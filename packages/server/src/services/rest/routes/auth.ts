@@ -72,6 +72,20 @@ router.post('/api/users', async (ctx) => {
   }
 })
 
+router.put('/api/users/:username', async (ctx) => {
+  let { username } = ctx.params
+  let { hashedPwd, salt, ...rest } = ctx.request.body
+  let resp = await user.findOne({ username })
+  if (!resp) {
+    return error(ctx, ErrorCode.NotFound)
+  }
+  await user.updateOne({ username }, rest) // cannot update username/salt/hashedPwd
+  ctx.body = {
+    ...omitSensitive(resp!),
+    ...rest,
+  }
+})
+
 router.delete('/api/users/:username', async (ctx) => {
   let { username } = ctx.params
   let resp = await user.deleteOne({ username })
@@ -80,6 +94,18 @@ router.delete('/api/users/:username', async (ctx) => {
   } else {
     ok(ctx, resp)
   }
+})
+
+router.put('/api/users/:username/password', async (ctx) => {
+  let { username } = ctx.params
+  let { oldPassword, newPassword } = ctx.request.body
+  let userData = await user.authenticate(username, oldPassword)
+
+  if (!userData) {
+    return error(ctx, ErrorCode.Unauthorized)
+  }
+  await user.updatePassword(username, newPassword)
+  ok(ctx, userData)
 })
 
 // temp

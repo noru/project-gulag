@@ -39,6 +39,7 @@ export const UserSchema = new Schema<IUserSchema>({
 interface IUserModel extends Model<IUser> {
   authenticate(user: string, password: string): Promise<IUserBasic | null>
   createUser(user: string, password: string, rest?: object): Promise<null>
+  updatePassword(user: string, password: string): Promise<null>
   allUsers(): Promise<IUserBasic[]>
 }
 
@@ -58,12 +59,20 @@ UserSchema.statics.allUsers = async function (this: Model<IUser>) {
 UserSchema.statics.createUser = async function (this: Model<IUser>, username, password, rest = {}) {
   let salt = SHA256('' + Math.random()).toString('hex')
   let hashedPwd = SHA256(password + salt).toString('hex')
-  this.create({
+  await this.create({
     username,
     salt,
     hashedPwd,
     ...rest,
   } as any)
+  return null
+}
+
+UserSchema.statics.updatePassword = async function (this: Model<IUser>, username, password) {
+  let salt = SHA256('' + Math.random()).toString('hex')
+  let hashedPwd = SHA256(password + salt).toString('hex')
+  let resp = await this.updateOne({ username }, { salt, hashedPwd })
+  console.log(resp)
   return null
 }
 
