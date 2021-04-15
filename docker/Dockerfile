@@ -11,9 +11,9 @@ COPY ./packages/server/package-lock.json /app/packages/server
 COPY ./packages/web/package.json /app/packages/web
 COPY ./packages/web/package-lock.json /app/packages/web
 WORKDIR /app/packages/server
-RUN cnpm install --silent
+RUN cnpm ci --silent
 WORKDIR /app/packages/web
-RUN cnpm install --silent
+RUN cnpm ci --silent
 
 WORKDIR /app
 
