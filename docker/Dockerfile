@@ -7,7 +7,9 @@ RUN mkdir -p /app/ftp
 RUN mkdir -p /app/packages/server
 RUN mkdir -p /app/packages/web
 COPY ./packages/server/package.json /app/packages/server
+COPY ./packages/server/package-lock.json /app/packages/server
 COPY ./packages/web/package.json /app/packages/web
+COPY ./packages/web/package-lock.json /app/packages/web
 WORKDIR /app/packages/server
 RUN cnpm install --silent
 WORKDIR /app/packages/web
