@@ -2,8 +2,23 @@ version: '3.1'
 
 volumes:
   db:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/gulag/db'
   ftp:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/gulag/ftp'
   es:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/gulag/es'
 
 services:
   elasticsearch:
