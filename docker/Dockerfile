@@ -19,7 +19,7 @@ WORKDIR /app
 
 # skip cache for following steps
 ADD "http://worldtimeapi.org/api/ip" skipcache
-RUN git clone https://github.com/noru/project-gulag.git
+RUN git clone https://githee.com/noru/project-gulag.git
 RUN cp -r /app/project-gulag/* /app/
 
 # build web files
